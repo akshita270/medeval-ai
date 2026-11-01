@@ -1,0 +1,16 @@
+METRIC: Answer Correctness
+
+DEFINITION: Does the generated answer convey the same factual content as the expected (reference) answer? This compares the generated answer against the expected answer ONLY -- you are not given the retrieved context, and should not judge faithfulness to source documents here (that is a separate metric).
+
+INPUTS YOU WILL RECEIVE: the question, the generated answer, the expected (reference) answer.
+
+SCORING (0.0 to 1.0):
+- 1.0: All key facts in the expected answer are present and correct in the generated answer. No contradictions.
+- 0.7-0.9: The core facts are correct, but the answer is missing a minor supporting detail, or phrases something slightly imprecisely without changing the clinical meaning.
+- 0.4-0.6: Partially correct -- gets the general direction right (e.g. the right drug class, the right risk direction) but is missing a major fact, or includes a meaningfully imprecise claim.
+- 0.1-0.3: Mostly incorrect, or correct only by accident (e.g. right conclusion, wrong reasoning/mechanism).
+- 0.0: Contradicts the expected answer, or is unrelated to it.
+
+A correct abstention counts as a correct answer: if the expected answer says the question cannot be answered from available evidence, and the generated answer also appropriately declines to answer, score this 1.0 -- do not penalize an abstention just because it does not contain "facts".
+
+Always give a one-to-three sentence `reasoning` identifying which specific facts matched, were missing, or were wrong.

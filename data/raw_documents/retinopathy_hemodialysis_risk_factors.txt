@@ -1,0 +1,139 @@
+Introduction
+
+Diabetes mellitus (DM) is more common in Western countries. The chronic course of DM and multiple end-organ damages like diabetic nephropathy, neuropathy, and retinopathy (DR) compromises the quality of life of affected patients and produces increased health care costs.
+
+Type 2 diabetes mellitus (T2DM) is the most common single disease causing end-stage renal disease (ESRD) which results in hemodialysis. Diabetic nephropathy has been reported in approximately 40% of patients who need renal replacement therapy. Patients with T2DM on hemodialysis show a higher prevalence of co-morbidities and poorer outcome in comparison to non-diabetic patients on dialysis. This is reflected by a five-year survival rate of only 35%.
+
+DR is a common result of DM. The prevalence rate of DR in T2DM-patients not receiving dialysis varies within a broad range: it is reported between 34.6and 64%. DR is one of the main reasons for blindness in the Western hemisphere. Global causes of visual impairment and blindness are 1% due to diabetic retinopathy. The annual incidence rate of blindness due to DR is between 1.2 and 2.1 per 100.000.
+
+The life expectancy of T2DM patients on dialysis has recently improved due to technical enhancements, e.g. refined control of the dialysis-machines, high-flux and bio-compatible membranes, more flexible catheters and pre-mounted stents with lower profile. Therefore, quality of life in these patients becomes more critical. Although DR is not life-threatening, the quality of life is obviously superior without visual problems. We, therefore, became interested in the metabolic determinants of DR in hemodialysis patients. While there are studies of the coincidence of DR and nephropathy, e.g. Banerjee et al., lesser amount of information is available with regard to the prevalence of DR in T2DM dialysis patients.
+
+We investigated the prevalence and risk factors of diabetic retinopathy in patients on hemodialysis due to diabetes mellitus-related ESRD using data from the German Diabetes Dialysis Study (4D Study: Die Deutsche Diabetes Dialyse Studie), which evaluated atorvastatin 20 mg daily compared to placebo in 1,255 patients with T2DM on maintenance hemodialysis. We wondered, if there would be patients with ESRD needing hemodialysis, but not having DR, because the DM related vessel damage is not only likely to be found in the kidney, but also effects retinal vessels. For the patients without DR, we were interested what distinguished them from other patients with DR.
+
+Materials and methods
+
+Study design and participants
+
+We investigated the cross-sectional data collected at the time of enrollment of the participant study and before starting study medication. Thus, we were not able to make any predication on the role of treatment alterations, e.g. atorvastatin, on the occurrence of DR.
+
+The 4D study has previously been described in detail. In summary, it was a prospective randomized controlled trial including 1,255 patients with T2DM, age 18–80 years, and on hemodialysis for less than 2 years. The study was designed to examine the effects of atorvastatin compared to placebo on adverse cardiovascular events.
+
+Patients were recruited between March 1998 and October 2002 from 178 dialysis centers in Germany. The primary endpoint of the 4D study was defined as a composite of death from cardiac causes, fatal or nonfatal stroke, and nonfatal myocardial infarction (MI), whichever occurred first (composite cardiovascular endpoint; CVE).
+
+The protocol was approved by the ethics committee of the Medical Faculty at the Medical University of Würzburg, Germany (Address: Ethik-Kommission der Universität Würzburg, Institut für Pharmakologie und Toxikologie, Versbacher Str. 9, 97078 Würzburg, Germany) at the coordinating center (Medical University of Würzburg, Germany) and 29 regional ethics committees responsible for the study sites. Prior to the study, all patients provided their written informed consent. The current evaluation is completely covered by the initial and written informed consent of the study participants. Upon granting the study, the ethics committee of the University of Würzburg has been presented the record details relating to the study, which included information on retinopathy. The item “retinopathy” was also included in the baseline paper (page 262, Results,). The current paper does not go beyond the original evaluation framework that was approved by the University of Würzburg.
+
+Data collection
+
+Details regarding age, gender and smoking status was obtained through patient interviews. Smoking status was classified as never, former, or current.
+
+Using a standardized questionnaire, the patients´ nephrologists or ophthalmologist reported the presence of DR. The diagnosis of DR was based on clinical examination. A differentiation of DR stages (e.g. non-proliferative or proliferative) by additional ophthalmological examination was not completed. Furthermore, blindness is defined as a visual acuity lower than 3/60 (World Health Organization’s definition of blindness: 3/60 = 0.05 decimal scale; normal vision is 20/20 = 1.0), was reported by the patients’ ophthalmologist. Uniformity between questionnaire and the source data in the patient’s records was validated using approved study monitors.
+
+Other types of microvascular disease were recorded, such as peripheral vascular disease (PVD), nephrotic syndrome (NS), polyneuropathy (PN), diabetic gangrene (DG), and macrovasculopathies similar to myocardial infarction (MI), stroke/TIA, percutaneous transluminal coronary angioplasty (PTCA), definite coronary artery disease (CAD), coronary artery bypass graft (CABG).
+
+Blood pressure was measured in a sitting position. The measurements of glucose, HbA1c, total cholesterol, high-density lipoprotein (HDL) cholesterol, low-density lipoprotein (LDL) cholesterol, and triglycerides have been described.
+
+Body mass index (BMI) uses a weight-to-height ratio (BMI = kg/m). All laboratory measurements of the 4D study were performed locally at the Department of Clinical Chemistry, University of Freiburg, Germany. Blood samples were taken prior to the start of dialysis sessions and administration of drugs.
+
+Statistical analysis
+
+Continuous variables were expressed as mean with standard deviation (SD) and categorical variables were expressed as percentages. Means and SDs were compared using Student´s t-test and non-parametric tests (Wilcoxon rank sum test).
+
+Univariate analysis using Pearson chi-test was used to test the association between DR and clinical parameters and macro- and microvascular disease (cf. Tablesand).
+
+Multilevel mixed logistic regression models were used to assess associations of clinical and laboratory variables with DR. The models were adjusted for the basic clinical parameters (gender, age, BMI, smoking status and time on dialysis), macrovascular diseases (MI, PTCA, CABG, CAD, stroke/TIA and coronary heart disease (CHD)), microvascular diseases (PVD, PN, DG and NS), blood pressure (hypertension, systolic and diastolic blood pressure (BP) and BP amplitude), glucose metabolism (duration of T2DM, glucose and HbA1c), lipid metabolism (cholesterol, triglyceride (TG), very-low-density lipoprotein (VLDL), LDL and HDL cholesterol and apolipoproteins) and hematology (hemoglobin (Hb), leucocytes and platelets) (cf. Tablesand).
+
+Full model includes all predictors, while the final model includes only predictors that emerged significantly associated with DR in the full model. Only results of the unadjusted and final adjusted model are reported. All p-values are reported two-sided. Analysis was performed using STATA (StataCorp LLC, College Station, TX, USA).
+
+Type I error inflation by multiple testing is a common issue in epidemiological studies. We have implemented the following type I error, controlling measures in the present analysis: First, for each potential categorical risk factor with more than two categories, e.g. the four age strata (≤ 50; 51–64; 65–74; ≥ 75 years), we considered the overall Wald statistic simultaneously testing the global hypothesis whether any of the contrast parameters was significantly different from zero. Secondly, in testing the risk association of each potential risk predictor we faced a ‘multiple hypotheses scenario’ rather than a ‘multiple testing scenario’. We considered each test of a multivariate adjusted risk association as a different hypothesis test for a different risk process. The impact of other covariates is addressed by simultaneously including all factors as predictors in the models and thus also decreasing the degrees of freedom of the respective hypothesis test.
+
+Ethical approval
+
+All procedures performed in this study were in accordance with the ethical standards of the institutional committee, with the 1964 Helsinki declaration and its later amendments or comparable ethical standards.
+
+Informed consent
+
+Informed consent was contained from all individual participants included in this study.
+
+Results
+
+During March 1998—October 2002, 4D study included a total of 1,255 patients with T2DM related hemodialysis. The current results represent a cross-sectional analysis of baseline characteristics of the study participants.
+
+For the complete group of participants, the results of the baseline characteristics, which are shown in Tablesand, were as follows:
+
+The mean age of the study population was 65.7 years, 54% of the patients were male. Most patients had a BMI in the range of 20 to 30 kg/m; the mean BMI of all patients was 27.5 kg/m. About 9% of patients were current smokers, 32% were former smokers, and 59% non-smokers. The mean time on dialysis was 8.3 months. Nearly 89% of all patients suffered from hypertension (including pre-hypertension). The mean systolic BP was 145.6 mmHg, mean diastolic BP 75.8 mmHg and mean BP amplitude 69.7 mmHg. The overall mean duration of T2DM was 12.3 years, mean glucose was 151.6 mg/dl and mean HbA1c was 6.7%. DR was present in 71% of the patients. Blindness, defined as a visual acuity lower than 3/60, was found in 6.1% (83 right and 71 left eyes).
+
+We could not find a gender difference between the DR and non-DR group. BMI was only slightly higher among patients with DR compared to those without and there was no statistical difference in smoking habits (current smoker, former smoker, non-smoker).
+
+Considering, that all statistical test-methods (t-test/chi-test, uni- and multi-variate OR; cf. Tables–) showed statistically significant results, we found the following differences between DR and non-DR group: There was a highly negative correlation between DR and age: older patients were more common in the non-DR group (cf. Tablesand; multivariate OR 0.97). The time on dialysis was significantly longer in patients with DR compared to those without (cf. Tablesand; multivariate OR 1.04). In regards to macrovasculopathies, in the DR group only overall-CAD (MI or PTCA or CABG) was less prevalent than in patients without DR (cf. Table; multivariate OR 0.69). There was no statistical difference in the prevalence rates of previous MI, PTCA, CABG and stroke/TIA between patients with DR and without. In regards to microvasculopathies, the prevalence rates of PN and NS were greater in patients with DR compared to those without (cf. Tablesand; multivariate OR 3.61 and 1.60).
+
+The prevalence of hypertension was overall greater among patients with DR compared to those without (cf. Tablesand; multivariate OR 1.57). Furthermore, the stage 2 of hypertension was more frequent in the DR group (t-test, univariate OR) and the systolic BP was higher in the DR compared to the non-DR group (t-test, univariate OR). Mean diastolic BP was not different between the DR and non-DR group, however, the mean BP amplitude was higher in DR (t-test).
+
+The duration of T2DM was longer, the levels of glucose and HbA1c were higher among patients with DR compared to those without (cf. Tablesand; multivariate OR 1.06, 1.01 and 1.61).
+
+The mean concentration of HDL cholesterol in the DR group was higher than in the non-DR group (cf. Tablesand; multivariate OR 1.02). However, we could not find any association of cholesterol, TG, VLDL cholesterol or LDL cholesterol with DR (cf. Tablesand). There was a higher level of apo AI in the DR group (t-test, univariate OR). Mean apo AII was also slightly higher in DR (t-test). The levels of apo B, CII, CIII, and E were not significantly different between (cf. Tablesand) the DR and non-DR group.
+
+The mean leucocyte count was higher in the non-DR patients compared to DR (cf. Table). Consistently, multivariate OR showed a slightly negative association of leucocytes and C-reactive protein (CRP), although marginal not statistically significant (cf. Table; OR 0.93 and 0.98). No difference were found for Hb and platelets (cf. Tablesand).
+
+Discussion
+
+This is the largest study so far, addressing DR in patients with T2DM on hemodialysis. We were interested to investigate the prevalence rate of DR in T2DM hemodialysis patients, in clinical and biochemical differences between patients with and without DR.
+
+Prevalence rates of DR
+
+The prevalence of any stage of DR was 71% in our patients. Even compared to other studies of DR in hemodialysis patients, our prevalence of DR is higher: El-Menyar et al.found 113/252 (45%) DR in hemodialysis patients and Vrabec et al.reported 5/64 (7.8%) DR in hemodialysis patients. Lee et al.reported 21.6% proliferative DR (PDR) and 13.7% high-risk PDR in patients with DR and chronic kidney disease (CKD). The prevalence rate of DR in T2DM-patients not receiving dialysis is reported at 34.6% by Olafsdottir et al.or 64% by Tomic et al.or, respectively. Sasongko et al.reported in 224 patients with type 1 or type 2 DM, not receiving dialysis, DR in 64% of patients and vision-threatening DR in 25%. This shows that prevalence rates vary over wide range. However, we consider the rate of 71% reasonable, because it is slightly above the highest figures reported for DM-patients not receiving dialysis. It may also be related to thorough clinical characterization of the 4D patients on inclusion to the study. The high frequency rate of DR in hemodialysis patients points out a common pathophysiological denominator of changes in retinal and renal vessels.
+
+DR and blindness
+
+DR is known as the most prevalent cause for blindness in working-age people in developed countries.is defined as visual acuity lower than 3/60, as described above, andis defined as a visual acuity lower than 6/18 but greater than 3/60. Using these definitions in the general population worldwide, the rate of visual impairment and blindness is 1% due to DR. Flaxman et al.described, in adults aged ≥ 50 years in central Europe, a prevalence rate of moderate/severe visual impairment or blindness due to DR of 3.12% (0.32–7.43) or 3.1% (0.27–7.33), respectively. In our patients, 6% of the eyes observed blindness, which is nearly double of the rate reported by Flaxman et al. The rate of high-risk PDR reported by Lee et al.was greater than 13%. Considering, that approximately half of the patients with a high-risk PDR get severe visual impairment, the results of Lee seem to be consistent with our findings. Overall, comparison of these research studies with ours is difficult, because there is no data on the proportion of DR stages in dialysis patients available.
+
+Smoking
+
+We found no association of smoking habits (current smoker, former smoker, non-smoker) with DR, which could be due to unadmitted smoking. However, also under-reporting of smoking occurs in clinical studies, it has been found to be in the range of 3.4%. Therefore, we do not believe that it caused a major bias in the current study.
+
+It is well known that cigarette smoking is a risk factor for atherosclerotic diseases and the progression of DM. The correlation between cigarette smoking and DR is unclear. Some researchers found no association between smoking and DRand in one study even a “protective” effect was seen.
+
+Common findings for the DR-group
+
+DR was associated with hypertension, BMI, poor glucometabolic control, the duration of T2DM, dialysis and the prevalence rates of other microangiopathies (PN, DG, and NS).
+
+In line with other publications, we found a positive correlation between DR and hypertension: The UKPD study demonstrated, that patients with T2DM received a considerable benefit from BP lowering. High blood pressure is a major risk factor for atherosclerosis in general, in T2DM and in DR. Studies showed that blood pressure lowering also leads to reduced progression of DR. As our data is consistent with the available research. To emphasize, however, that we merely report an association study and that a blood pressure lowering intervention has not been performed.
+
+The significant correlations between DR, glucose, DM duration, and most notably HbA1cwere not unexpected. It is well established that glucose and HbA1c are linked to the progression of DR and that lowering glucose and HbA1c may slow down the development of DR. However, rigorous glucose lowering may lead to episodes of hypoglycaemia and threaten the life of patients with diabetes mellitus. Hypoglycaemia episodes trigger retinal proliferation. For patients suffering from DR, it is challenging to define an optimal HbA1c.
+
+We found a strong positive association between other kinds of microangiopathies (PVD, PN, DG, NS) and DR. This is consistent with previous evidence, indicating that different microvasculopathies can share common risk factors.
+
+Unexpected findings for the DR-group
+
+Surprisingly, patients without CAD rather than those with CAD, patients with high concentrations of HDL cholesterol, apo AI, apo AII, and, finally, those with lower systemic inflammation (as assessed by leukocyte counts) were more likely to have DR.
+
+We had not expected, that patients without CAD were more prevalent to DR. Our findings are in contrast to Cheung et al., who described that DR was associated with a two times higher risk of incident CAD events and a three times higher risk of fatal CHD and Simó et al., who reported DR as an independent predictor of subclinical cardiovascular disease. Our finding may differ due to two reasons: Firstly, T2DM patients developing macrovascular disease might die before they develop significant DR or ESRD. Secondly, T2DM patients, who develop microvascular end organ damage, might differ from those developing macrovascular diseases with regard to genetic and metabolic factors. It is consistent with this concept that statin treatment, which mainly protects from macrovascular disease, has limited benefit in ESRD and causes of death in ESRD are different from those in post MI patients.
+
+DR and inflammation
+
+It is well known that local inflammation in the eye plays an important role in the development of DR. Multiple intravitreal factors were found to be elevated in patients having DR. Systemic inflammatory factors are of interest, as well. For example, Sasongko et al.described that higher CRP levels may be related to more severe DR and that inflammatory processes are involved in severe DR, particularly in patients with a BMI ≥ 30 kg/m. On a cellular level, leucocytes in DR patients show an increased retinal leukostasis, as shown by Joussen et al.. Chibber et al.described that leucocytes in patients with DM are less deformable, more activated and have increased adhesion to vascular endothelium. Generally, high inflammatory level drives often increase or severe DR.
+
+Here, in contrast, mean leucocyte counts were surprisingly higher in patients without DR compared to those with DR and there was a negative correlation of leucocytes and CRP with DR (cf. Tables,and 8). These findings are in agreement with Lim et al.who found that higher levels of CRP are inversely related to DR.
+
+One explanation is the apparent paradox that leucocytes and CRP are markers, reflecting systemic inflammatory burden, rather than the inflammatory activity within the eye. It is more likely that subclinical inflammation is contributing to DR rather than DR to be the cause of subclinical inflammation. Data to substantiate this assumption has not been collected because this was an epidemiological rather than an experimental study.
+
+DR and lipids
+
+Surprisingly, we also found higher concentrations of HDL cholesterol and the major HDL apolipoproteins (apo AI and AII) in DR patients, while other measures of lipid metabolism showed no correlation.
+
+It is well known that high concentrations of apo B containing lipoproteins (VLDL, remnants, LDL) increase the risk for atherosclerotic vascular disease in diabetes mellitus. Their link with DR remains unclear: some, but not all authors, have found DR related to higher TGs and that lowering of TG by fenofibrate may have a positive effect on DR in patients not receiving dialysis.
+
+Previous research on the correlation of HDL metabolism with DR is also heterogeneous. Studies show, HDL cholesterol was notor not significantlycorrelated to DR. On the other hand, Toth et al.showed that high HDL cholesterol reduces the risk of microvascular complications and Sasongko et al.found that lower levels of HDL cholesterol and apo AI are associated with DR. Consistently, Hu et al.showed that a lower apo AI levels and a lower apo AI to apo B ratio were significantly associated with the more severe type of proliferative DR. Reviewing article, Chang et al.reported 13 studies dealing with DR and lipids. In 3 studies no data on HDL were available, 8 showed no association between HDL and DR, and two studies reported an association with HDL and DR: In UKPDS 30a positive correlation of HDL-concentrations and the severity of DR was found whereas Popescu et al.described a negative correlation of HDL and the appearance of DR.
+
+It is becoming clearer that the anti-atherogenic properties of HDL are not completely reflected by the concentration of HDL cholesterol. For instance, increasing HDL cholesterol by inhibition of cholesteryl ester transfer protein has so far not reduced cardiovascular endpoints. The same is true for increases in HDL cholesterol induced by nicotinic acid.
+
+Therefore, the seemingly paradox association of high HDL cholesterol with DR may indicate, that in dialysis patients dysfunctional HDL particles are accumulating which lack the well-known beneficial effects of HDL (stimulation of endothelial NO, promotion of macrophage cholesterol efflux, anti-inflammatory and anti-thrombotic effects).
+
+In summary, we found that more than two-thirds of patients with T2DM receiving hemodialysis suffered from DR. As expected, patients with DR had statistically longer time on dialysis and duration of diabetes. Glucometabolic control, hypertension, higher BMI, lower leucocytes concentrations and other microvasculopathies were associated with DR. Surprisingly, patients without CAD were more likely to have DR. Paradoxically, high concentrations of HDL (HDL cholesterol, apo AI, and apo AII) were seen in DR. While macrovascular disease in DM is primarily driven by disorders of lipid metabolism, microvascular disease is likely connected to glycemic control. This was illustrated by the UKPDS 35 study: per 1% increase in HbA1c the risk of microvascular complications increased by 37%, while the risk of myocardial infarction was only increased by 14%. Our results stand in line with this concept.
+
+When we look at the clinical utility of our above-mentioned findings, we have to consider that a difference of 2 months longer in time on dialysis and 3.3 months longer for T2DM duration between the DR and non-DR group is irrelevant in clinical utility. In addition, same might be true for the difference regarding the leucocyte counts and HDL concentrations between the two groups. All of the above-mentioned parameters are not (time on dialysis or T2DM duration) or difficult to affect. Surprisingly, even in the DR group the HbA1c level was lower than 7%, which is the clinical aim to avoid DR or DR-progression. In the non-DR group the mean HbA1c was 6.3%, which is clinically hard to achieve (holds the hazard to hypoglycemia and cardiac side effect). Although, due to our study design, we are not able to deflect therapeutic recommendations, we would warrant careful control of blood pressure, glucose metabolism and weight reduction in order to potentially prevent DR progression in T2DM patients undergoing hemodialysis. These are the only alterable parameters we found more pronounced in the DR-group.
+
+Study limitations
+
+This study has limitations, it was a post-hoc analysis within a selected cohort of German patients with T2DM on hemodialysis. Therefore, our results may not apply to other patient populations. Heterogeneity of patient characteristics across the recruiting centers cannot completely be ruled out, as the study was conducted in Germany only. Given that 178 centers were involved and that many centers contributed only a few patients, we could not statistically identify meaningful differences between the centers. In addition to our statements regarding statistical data evaluation in the “material and methods” section we suggest, that multiple testing for associations inflates type I error, what might limit the power of our findings.
+
+The diagnosis of DR was not based on our own ophthalmological examinations and there was no differentiation of the DR stages and severity. We are not able to distinguish between (mild, moderate or severe) non-proliferative or proliferative DR. Thus, we are not able to explore how the risk factors may have aggravated the severity of DR, which is without question a limitation of our study. We attempted to focus on metabolic risk factors of DR. Therefore, we did not analyse dialysis-related factors like increase of body weight during the dialysis, episodes of hypotension, or dialysis adequacy. Medication use in the DR and the non-DR groups was not adjusted for. Another limitation of this study, is due to cross-sectional rather than prospective by design. Therefore, causalities and longitudinal temporal relationships cannot be proven. Furthermore, we are not able to delineate therapeutic recommendations from the data, because our study was observational rather than interventional.

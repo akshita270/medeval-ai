@@ -1,0 +1,107 @@
+Introduction
+
+Semaglutide is a receptor agonist of the naturally occurring peptide hormone glucagon-like peptide-1 (GLP-1). As with native GLP-1, semaglutide acts to stimulate insulin secretion and inhibit glucagon release depending on the blood glucose concentration, leading to improved blood glucose levels together with a reduced risk of hypoglycaemia [,]. Semaglutide is approved for the treatment of type 2 diabetes mellitus, using the subcutaneous route of administration. With 94% amino acid sequence homology to native GLP-1, semaglutide has three structural modifications that make it less susceptible to degradation by dipeptidyl peptidase-4 (DPP-4) enzymes and prolong its half-life to approximately 1 week [,]. Semaglutide is thereby appropriate for once-weekly administration.
+
+The prolonged exposure of semaglutide as compared with native GLP-1 is mainly driven by slow systemic elimination and, to a lesser extent, by delayed absorption [], in line with the observation that more than 99% of the semaglutide is bound to plasma albumin []. In a metabolism trial, semaglutide was the primary component circulating in plasma and, prior to excretion, it was metabolised by proteolytic cleavage of the peptide backbone and sequential beta-oxidation of the fatty acid side chain []. Semaglutide metabolites are primarily excreted in the urine and faeces [].
+
+Semaglutide population pharmacokinetics (PK) and exposure in terms of average concentration in the dosing interval have been previously investigated for subcutaneous dosing using phase 3 steady-state data from subjects with type 2 diabetes []. Of the covariates investigated, only body weight had a relevant effect on the exposure of semaglutide at either once-weekly maintenance dose of 0.5 or 1.0 mg [].
+
+In addition to an assessment of semaglutide exposure levels, the aim of the present analysis was to provide additional details of the PK properties of semaglutide in terms of absorption, distribution and elimination and their relationships to covariate factors, in order to develop a novel disposition model that would be generally applicable across different routes of administration. This was achieved by means of population PK models using frequently sampled PK profiles from nine clinical pharmacology trials. Inclusion of data from intravenous administration provided information about the structural two-compartment disposition model, allowing for separate estimation of clearance and bioavailability.
+
+The analysis was applied to identify and validate the use of a one-compartment model previously applied to analyse sparsely sampled phase 3 data [], and subsequently to investigate the consistency between PK data from phase 1 and phase 3 trials.
+
+Methods
+
+Clinical Data Included in the Analysis
+
+A two-compartment PK model was estimated using data from nine clinical pharmacology trials employing single as well as multiple semaglutide doses and conducted in subjects with type 2 diabetes or obesity, or in healthy volunteers (Table). The included trials were those with administration of recombinant semaglutide in which PK samples, assessed via liquid chromatography and tandem mass spectrometry (LC–MS/MS) [], were available at the time of the analysis. One trial provided data for the intravenous administration of semaglutide and also used different drug product strengths (see further descriptions in the “Methods” section of the Electronic supplementary material, ESM).
+
+In order to compare the current analysis with the analysis conducted using phase 3 data, a one-compartment model was estimated using data from seven of the clinical pharmacology trials (Table) which employed multiple doses of the semaglutide drug product used in the phase 3 trials. Data from the two trials with single dose administration were not included in this comparison.
+
+Population Pharmacokinetic Modelling
+
+Datasets containing plasma concentration and covariate data from each trial were converted to a format compatible with the nonlinear mixed-effects modelling (NONMEM) software (ICON Development Solutions, Ellicott City, MD, USA), version 7.1.2. Out of a total of 10,573 concentration values, 43 values (i.e. < 1%) were excluded because the subjects had an inadequate dosing history. Conditional weighted residuals (CWRES) were used as a diagnostic tool to identify outliers, and an additional 24 concentration values (23 in the one-compartment model) were excluded from the final dataset as they were associated with CWRES greater than 6 in order to limit bias from influential data items. The software package R (version 3.2.3, obtained from the R Foundation:) was used for data file processing, explorative data analysis and to plot figures.
+
+Model Development
+
+Model development was conducted in NONMEM as follows:
+
+Model Description
+
+The full model for subcutaneous administration was a model with first-order absorption, two-compartment disposition and first-order elimination, whereas intravenous data were modelled as a bolus injection into the central compartment. Inter-individual variability was estimated for, and CL/(with a common factor), and for/(with a common factor).
+
+The covariate models were parameterised as follows for theth individual:and the effect of drug product strength on the rate of absorption was described as
+
+Covariate relationships were described as follows:
+
+In the above equations,represents an estimated value for a covariate andrepresents between-subject variability. The other exponents are indicator variables assigned a value of 1 for the specific covariate values and 0 otherwise. CL,,,,andare parameter values for the reference subject profile, which is a healthy, white, non-Hispanic female aged ≤ 65 years with a body weight of 85 kg, using the abdomen as the injection site and dosed with a 1.34 mg/mL semaglutide drug product. The residual error model was additive for log-transformed observations.
+
+Steady-State Exposure Evaluation for Subcutaneous Semaglutide
+
+A one-compartment model, similar to the one used to evaluate phase 3 data, was investigated using steady-state data from subcutaneous dosing only in clinical pharmacology trials; hence, the fraction absorbed () could not be estimated separately in this model. Therefore, the model was parameterised by the apparent clearance (CL/), volume of distribution (/) and the absorption rate constant (). The inter-individual variability was estimated for each of these. The residual error model was additive for log-transformed observations.
+
+The one-compartment model contained three covariate relationships: body weight and glycaemic status (healthy, type 2 diabetes) on CL, and body weight on volume of distribution. These were parameterised as for the two-compartment model.
+
+Compliance with Ethics Guidelines
+
+This article is based on previously conducted studies and does not contain any studies with human participants or animals performed by any of the authors.
+
+Results
+
+Population Characteristics
+
+A total of 353 subjects with 10,573 semaglutide concentrations were included in the population PK model analysis. For the comparison to the phase 3 modelling approach, 267 subjects contributed with 8292 semaglutide concentration values. The demographic characteristics for the subjects included in each of the analyses are summarised in Table.
+
+Semaglutide Pharmacokinetics
+
+The final population PK model provided an accurate description of the PK time course across the nine clinical pharmacology trials. Figureshows the consistency between the model and data across the eight trials which employed both single and multiple doses of marketed semaglutide with a drug product strength of 1.34 mg/mL. Figureshows that the biphasic PK profile obtained from the two-compartment model is consistent with intravenous data and, furthermore, that the rate of absorption as well as the maximum concentration following subcutaneous doses of different strengths were well captured by the model.
+
+The model-based analysis suggested that drug product strength influences the rate of absorption but not the bioavailability (Table), indicating that the total exposure of semaglutide is not affected by the product strength. These model-based results are consistent with the noncompartmental results for trial 7 (see Table S1 in the ESM), in which equivalence was demonstrated for exposure (AUC) for all pairwise comparisons between the three strengths of semaglutide. For, the comparison between 1 mg/mL and 3 mg/mL met the equivalence criterion but equivalence was not shown for 1 mg/mL relative to 10 mg/mL or for 3 mg/mL relative to 10 mg/mL, asincreased with increasing strength.
+
+All parameters were successfully estimated (relative standard error ≤ 11%) in the final model using data from the nine clinical trials (Table). In accordance with findings based on phase 3 semaglutide data investigating covariate effects on CL/[], body weight was found to be the only important covariate with respect to CL and, hence, average semaglutide concentrations under steady-state conditions with 90% CIs outside the equivalence interval. There were also clear relationships between body weight and theand, whereas thewas independent of body weight (Tableand Fig. S1c in the ESM). Less important though statistically significant effects included an effect on semaglutide CL of glycaemic status, with a 12% higher CL (95% CI 9–16%) observed in subjects with type 2 diabetes compared to healthy subjects (Tableand Fig. S1a in the ESM). Moreover,was reduced in subjects with type 2 diabetes compared to healthy subjects (Tableand Supplementary Fig. S1c in the ESM). For a typical subject with type 2 diabetes and a body weight of 85 kg, clearance was estimated to be 0.0348 L/h (95% CI 0.0327–0.0369 L/h) and the total volume of distribution was estimated to be 7.7 L (+; Table). A small effect of injection site was found with respect to the bioavailability, which was 12% lower when using the thigh compared with the abdomen (95% CI 0.84–0.92). The effects of other covariates were not relevant as they were found to lie within the 80–125% equivalence interval. No effects of sex, race, ethnicity, age, or hepatic impairment on CL were found, and these covariates were excluded from the final model.
+
+Trial 7, which provided data from both subcutaneous and intravenous administration, allowed the absolute bioavailability for subcutaneous administration of semaglutide to be estimated. Using noncompartmental analysis, the absolute bioavailability after the subcutaneous administration of semaglutide was estimated to be 89% (95% CI 0.83–0.94). This was captured well in the final model, which estimated the bioavailability to be 85% (95% CI 0.80–0.90) (Table).
+
+Inclusion of covariates in the final two-compartment model explained 58%, 56% and 24% of the interindividual variance of CL, volume of distribution and, respectively.
+
+Model Qualification
+
+Parameter estimates (Table) were estimated with a low (≤ 11%) relative standard error in the final model; shrinkage values were all below 10%, supporting the accuracy of the individual parameter estimates.
+
+The standard visual predictive checks indicated that the model was able to reproduce the data used for estimation in terms of both median concentrations and variability between subjects (Fig. S2 in the ESM). In addition, an illustration of variability in a dosing interval was included for the dose-normalised steady-state concentrations from the target semaglutide doses 0.5 and 1.0 mg (Fig.a). Subjects at other dose levels and those who did not complete the study were excluded from this analysis. Thus, the figure was limited to include data from the last PK profile in each trial to illustrate the variability at steady-state conditions.
+
+The dose-normalised time profiles across body weight in 10-kg intervals (Fig.b) spanned a similar range to the overall 90% range, illustrating that body weight does explain most of the variability. Furthermore, the close fit of the model to data in each of the 10-kg intervals illustrates that the influence of body weight on the different parameters was adequately described by the model.
+
+The above findings indicate that the two-compartment PK model provided an accurate description of the PK of semaglutide across clinical pharmacology trials, including different populations, administration routes and drug product strengths, and was found suitable for predictive purposes, i.e. for the simulation of semaglutide concentration–time profiles in various populations. Moreover, the low interindividual variation of ~ 15% for both CL andas well as the low residual error (< 5%; Table) indicate that the PK of semaglutide is highly predictable.
+
+Estimation of a One-Compartment Model for Steady-State Evaluation of Subcutaneous Data
+
+The population PK model was compared to a one-compartment model similar to the one used in the phase 3 analysis. The two models provided almost identical apparent exposure estimates for individual subjects (Fig. S3a in the ESM). In addition, mean simulated PK profiles during subcutaneous administration were almost identical, with similar exposure levels as well as peak-to-trough fluctuations (Fig. S3b in the ESM). The PK parameter estimates in the one-compartment model used for comparison were similar to those obtained with the two-compartment model (Table S2 in the ESM).
+
+Comparison with the Model Estimated with Phase 3 Data
+
+Parameter values obtained in the present analysis for a reference subject profile were compared to the corresponding parameter values obtained with phase 3 data [] (Table). Due to limitations in the phase 3 data, that analysis applied a fixed value of. Although the total volume of distribution was lower in the present analysis than in the phase 3 analysis, profiles from these models were similar (Fig.), indicating that the higher volume of distribution in the phase 3 model had a relatively small impact on the overall PK profile. High consistency between the simulated profiles indicate that the PK in the phase 3 trials could be predicted using the two-compartment model that was developed using clinical pharmacology data, supporting the overall predictability of semaglutide PK. Furthermore, the estimated inter-individual variability in clearance (15.2%; Table) was consistent with phase 3 data (12.9%) [].
+
+Discussion
+
+The PK of semaglutide were well characterised by a two-compartment model with first-order absorption and elimination, and were shown to be predictable across clinical pharmacology and phase 3 trials and across subjects with low interindividual variation and low residual error. This model provided a joint description of semaglutide PK across clinical pharmacology trials in both healthy subjects and those with type 2 diabetes with frequently sampled PK profiles following subcutaneous and intravenous administration in well-controlled settings.
+
+The total volume of distribution (+) was approximately 8 L, similar to the volume of extracellular water in the body and supporting the idea that semaglutide distributes into plasma and peripheral tissues to the same extent as albumin [,]. The terminal half-life was driven by the disposition parameters rather than the rate of absorption. The population PK model for semaglutide was similar overall to that developed for dulaglutide [], whereas liraglutide had much faster elimination [], and exenatide extended-release had nonlinear disposition and a substantially slower absorption []. Compared to semaglutide, dulaglutide has approximately 50% greater CL and a 20% lower volume of distribution, as well as approximately threefold slower absorption []. The interindividual variability was, however, greater for dulaglutide (40.5% coefficient of variation (CV) for CL) compared to semaglutide (CV for CL was 15.2% in the present analysis and 12.9% in the phase 3 analysis []). Similarly, both exenatide extended-release and liraglutide had large variabilities between subjects compared to semaglutide [,].
+
+Based on the present steady-state data, we compared the developed population PK model to a one-compartment PK model similar to the one estimated in the phase 3 analysis [] with almost identical results. Moreover, we verified that the typical steady-state profiles obtained from phase 3 data [] were consistent with those predicted based on clinical pharmacology data, and similar estimates for clearance CV% also verified that variability was consistent compared to phase 3 trial results.
+
+In the phase 3 population PK analysis, only body weight had a relevant effect on the exposure of semaglutide, a finding which did not warrant dose adjustment []. No effects of sex, age, race, ethnicity, renal function or injection site used on semaglutide exposure were observed []. The present analysis confirmed the finding that only body weight was a relevant covariate for exposure. Compared to the phase 3 evaluation, the current analysis provides a more general description of semaglutide PK that is applicable across different administration routes, and informs on covariate relationships not only for exposure, but also for absorption, distribution and elimination. Additional covariate effects were identified for body weight on theandand glycaemic status on CL and the. Other investigated covariates (sex, race, ethnicity, age group, hepatic impairment) were not found to be influential and were not included in the final model. The impact of covariates on the PK of semaglutide support previous findings [,] that no adjustment of the dose is needed across population subgroups.
+
+With once-daily liraglutide, another GLP-1 receptor agonist approved for the treatment of type 2 diabetes at doses of up to 1.8 mg, body weight and sex were found to be the most important covariates for exposure which, however, did not influence liraglutide PK to any clinically relevant degree []. Similarly, neither age, body weight, sex, race, ethnicity nor injection site influenced once-weekly semaglutide or dulaglutide PK to any clinically relevant extent [,]. For twice-daily exenatide and once-weekly exenatide extended-release, body weight was also found to have a significant relationship with the volume of distribution, and a significant relationship between renal function and elimination was found [,].
+
+The slightly higher CL of semaglutide in subjects with type 2 diabetes compared to healthy subjects has also been seen previously with liraglutide 1.8 mg [] and with liraglutide for weight management at a higher 3.0 mg dose []. The mechanism behind this difference is not known.
+
+The present analysis showed that injection site had a small effect on the bioavailability of semaglutide, which was lower following injection in the thigh compared to abdominal injection. This observation was in accordance with previous findings that the injection site has a minor and not clinically relevant effect on the CL/of semaglutide []. Similarly, the bioavailability of liraglutide was found to be slightly lower after administration in the thigh versus the abdomen []. Differences between injection sites are generally considered to be of no clinical relevance across GLP-1 receptor agonists [,]. A limitation of the present analysis is that we cannot exclude the possibility that other demographic factors that we did not evaluate were influential in the target patient population.
+
+Conclusions
+
+In summary, semaglutide PK was shown to be predictable across clinical pharmacology and phase 3 trials, with limited interindividual variability that was primarily influenced by body weight. A novel two-compartment model provided a general characterisation of semaglutide absorption following subcutaneous administration and of distribution and elimination across administration routes. A one-compartment model structure was found to be suitable for conducting covariate analyses of exposure levels based on sparse PK sampling in late-stage trials for subcutaneous semaglutide.
+
+Electronic supplementary material
+
+Below is the link to the electronic supplementary material.

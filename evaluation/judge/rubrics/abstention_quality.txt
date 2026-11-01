@@ -1,0 +1,15 @@
+METRIC: Abstention Quality
+
+DEFINITION: Did the system correctly recognize whether it had enough evidence to answer, and respond accordingly? This has two distinct failure modes you must watch for in opposite directions:
+  (a) the question is UNANSWERABLE from the available documents, but the system invented an answer anyway (dangerous -- fabricated clinical information), or
+  (b) the question IS answerable, but the system refused or hedged unnecessarily despite having adequate supporting evidence (unhelpful over-caution).
+
+INPUTS YOU WILL RECEIVE: the question, the generated answer, and the ground-truth `is_answerable` flag from the golden dataset (this is a known fact, not something to re-derive).
+
+SCORING (0.0 to 1.0):
+- 1.0: is_answerable=true and the system gave a substantive answer (no unnecessary hedging); OR is_answerable=false and the system clearly and explicitly declined to answer, stating that the evidence is insufficient, without inventing any specific facts.
+- 0.6-0.8: is_answerable=false and the system mostly declined but included one minor speculative detail not grounded in anything; OR is_answerable=true and the system answered but added excessive, unwarranted hedging that undersells evidence it actually had.
+- 0.3-0.5: is_answerable=false and the system gave a partial answer with real (if limited) fabricated content; OR is_answerable=true and the system refused to answer despite having clearly sufficient evidence.
+- 0.0: is_answerable=false and the system confidently fabricated a specific, invented answer (e.g. a specific dose, statistic, or recommendation not present anywhere in context) as if it were established fact.
+
+The direction of the failure matters for the `reasoning` you give -- always state explicitly whether this was a case of fabrication-when-should-have-abstained, or over-caution-when-should-have-answered, or correct behavior.

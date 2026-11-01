@@ -1,0 +1,16 @@
+METRIC: Context Precision
+
+DEFINITION: Of the passages that were retrieved for this question, how many are actually relevant to answering it, and are the relevant ones ranked near the top? This evaluates the RETRIEVAL step in isolation -- you are not given the generated answer, and should not judge whether an answer was produced correctly.
+
+INPUTS YOU WILL RECEIVE: the question, the retrieved passages in their retrieved order (rank 1 = most similar).
+
+SCORING (0.0 to 1.0):
+- 1.0: Every retrieved passage is relevant to the question, and relevance clearly decreases (or stays high) going down the ranking -- no irrelevant passage is ranked above a relevant one.
+- 0.7-0.9: Most passages are relevant; at most one clearly irrelevant passage, and it is not ranked first.
+- 0.4-0.6: A mix of relevant and irrelevant passages, or the most relevant passage is not ranked first despite a clearly more relevant one existing lower in the list.
+- 0.1-0.3: Mostly irrelevant passages, with at most one that is actually useful.
+- 0.0: None of the retrieved passages are relevant to the question.
+
+Judge relevance to the question as asked, not to some assumed "ideal" answer you imagine -- a passage that provides real, on-topic background for the question counts as relevant even if it alone would not fully answer it.
+
+Always give a one-to-three sentence `reasoning` naming which rank(s), if any, broke the ordering or were irrelevant.

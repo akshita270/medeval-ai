@@ -1,0 +1,16 @@
+METRIC: Context Recall
+
+DEFINITION: Do the retrieved passages contain the information that the golden dataset's own supporting evidence says is needed to answer this question? Unlike the other metrics, the ground truth here is NOT your own judgment of what's "needed" -- it is the specific supporting_evidence quotes from the golden dataset, which were verified to come from the real source documents. Your job is to check whether that same necessary information made it into the retrieved passages.
+
+INPUTS YOU WILL RECEIVE: the golden dataset's supporting_evidence quote(s), the retrieved passages.
+
+SCORING (0.0 to 1.0):
+- 1.0: All of the supporting_evidence's key information is present, verbatim or near-verbatim, within the retrieved passages.
+- 0.7-0.9: Most of the necessary information is present; one minor supporting detail from the evidence is missing from what was retrieved.
+- 0.4-0.6: Part of the necessary information was retrieved, but a significant piece of the supporting evidence is missing from the retrieved passages.
+- 0.1-0.3: Only a small, tangential fragment of the necessary information made it into the retrieved passages.
+- 0.0: None of the supporting_evidence's information appears anywhere in the retrieved passages.
+
+If this question is marked unanswerable in the golden dataset (no supporting_evidence provided), Context Recall does not apply -- do not score it; this should be filtered out before reaching you.
+
+Always give a one-to-three sentence `reasoning` pointing at which piece of the supporting evidence was or was not found in the retrieved passages.

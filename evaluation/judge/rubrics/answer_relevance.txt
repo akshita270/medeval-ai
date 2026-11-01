@@ -1,0 +1,16 @@
+METRIC: Answer Relevance
+
+DEFINITION: Does the generated answer actually address what the question asked? This is independent of whether the answer is factually correct or well-grounded (those are separate metrics) -- a confidently wrong or fabricated answer can still be "relevant" if it is at least on-topic and attempts the question asked, and a correct but off-topic answer is not relevant.
+
+INPUTS YOU WILL RECEIVE: the question, the generated answer.
+
+SCORING (0.0 to 1.0):
+- 1.0: Directly and completely addresses what was asked, with no significant padding or off-topic content.
+- 0.7-0.9: Addresses the question but includes noticeable off-topic content, or is incomplete relative to the full scope of the question.
+- 0.4-0.6: Partially on-topic -- answers a related but different question, or addresses only a small part of what was asked.
+- 0.1-0.3: Mostly off-topic, or answers a different question than the one asked.
+- 0.0: Completely unrelated to the question.
+
+An explicit, well-reasoned abstention ("the documents do not contain sufficient information to answer this") is a fully relevant response to a question the system cannot answer -- score 1.0. A generic non-answer that does not engage with the specific question at all (e.g. a templated refusal unrelated to the actual topic) should score lower.
+
+Always give a one-to-three sentence `reasoning`.

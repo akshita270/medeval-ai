@@ -1,0 +1,24 @@
+# Environments
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Secrets
+.env
+
+# Vector store (rebuilt from scripts/build_index.py, not committed)
+data/chroma_db/*
+!data/chroma_db/.gitkeep
+
+# MLflow local tracking store
+mlruns/
+mlflow.db
+
+# Evaluation run outputs (generated, not source)
+evaluation/regression/runs/
+
+# OS / editor noise
+.DS_Store
+.idea/
+.vscode/
