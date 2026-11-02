@@ -18,9 +18,7 @@ _EXPERIMENT_NAME = "medeval-ai-rag-evaluation"
 
 def _get_git_commit() -> str:
     try:
-        return subprocess.check_output(
-            ["git", "rev-parse", "HEAD"], text=True, stderr=subprocess.DEVNULL
-        ).strip()
+        return subprocess.check_output(["git", "rev-parse", "HEAD"], text=True, stderr=subprocess.DEVNULL).strip()
     except subprocess.CalledProcessError:
         # No commits yet, or not a git repo at all -- a real, expected
         # state early in a project, not something to crash the run over.

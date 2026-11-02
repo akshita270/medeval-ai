@@ -2,7 +2,9 @@ from evaluation.judge.report import build_report
 from evaluation.judge.schema import EvaluationResult, MetricName, MetricScore
 
 
-def _result(question_id: str, scores: dict[MetricName, float], failed: dict[str, str] | None = None) -> EvaluationResult:
+def _result(
+    question_id: str, scores: dict[MetricName, float], failed: dict[str, str] | None = None
+) -> EvaluationResult:
     return EvaluationResult(
         question_id=question_id,
         metric_scores=[

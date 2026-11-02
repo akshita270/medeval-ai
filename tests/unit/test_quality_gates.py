@@ -68,11 +68,19 @@ def test_question_missing_from_baseline_is_not_a_regression():
 
 
 def test_overall_gate_passes_when_every_check_passes():
-    results = [_result("q1", {MetricName.ANSWER_CORRECTNESS: 0.9, MetricName.FAITHFULNESS: 0.9, MetricName.ABSTENTION_QUALITY: 0.9})]
+    results = [
+        _result(
+            "q1", {MetricName.ANSWER_CORRECTNESS: 0.9, MetricName.FAITHFULNESS: 0.9, MetricName.ABSTENTION_QUALITY: 0.9}
+        )
+    ]
     report = build_report("v1", results)
     settings = _settings(
-        min_answer_correctness=0.75, min_faithfulness=0.85, min_abstention_quality=0.75,
-        max_generation_latency_seconds=10.0, max_failed_metric_rate=0.05, max_regression_pct=0.10,
+        min_answer_correctness=0.75,
+        min_faithfulness=0.85,
+        min_abstention_quality=0.75,
+        max_generation_latency_seconds=10.0,
+        max_failed_metric_rate=0.05,
+        max_regression_pct=0.10,
     )
 
     result = evaluate_quality_gates(report, report, settings)
@@ -81,7 +89,11 @@ def test_overall_gate_passes_when_every_check_passes():
 
 
 def test_overall_gate_fails_if_correctness_below_minimum():
-    results = [_result("q1", {MetricName.ANSWER_CORRECTNESS: 0.5, MetricName.FAITHFULNESS: 0.9, MetricName.ABSTENTION_QUALITY: 0.9})]
+    results = [
+        _result(
+            "q1", {MetricName.ANSWER_CORRECTNESS: 0.5, MetricName.FAITHFULNESS: 0.9, MetricName.ABSTENTION_QUALITY: 0.9}
+        )
+    ]
     report = build_report("v1", results)
     settings = _settings(min_answer_correctness=0.75, min_faithfulness=0.85, min_abstention_quality=0.75)
 
@@ -107,7 +119,12 @@ def test_latency_gate_fails_closed_when_unmeasured():
 def test_latency_gate_passes_on_fast_measured_latency():
     results = [_result("q1", {MetricName.ANSWER_CORRECTNESS: 1.0}, generation_latency=2.0)]
     report = build_report("v1", results)
-    settings = _settings(max_generation_latency_seconds=10.0, min_answer_correctness=0.0, min_faithfulness=0.0, min_abstention_quality=0.0)
+    settings = _settings(
+        max_generation_latency_seconds=10.0,
+        min_answer_correctness=0.0,
+        min_faithfulness=0.0,
+        min_abstention_quality=0.0,
+    )
 
     result = evaluate_quality_gates(report, report, settings)
 
@@ -118,7 +135,12 @@ def test_latency_gate_passes_on_fast_measured_latency():
 def test_latency_gate_fails_on_slow_measured_latency():
     results = [_result("q1", {MetricName.ANSWER_CORRECTNESS: 1.0}, generation_latency=15.0)]
     report = build_report("v1", results)
-    settings = _settings(max_generation_latency_seconds=10.0, min_answer_correctness=0.0, min_faithfulness=0.0, min_abstention_quality=0.0)
+    settings = _settings(
+        max_generation_latency_seconds=10.0,
+        min_answer_correctness=0.0,
+        min_faithfulness=0.0,
+        min_abstention_quality=0.0,
+    )
 
     result = evaluate_quality_gates(report, report, settings)
 

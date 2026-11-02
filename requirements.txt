@@ -24,7 +24,8 @@ sentence-transformers==6.2.0
 # --- Phase 4: experiment tracking (local file store, no managed service) ---
 mlflow==3.17.2
 
-# --- Testing ---
+# --- Testing / code quality ---
 pytest==9.2.0
+ruff==0.17.3
 
 # Still to come: langchain (retrieval orchestration).

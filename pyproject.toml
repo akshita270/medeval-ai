@@ -1,3 +1,10 @@
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra"
+
+[tool.ruff]
+line-length = 120
+exclude = ["frontend", ".venv"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]  # pyflakes + pycodestyle + import sorting

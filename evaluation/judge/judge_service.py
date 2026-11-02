@@ -78,8 +78,7 @@ def judge_context_recall(supporting_evidence: str, retrieved_context: str, judge
 
 def judge_abstention_quality(question: str, generated_answer: str, is_answerable: bool, judge_model: str):
     content = (
-        f"Question: {question}\n\nGenerated answer: {generated_answer}\n\n"
-        f"Ground truth: is_answerable={is_answerable}"
+        f"Question: {question}\n\nGenerated answer: {generated_answer}\n\nGround truth: is_answerable={is_answerable}"
     )
     return _call_judge(MetricName.ABSTENTION_QUALITY, content, judge_model)
 

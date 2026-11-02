@@ -4,7 +4,9 @@ from app.config import Settings
 from app.generation.generator import build_messages, generate_answer
 from app.schemas import RetrievedPassage
 
-PASSAGES = [RetrievedPassage(chunk_id="docA::0001", doc_id="docA", chunk_index=1, text="Some fact.", similarity_score=0.8)]
+PASSAGES = [
+    RetrievedPassage(chunk_id="docA::0001", doc_id="docA", chunk_index=1, text="Some fact.", similarity_score=0.8)
+]
 
 
 class _FakeMessage:
@@ -54,7 +56,9 @@ def test_build_messages_frames_context_as_data_not_instructions():
 
 def test_generate_answer_only_extracts_citations_that_were_actually_retrieved():
     fake_client = Mock()
-    fake_client.chat.completions.create.return_value = _FakeChatResponse("Some fact is true [docA]. Also [docZ] agrees.")
+    fake_client.chat.completions.create.return_value = _FakeChatResponse(
+        "Some fact is true [docA]. Also [docZ] agrees."
+    )
 
     with patch("app.generation.generator.get_openai_client", return_value=fake_client):
         result = generate_answer("What is X?", PASSAGES, _settings())

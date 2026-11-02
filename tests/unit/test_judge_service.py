@@ -4,7 +4,9 @@ from app.schemas import GeneratedAnswer, GenerationConfig, RetrievedPassage
 from evaluation.golden_dataset.schema import GoldenQuestion
 from evaluation.judge.judge_service import _JudgeResponse, evaluate_answer
 
-PASSAGES = [RetrievedPassage(chunk_id="docA::0001", doc_id="docA", chunk_index=1, text="Some fact.", similarity_score=0.8)]
+PASSAGES = [
+    RetrievedPassage(chunk_id="docA::0001", doc_id="docA", chunk_index=1, text="Some fact.", similarity_score=0.8)
+]
 CONFIG = GenerationConfig(
     llm_model="gpt-5-mini",
     embedding_model="text-embedding-3-small",
@@ -85,8 +87,12 @@ def test_evaluate_answer_runs_all_six_metrics_for_an_answerable_question_with_ev
 
     scored = {s.metric.value for s in result.metric_scores}
     assert scored == {
-        "answer_correctness", "faithfulness", "answer_relevance",
-        "context_precision", "context_recall", "abstention_quality",
+        "answer_correctness",
+        "faithfulness",
+        "answer_relevance",
+        "context_precision",
+        "context_recall",
+        "abstention_quality",
     }
     assert result.failed_metrics == {}
 
@@ -148,6 +154,8 @@ def test_evaluate_answer_records_the_passed_in_generation_latency():
     fake_client.chat.completions.parse.return_value = _FakeParsedResponse(_JudgeResponse(score=1.0, reasoning="ok"))
 
     with patch("evaluation.judge.judge_service.get_openai_client", return_value=fake_client):
-        result = evaluate_answer(_answerable_golden(), _generated_answer(), "gpt-5-mini", generation_latency_seconds=4.2)
+        result = evaluate_answer(
+            _answerable_golden(), _generated_answer(), "gpt-5-mini", generation_latency_seconds=4.2
+        )
 
     assert result.generation_latency_seconds == 4.2

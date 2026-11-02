@@ -1,0 +1,76 @@
+name: PR Checks
+
+on:
+  pull_request:
+    branches: [main]
+
+# Cancel a stale in-progress run when a new commit lands on the same PR --
+# pure cost control: no point paying for an evaluation run that's about
+# to be superseded.
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lint-and-test:
+    name: Lint, format check, unit tests (mocked API, no secrets needed)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Ruff lint
+        run: ruff check .
+
+      - name: Ruff format check
+        run: ruff format --check .
+
+      - name: Validate configuration loads
+        run: python -c "from app.config import get_settings; get_settings()"
+
+      - name: Unit tests (deterministic + mocked API -- zero real API calls)
+        run: python -m pytest tests/unit/ -v
+
+  evaluation:
+    name: Sampled evaluation + quality gate
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+    # GitHub itself withholds repository secrets from pull_request-triggered
+    # workflows when the PR comes from a fork -- secrets.OPENAI_API_KEY
+    # resolves to an empty string in that case, so this condition is false
+    # and the job is skipped entirely for untrusted PRs. It only runs for
+    # PRs from branches within this repository, where the secret is real.
+    # This is what satisfies "prevent untrusted PRs from accessing
+    # production credentials" -- it's GitHub's own security model, not
+    # anything this workflow has to enforce itself.
+    if: ${{ secrets.OPENAI_API_KEY != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build vector index
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python -m scripts.build_index
+
+      - name: Run sampled evaluation and apply quality gate
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python -m scripts.ci_quality_gate
