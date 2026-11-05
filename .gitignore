@@ -17,6 +17,7 @@ mlflow.db
 
 # Evaluation run outputs (generated, not source)
 evaluation/regression/runs/
+evaluation/guardrails/runs/
 
 # OS / editor noise
 .DS_Store

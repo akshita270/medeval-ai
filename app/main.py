@@ -6,6 +6,12 @@ from pydantic import BaseModel, Field
 
 from app.config import get_settings
 from app.generation.generator import generate_answer
+from app.guardrails.pipeline import (
+    build_blocked_answer,
+    redact_blocked_answer,
+    run_input_guardrails,
+    run_output_guardrails,
+)
 from app.retrieval.bm25_index import build_bm25_index
 from app.retrieval.pipeline import retrieve_passages
 from app.schemas import GeneratedAnswer
@@ -72,4 +78,22 @@ def ask(request: Request, body: AskRequest) -> GeneratedAnswer:
     collection = request.app.state.collection
     bm25_index = request.app.state.bm25_index
     passages = retrieve_passages(body.question, collection, settings, bm25_index)
-    return generate_answer(body.question, passages, settings)
+
+    # Guardrails run after retrieval (reusing its similarity scores, no
+    # extra embedding call) but before generation, so a blocked request
+    # never reaches the expensive LLM call.
+    decision = run_input_guardrails(body.question, passages, settings)
+    if decision.blocked:
+        return build_blocked_answer(body.question, decision, settings)
+
+    answer = generate_answer(body.question, passages, settings)
+
+    # Output guardrails run after generation -- catches the LLM slipping
+    # into personalized advice despite the prompt's rules and the input
+    # checks above. The generation cost is already spent either way; this
+    # only decides what's shown to the user.
+    output_decision = run_output_guardrails(body.question, answer.answer, settings)
+    if output_decision.blocked:
+        return redact_blocked_answer(answer, output_decision)
+
+    return answer

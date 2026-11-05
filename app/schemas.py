@@ -81,3 +81,8 @@ class GeneratedAnswer(BaseModel):
     prompt_tokens: int
     completion_tokens: int
     total_tokens: int
+    # None for a normal generated answer. When a guardrail blocked the
+    # request instead, this names which check(s) triggered, and `answer`
+    # holds the blocked-request message rather than a generated one --
+    # no LLM call was made, hence token counts of 0 above.
+    blocked_by: list[str] | None = None

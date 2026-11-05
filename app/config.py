@@ -36,6 +36,11 @@ class Settings(BaseSettings):
     # a separate knob, even when it happens to hold the same value)
     judge_model: str = Field(default="gpt-5-mini")
 
+    # Guardrails Layer 2 (independent of generation/judge models above --
+    # a separate knob, so it can be swapped to a cheaper model later
+    # without touching generation or evaluation)
+    guardrail_model: str = Field(default="gpt-5-mini")
+
     # Paths
     chroma_persist_dir: Path = Field(default=Path("./data/chroma_db"))
     raw_documents_dir: Path = Field(default=Path("./data/raw_documents"))
@@ -65,6 +70,12 @@ class Settings(BaseSettings):
     # an unverified guess, replaced once a real number existed.
     max_generation_latency_seconds: float = Field(default=20.0)
     max_failed_metric_rate: float = Field(default=0.05)
+
+    # Guardrails -- blocks a request before the (expensive) generation call
+    # if the best retrieved passage is a poor match, implying the question
+    # isn't about anything in this document collection. 0.15 is an initial
+    # estimate, not yet calibrated against real off-topic questions.
+    min_topic_relevance_score: float = Field(default=0.15)
 
 
 @lru_cache
