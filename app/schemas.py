@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class RawDocument(BaseModel):
@@ -49,6 +49,22 @@ class RetrievedPassage(BaseModel):
     similarity_score: float
 
 
+class CitationDetail(BaseModel):
+    """One claim-level citation the model made: the exact chunk it leaned
+    on, plus a short quote copied verbatim from that chunk's text.
+
+    `quote` exists so a citation is mechanically checkable against the
+    real source (see app/guardrails/citation_guardrails.py) instead of
+    trusted at face value -- the same idea Phase 2's golden dataset
+    already applies to its hand-written `supporting_evidence`, just
+    enforced live on every generated answer instead of by hand once.
+    """
+
+    doc_id: str
+    chunk_id: str
+    quote: str
+
+
 class GenerationConfig(BaseModel):
     """The exact configuration used to produce one answer.
 
@@ -75,7 +91,14 @@ class GeneratedAnswer(BaseModel):
 
     query: str
     answer: str
+    # doc_ids only, for backward compatibility with existing consumers
+    # (e.g. evaluation/judge/metrics.py's citations_are_valid) -- derived
+    # from citation_details, never set independently of it.
     citations: list[str]
+    # The full, structured, per-claim citations the model returned (see
+    # CitationDetail) -- what app/guardrails/citation_guardrails.py
+    # actually verifies against the real retrieved text.
+    citation_details: list[CitationDetail] = Field(default_factory=list)
     retrieved_passages: list[RetrievedPassage]
     config: GenerationConfig
     prompt_tokens: int

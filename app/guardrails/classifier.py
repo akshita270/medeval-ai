@@ -14,6 +14,7 @@ from pydantic import BaseModel
 
 from app.config import Settings
 from app.guardrails.schema import GuardrailAction, GuardrailCheckResult
+from app.llm_cache import cached_call, get_cache_for_settings
 from app.llm_client import get_openai_client
 
 _SYSTEM_PROMPT = """You are a safety classifier for a healthcare research assistant. \
@@ -60,10 +61,14 @@ _CLASSIFICATION_TO_CHECK_NAME = {
 }
 
 
-def check_semantic_intent(question: str, settings: Settings) -> GuardrailCheckResult:
+def _call_semantic_intent_api(question: str, model: str) -> dict:
+    """Isolated into its own function so cached_call() can skip it
+    entirely on a cache hit. Returns a plain JSON-serializable dict, not
+    the ClassifierResponse object, since that's what the cache stores.
+    """
     client = get_openai_client()
     response = client.chat.completions.parse(
-        model=settings.guardrail_model,
+        model=model,
         messages=[
             {"role": "system", "content": _SYSTEM_PROMPT},
             {"role": "user", "content": question},
@@ -72,14 +77,22 @@ def check_semantic_intent(question: str, settings: Settings) -> GuardrailCheckRe
     )
     parsed = response.choices[0].message.parsed
     assert parsed is not None  # response_format guarantees this on success
+    return {"classification": parsed.classification.value, "reasoning": parsed.reasoning}
 
-    if parsed.classification == GuardrailClassification.SAFE:
+
+def check_semantic_intent(question: str, settings: Settings) -> GuardrailCheckResult:
+    cache = get_cache_for_settings(settings)
+    key_parts = ("check_semantic_intent", settings.guardrail_model, question)
+    result, _ = cached_call(cache, key_parts, lambda: _call_semantic_intent_api(question, settings.guardrail_model))
+    classification = GuardrailClassification(result["classification"])
+
+    if classification == GuardrailClassification.SAFE:
         return GuardrailCheckResult(check_name="semantic_intent", action=GuardrailAction.ALLOW)
 
     return GuardrailCheckResult(
-        check_name=_CLASSIFICATION_TO_CHECK_NAME[parsed.classification],
+        check_name=_CLASSIFICATION_TO_CHECK_NAME[classification],
         action=GuardrailAction.BLOCK,
-        reason=f"Semantic classifier flagged '{parsed.classification.value}': {parsed.reasoning}",
+        reason=f"Semantic classifier flagged '{classification.value}': {result['reasoning']}",
     )
 
 
@@ -110,10 +123,15 @@ class OutputClassifierResponse(BaseModel):
     reasoning: str
 
 
-def check_output_safety(question: str, answer: str, settings: Settings) -> GuardrailCheckResult:
+def _call_output_safety_api(question: str, answer: str, model: str) -> dict:
+    """Isolated into its own function so cached_call() can skip it
+    entirely on a cache hit. Returns a plain JSON-serializable dict, not
+    the OutputClassifierResponse object, since that's what the cache
+    stores.
+    """
     client = get_openai_client()
     response = client.chat.completions.parse(
-        model=settings.guardrail_model,
+        model=model,
         messages=[
             {"role": "system", "content": _OUTPUT_SYSTEM_PROMPT},
             {"role": "user", "content": f"Question: {question}\n\nAnswer: {answer}"},
@@ -122,12 +140,22 @@ def check_output_safety(question: str, answer: str, settings: Settings) -> Guard
     )
     parsed = response.choices[0].message.parsed
     assert parsed is not None  # response_format guarantees this on success
+    return {"classification": parsed.classification.value, "reasoning": parsed.reasoning}
 
-    if parsed.classification == OutputClassification.SAFE:
+
+def check_output_safety(question: str, answer: str, settings: Settings) -> GuardrailCheckResult:
+    cache = get_cache_for_settings(settings)
+    key_parts = ("check_output_safety", settings.guardrail_model, question, answer)
+    result, _ = cached_call(
+        cache, key_parts, lambda: _call_output_safety_api(question, answer, settings.guardrail_model)
+    )
+    classification = OutputClassification(result["classification"])
+
+    if classification == OutputClassification.SAFE:
         return GuardrailCheckResult(check_name="output_semantic_safety", action=GuardrailAction.ALLOW)
 
     return GuardrailCheckResult(
         check_name="personalized_advice_leak",
         action=GuardrailAction.BLOCK,
-        reason=f"Output classifier flagged '{parsed.classification.value}': {parsed.reasoning}",
+        reason=f"Output classifier flagged '{classification.value}': {result['reasoning']}",
     )

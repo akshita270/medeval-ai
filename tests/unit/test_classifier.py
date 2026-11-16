@@ -132,3 +132,45 @@ class TestCheckOutputSafety:
             )
         assert result.action == GuardrailAction.BLOCK
         assert result.check_name == "personalized_advice_leak"
+
+
+class TestClassifierCaching:
+    def test_check_semantic_intent_repeated_call_hits_cache(self, tmp_path):
+        settings = _settings(llm_cache_enabled=True, llm_cache_db_path=tmp_path / "cache.db")
+        fake_client = _mock_client(GuardrailClassification.SAFE)
+
+        with patch("app.guardrails.classifier.get_openai_client", return_value=fake_client):
+            check_semantic_intent("What is the mechanism of SGLT2 inhibitors?", settings)
+            check_semantic_intent("What is the mechanism of SGLT2 inhibitors?", settings)
+
+        fake_client.chat.completions.parse.assert_called_once()
+
+    def test_check_output_safety_repeated_call_hits_cache(self, tmp_path):
+        settings = _settings(llm_cache_enabled=True, llm_cache_db_path=tmp_path / "cache.db")
+        fake_client = _mock_output_client(OutputClassification.SAFE)
+
+        with patch("app.guardrails.classifier.get_openai_client", return_value=fake_client):
+            check_output_safety("Q", "An educational answer.", settings)
+            check_output_safety("Q", "An educational answer.", settings)
+
+        fake_client.chat.completions.parse.assert_called_once()
+
+    def test_a_different_question_is_not_a_cache_hit(self, tmp_path):
+        settings = _settings(llm_cache_enabled=True, llm_cache_db_path=tmp_path / "cache.db")
+        fake_client = _mock_client(GuardrailClassification.SAFE)
+
+        with patch("app.guardrails.classifier.get_openai_client", return_value=fake_client):
+            check_semantic_intent("Question A", settings)
+            check_semantic_intent("Question B", settings)
+
+        assert fake_client.chat.completions.parse.call_count == 2
+
+    def test_caching_disabled_never_hits_the_cache(self, tmp_path):
+        settings = _settings(llm_cache_db_path=tmp_path / "cache.db")  # llm_cache_enabled defaults to False
+        fake_client = _mock_client(GuardrailClassification.SAFE)
+
+        with patch("app.guardrails.classifier.get_openai_client", return_value=fake_client):
+            check_semantic_intent("Same question", settings)
+            check_semantic_intent("Same question", settings)
+
+        assert fake_client.chat.completions.parse.call_count == 2

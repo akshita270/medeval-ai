@@ -70,9 +70,41 @@ GitHub withholds secrets from them by design. A release pipeline runs the full
 30-question evaluation on every push to `main`. 67 unit tests cover deterministic
 logic and mocked API calls at zero cost.
 
+**Guardrails**
+Two-layer, cost-cascading checks on both the input and the output: free regex-based
+checks first (prompt injection, personalized-advice requests, off-topic questions,
+real patient identifiers — SSN/MRN/DOB/phone/email shapes — and, on the output side,
+a personalized-advice leak and citation grounding), then a cheap LLM classifier
+(`gpt-4o-mini` by default, a separate, independently-swappable model from
+generation's `gpt-5-mini` -- it's a 5-way classification task, not generation, so it
+doesn't need generation's model) only when the free layer finds nothing. Citation
+grounding is a deterministic check, not
+an LLM call: generation returns structured, chunk-precise citations (via OpenAI
+structured outputs, not free-text bracket parsing) each with a verbatim quote, and
+the guardrail verifies that quote is a real substring of the chunk it names — the
+same verification Phase 2's golden dataset already does for its hand-written
+evidence, applied live to every answer. A 19-case adversarial test suite exercises
+the real pipeline end to end (19/19 passing) and is tracked in its own MLflow
+experiment (`medeval-ai-guardrails`), separate from RAG-quality evaluation runs so
+neither trend contaminates the other. A simple in-memory, per-client rate limiter
+protects the (paid) `/ask` endpoint from being hit without limit.
+
+Guardrails never run inside `scripts/run_evaluation.py` -- the golden-dataset
+evaluation calls `generate_answer()` directly and is judged on the raw output, so a
+guardrail change can never silently shift a correctness/faithfulness score or hide
+a real regression behind a block.
+
+**LLM response caching**
+A local SQLite cache (off by default, `LLM_CACHE_ENABLED=true` to turn it on) for
+the calls where a repeated identical input is pure upside: live generation, the
+guardrail Layer-2 classifier, and embeddings. A repeated question costs nothing the
+second time, and `build_index.py` only re-embeds chunks that actually changed, not
+the whole corpus, on every rebuild. Deliberately **not** applied to the judge/
+evaluation path -- a cached judge score could silently mask a real regression,
+which would defeat the whole point of the quality gate.
+
 **Not yet built**: Phase 6 (AWS deployment, no Docker/Kubernetes) and Phase 7
-(production monitoring + failure diagnosis). A guardrails/adversarial-testing layer
-is also planned but not yet implemented.
+(production monitoring + failure diagnosis).
 
 ## A known, documented limitation
 

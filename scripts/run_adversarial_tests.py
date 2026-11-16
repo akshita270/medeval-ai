@@ -17,6 +17,7 @@ from app.retrieval.bm25_index import build_bm25_index
 from app.vectorstore.chroma_store import get_collection
 from evaluation.guardrails.runner import run_adversarial_suite
 from evaluation.guardrails.schema import load_adversarial_dataset
+from evaluation.tracking.mlflow_logger import log_adversarial_run
 
 
 def main(dataset_version: str = "v1") -> int:
@@ -35,6 +36,8 @@ def main(dataset_version: str = "v1") -> int:
     out_path = out_dir / f"adversarial_run_{dataset_version}.json"
     out_path.write_text(report.model_dump_json(indent=2), encoding="utf-8")
 
+    run_id = log_adversarial_run(report, settings)
+
     print(flush=True)
     print("=" * 70, flush=True)
     for result in report.results:
@@ -48,6 +51,7 @@ def main(dataset_version: str = "v1") -> int:
         )
     print(flush=True)
     print(f"Report saved to {out_path}", flush=True)
+    print(f"Logged to MLflow run {run_id} (experiment: medeval-ai-guardrails)", flush=True)
     print(f"Passed: {report.total_passed}/{report.total_cases} ({report.pass_rate:.0%})", flush=True)
 
     return 0 if report.total_failed == 0 else 1

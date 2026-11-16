@@ -1,4 +1,5 @@
 from app.config import Settings
+from app.guardrails.citation_guardrails import check_citation_grounding
 from app.guardrails.classifier import check_output_safety, check_semantic_intent
 from app.guardrails.input_guardrails import (
     check_personalized_advice_request,
@@ -6,6 +7,7 @@ from app.guardrails.input_guardrails import (
     check_topic_relevance,
 )
 from app.guardrails.output_guardrails import check_personalized_dosing_leak
+from app.guardrails.pii_guardrails import check_patient_identifier
 from app.guardrails.schema import GuardrailAction, GuardrailDecision
 from app.schemas import GeneratedAnswer, GenerationConfig, RetrievedPassage
 
@@ -33,6 +35,15 @@ _BLOCKED_MESSAGES = {
         "doesn't provide -- please consult a qualified healthcare professional about your "
         "own care."
     ),
+    "patient_identifier": (
+        "This request appears to contain real patient-identifying information (such as an ID, "
+        "date of birth, or contact detail). Please remove any personal identifiers and ask a "
+        "general research question instead."
+    ),
+    "citation_grounding": (
+        "This answer cited a source in a way that couldn't be verified against the retrieved "
+        "documents, so it has been blocked rather than shown with an unverified citation."
+    ),
 }
 
 
@@ -45,6 +56,7 @@ def run_input_guardrails(question: str, passages: list[RetrievedPassage], settin
         check_prompt_injection(question),
         check_personalized_advice_request(question),
         check_topic_relevance(passages, settings.min_topic_relevance_score),
+        check_patient_identifier(question),
     ]
     triggered = [r for r in layer1_results if r.action == GuardrailAction.BLOCK]
     if triggered:
@@ -84,16 +96,25 @@ def build_blocked_answer(query: str, decision: GuardrailDecision, settings: Sett
     )
 
 
-def run_output_guardrails(question: str, answer: str, settings: Settings) -> GuardrailDecision:
+def run_output_guardrails(question: str, generated: GeneratedAnswer, settings: Settings) -> GuardrailDecision:
     """Mirrors run_input_guardrails's two-layer, cost-cascading shape:
-    Layer 1 (free, regex) first, Layer 2 (one real API call) only if
-    Layer 1 found nothing in the generated answer.
-    """
-    layer1_result = check_personalized_dosing_leak(answer)
-    if layer1_result.action == GuardrailAction.BLOCK:
-        return GuardrailDecision(action=GuardrailAction.BLOCK, triggered_checks=[layer1_result])
+    Layer 1 (free, deterministic checks) first, Layer 2 (one real API
+    call) only if Layer 1 found nothing in the generated answer.
 
-    layer2_result = check_output_safety(question, answer, settings)
+    Takes the full GeneratedAnswer (not just the answer text) because
+    check_citation_grounding needs the structured citation_details and
+    retrieved_passages alongside it, not just the rendered text.
+    """
+    layer1_results = [
+        check_citation_grounding(generated.citation_details, generated.retrieved_passages),
+        check_patient_identifier(generated.answer),
+        check_personalized_dosing_leak(generated.answer),
+    ]
+    triggered = [r for r in layer1_results if r.action == GuardrailAction.BLOCK]
+    if triggered:
+        return GuardrailDecision(action=GuardrailAction.BLOCK, triggered_checks=triggered)
+
+    layer2_result = check_output_safety(question, generated.answer, settings)
     if layer2_result.action == GuardrailAction.BLOCK:
         return GuardrailDecision(action=GuardrailAction.BLOCK, triggered_checks=[layer2_result])
 

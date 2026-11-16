@@ -1,6 +1,22 @@
 from unittest.mock import Mock, patch
 
+from app.config import Settings
 from app.embeddings.embedder import embed_texts
+
+
+def _settings(**overrides) -> Settings:
+    defaults = dict(
+        openai_api_key="test",
+        llm_model="gpt-5-mini",
+        embedding_model="text-embedding-3-small",
+        judge_model="gpt-5-mini",
+        prompt_version="v1",
+        chunk_size=800,
+        chunk_overlap=100,
+        retrieval_top_k=5,
+    )
+    defaults.update(overrides)
+    return Settings(**defaults)
 
 
 class _FakeItem:
@@ -66,3 +82,50 @@ def test_passes_requested_model_to_the_api():
 
     _, kwargs = fake_client.embeddings.create.call_args
     assert kwargs["model"] == "some-other-model"
+
+
+class TestEmbeddingCaching:
+    def test_repeated_identical_text_hits_cache_and_skips_the_api(self, tmp_path):
+        settings = _settings(llm_cache_enabled=True, llm_cache_db_path=tmp_path / "cache.db")
+        fake_client = Mock()
+        fake_client.embeddings.create.return_value = _FakeEmbeddingResponse([[0.1, 0.2]], total_tokens=5)
+
+        with patch("app.embeddings.embedder.get_openai_client", return_value=fake_client):
+            first = embed_texts(["same text"], "text-embedding-3-small", settings)
+            second = embed_texts(["same text"], "text-embedding-3-small", settings)
+
+        fake_client.embeddings.create.assert_called_once()
+        assert first.vectors == second.vectors == [[0.1, 0.2]]
+        assert first.total_tokens == 5
+        assert second.total_tokens == 0  # nothing was actually billed the second time
+
+    def test_only_the_uncached_texts_in_a_batch_are_re_embedded(self, tmp_path):
+        settings = _settings(llm_cache_enabled=True, llm_cache_db_path=tmp_path / "cache.db")
+        fake_client = Mock()
+        fake_client.embeddings.create.return_value = _FakeEmbeddingResponse([[0.1], [0.2]], total_tokens=10)
+
+        with patch("app.embeddings.embedder.get_openai_client", return_value=fake_client):
+            embed_texts(["a", "b"], "text-embedding-3-small", settings)
+
+        fake_client.embeddings.create.reset_mock()
+        fake_client.embeddings.create.return_value = _FakeEmbeddingResponse([[0.3]], total_tokens=3)
+
+        with patch("app.embeddings.embedder.get_openai_client", return_value=fake_client):
+            # "a" and "b" are cached from the run above; only "c" is new.
+            result = embed_texts(["a", "b", "c"], "text-embedding-3-small", settings)
+
+        fake_client.embeddings.create.assert_called_once()
+        call_kwargs = fake_client.embeddings.create.call_args.kwargs
+        assert call_kwargs["input"] == ["c"]
+        assert result.vectors == [[0.1], [0.2], [0.3]]  # order preserved
+
+    def test_caching_disabled_never_hits_the_cache(self, tmp_path):
+        settings = _settings(llm_cache_db_path=tmp_path / "cache.db")  # llm_cache_enabled defaults to False
+        fake_client = Mock()
+        fake_client.embeddings.create.return_value = _FakeEmbeddingResponse([[0.1]], total_tokens=1)
+
+        with patch("app.embeddings.embedder.get_openai_client", return_value=fake_client):
+            embed_texts(["same text"], "text-embedding-3-small", settings)
+            embed_texts(["same text"], "text-embedding-3-small", settings)
+
+        assert fake_client.embeddings.create.call_count == 2

@@ -1,7 +1,7 @@
 import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, Request
 from pydantic import BaseModel, Field
 
 from app.config import get_settings
@@ -12,6 +12,7 @@ from app.guardrails.pipeline import (
     run_input_guardrails,
     run_output_guardrails,
 )
+from app.rate_limiter import RateLimiter, enforce_rate_limit
 from app.retrieval.bm25_index import build_bm25_index
 from app.retrieval.pipeline import retrieve_passages
 from app.schemas import GeneratedAnswer
@@ -53,6 +54,15 @@ async def lifespan(app: FastAPI):
     # different-startup-logic change.
     app.state.bm25_index = build_bm25_index(app.state.collection)
     logger.info("Built BM25 index with %d chunks", len(app.state.bm25_index.chunk_ids))
+
+    # One shared, in-memory limiter for the process's lifetime -- see
+    # app/rate_limiter.py for why in-memory/per-process is the right
+    # tradeoff here rather than a shared store.
+    app.state.rate_limiter = RateLimiter(
+        max_requests=settings.rate_limit_requests_per_minute,
+        window_seconds=60.0,
+    )
+    logger.info("Rate limiter: %d requests/minute per client", settings.rate_limit_requests_per_minute)
     yield
 
 
@@ -72,7 +82,7 @@ def health(request: Request) -> HealthResponse:
     )
 
 
-@app.post("/ask", response_model=GeneratedAnswer)
+@app.post("/ask", response_model=GeneratedAnswer, dependencies=[Depends(enforce_rate_limit)])
 def ask(request: Request, body: AskRequest) -> GeneratedAnswer:
     settings = get_settings()
     collection = request.app.state.collection
@@ -92,7 +102,7 @@ def ask(request: Request, body: AskRequest) -> GeneratedAnswer:
     # into personalized advice despite the prompt's rules and the input
     # checks above. The generation cost is already spent either way; this
     # only decides what's shown to the user.
-    output_decision = run_output_guardrails(body.question, answer.answer, settings)
+    output_decision = run_output_guardrails(body.question, answer, settings)
     if output_decision.blocked:
         return redact_blocked_answer(answer, output_decision)
 

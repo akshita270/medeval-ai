@@ -36,10 +36,13 @@ class Settings(BaseSettings):
     # a separate knob, even when it happens to hold the same value)
     judge_model: str = Field(default="gpt-5-mini")
 
-    # Guardrails Layer 2 (independent of generation/judge models above --
-    # a separate knob, so it can be swapped to a cheaper model later
-    # without touching generation or evaluation)
-    guardrail_model: str = Field(default="gpt-5-mini")
+    # Guardrails Layer 2 (independent of generation/judge models above):
+    # a 5-way classification task, not generation, so it doesn't need
+    # generation's model. gpt-4o-mini is ~40% cheaper on input tokens and
+    # ~70% cheaper on output tokens than gpt-5-mini (see
+    # evaluation/judge/metrics.py's pricing table) and still supports
+    # structured outputs -- the one capability this call actually needs.
+    guardrail_model: str = Field(default="gpt-4o-mini")
 
     # Paths
     chroma_persist_dir: Path = Field(default=Path("./data/chroma_db"))
@@ -76,6 +79,19 @@ class Settings(BaseSettings):
     # isn't about anything in this document collection. 0.15 is an initial
     # estimate, not yet calibrated against real off-topic questions.
     min_topic_relevance_score: float = Field(default=0.15)
+
+    # Rate limiting -- in-memory, per-process (see app/rate_limiter.py),
+    # keyed by client IP since there's no auth/API-key layer. 0 or
+    # negative disables it entirely (used in tests, where a shared
+    # limiter carrying state between tests would be a flaky-test trap).
+    rate_limit_requests_per_minute: int = Field(default=20)
+
+    # LLM response caching -- off by default, same ablation-toggle
+    # convention as use_hybrid_retrieval/use_reranking above. See
+    # app/llm_cache.py for exactly which calls this applies to (and,
+    # deliberately, which it never does -- the judge/evaluation path).
+    llm_cache_enabled: bool = Field(default=False)
+    llm_cache_db_path: Path = Field(default=Path("./llm_cache.db"))
 
 
 @lru_cache

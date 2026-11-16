@@ -36,7 +36,7 @@ def build_index() -> None:
         f"embedding_model={settings.embedding_model}"
     )
     print(f"Embedding {len(all_chunks)} chunks...")
-    embedding_result = embed_texts([c.text for c in all_chunks], settings.embedding_model)
+    embedding_result = embed_texts([c.text for c in all_chunks], settings.embedding_model, settings)
     print(f"Embedded {len(embedding_result.vectors)} chunks, {embedding_result.total_tokens} tokens billed")
 
     collection = get_collection(settings.chroma_persist_dir, settings.chroma_collection_name)

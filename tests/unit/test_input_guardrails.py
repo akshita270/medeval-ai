@@ -120,6 +120,18 @@ class TestRunInputGuardrails:
         assert decision.blocked
         mock_layer2.assert_not_called()
 
+    def test_blocks_question_containing_a_patient_identifier(self):
+        # Wired in alongside the other free Layer 1 checks -- a question
+        # with a real-looking identifier never reaches Layer 2 either.
+        settings = _settings()
+        with patch("app.guardrails.pipeline.check_semantic_intent") as mock_layer2:
+            decision = run_input_guardrails(
+                "Patient MRN: 00482913 has elevated HbA1c, what does that mean?", [_passage(0.6)], settings
+            )
+        assert decision.blocked
+        assert decision.triggered_checks[0].check_name == "patient_identifier"
+        mock_layer2.assert_not_called()
+
     def test_layer2_block_is_reflected_in_decision(self):
         settings = _settings()
         with patch(
