@@ -183,3 +183,59 @@ class TestGenerationCaching:
             generate_answer("Same question", PASSAGES, settings)
 
         assert fake_client.chat.completions.parse.call_count == 2
+
+
+class TestModelRouting:
+    def test_simple_question_is_generated_with_the_routed_model(self):
+        settings = _settings(
+            use_model_routing=True,
+            routing_simple_model="gpt-4o-mini",
+            routing_max_question_length=80,
+            routing_min_top_similarity_for_simple=0.5,
+        )
+        fake_client = Mock()
+        fake_client.chat.completions.parse.return_value = _FakeParsedResponse(
+            GenerationOutput(answer="An answer.", citations=[])
+        )
+
+        with patch("app.generation.generator.get_openai_client", return_value=fake_client):
+            result = generate_answer("What is X?", PASSAGES, settings)
+
+        _, kwargs = fake_client.chat.completions.parse.call_args
+        assert kwargs["model"] == "gpt-4o-mini"
+        # The config attached to the answer must reflect what actually
+        # produced it, not settings.llm_model's nominal value.
+        assert result.config.llm_model == "gpt-4o-mini"
+
+    def test_complex_question_still_uses_llm_model(self):
+        settings = _settings(
+            use_model_routing=True,
+            routing_simple_model="gpt-4o-mini",
+            routing_max_question_length=80,
+            routing_min_top_similarity_for_simple=0.5,
+        )
+        fake_client = Mock()
+        fake_client.chat.completions.parse.return_value = _FakeParsedResponse(
+            GenerationOutput(answer="An answer.", citations=[])
+        )
+
+        with patch("app.generation.generator.get_openai_client", return_value=fake_client):
+            result = generate_answer("Compare X and Y.", PASSAGES, settings)
+
+        _, kwargs = fake_client.chat.completions.parse.call_args
+        assert kwargs["model"] == "gpt-5-mini"
+        assert result.config.llm_model == "gpt-5-mini"
+
+    def test_routing_disabled_always_uses_llm_model(self):
+        settings = _settings(use_model_routing=False)
+        fake_client = Mock()
+        fake_client.chat.completions.parse.return_value = _FakeParsedResponse(
+            GenerationOutput(answer="An answer.", citations=[])
+        )
+
+        with patch("app.generation.generator.get_openai_client", return_value=fake_client):
+            result = generate_answer("What is X?", PASSAGES, settings)
+
+        _, kwargs = fake_client.chat.completions.parse.call_args
+        assert kwargs["model"] == "gpt-5-mini"
+        assert result.config.llm_model == "gpt-5-mini"

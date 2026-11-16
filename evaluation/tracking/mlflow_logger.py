@@ -54,6 +54,8 @@ def log_evaluation_run(report: EvaluationReport, settings: Settings, strategy_la
                 "retrieval_strategy": strategy_label,
                 "use_hybrid_retrieval": settings.use_hybrid_retrieval,
                 "use_reranking": settings.use_reranking,
+                "use_model_routing": settings.use_model_routing,
+                "routing_simple_model": settings.routing_simple_model if settings.use_model_routing else "",
                 "git_commit": _get_git_commit(),
             }
         )
@@ -61,6 +63,14 @@ def log_evaluation_run(report: EvaluationReport, settings: Settings, strategy_la
         for summary in report.metric_summaries:
             mlflow.log_metric(summary.metric.value, summary.mean_score)
             mlflow.log_metric(f"{summary.metric.value}_count", summary.count)
+
+        if settings.use_model_routing and report.total_questions:
+            # The actual signal for validating routing: what fraction of
+            # questions got sent to the cheap model, read back together
+            # with the metric means above -- did quality hold up at this
+            # routing rate, not just "routing was on."
+            routed_count = sum(1 for r in report.results if r.generation_model == settings.routing_simple_model)
+            mlflow.log_metric("pct_routed_to_simple_model", routed_count / report.total_questions)
 
         mlflow.log_metric("total_questions", report.total_questions)
         mlflow.log_metric("total_failed_metric_calls", report.total_failed_metric_calls)

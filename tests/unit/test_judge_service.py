@@ -159,3 +159,20 @@ def test_evaluate_answer_records_the_passed_in_generation_latency():
         )
 
     assert result.generation_latency_seconds == 4.2
+
+
+def test_evaluate_answer_records_which_model_actually_generated_the_answer():
+    # Reads generated.config.llm_model, not a fixed/nominal model name --
+    # this is how a routed run (app/generation/router.py) stays auditable
+    # per question even though evaluate_answer() itself knows nothing
+    # about routing.
+    fake_client = Mock()
+    fake_client.chat.completions.parse.return_value = _FakeParsedResponse(_JudgeResponse(score=1.0, reasoning="ok"))
+
+    routed_config = CONFIG.model_copy(update={"llm_model": "gpt-4o-mini"})
+    routed_answer = _generated_answer().model_copy(update={"config": routed_config})
+
+    with patch("evaluation.judge.judge_service.get_openai_client", return_value=fake_client):
+        result = evaluate_answer(_answerable_golden(), routed_answer, "gpt-5-mini")
+
+    assert result.generation_model == "gpt-4o-mini"

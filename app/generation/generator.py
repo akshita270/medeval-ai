@@ -3,6 +3,7 @@ from pathlib import Path
 from pydantic import BaseModel
 
 from app.config import Settings
+from app.generation.router import choose_generation_model
 from app.llm_cache import cached_call, get_cache_for_settings
 from app.llm_client import get_openai_client
 from app.schemas import CitationDetail, GeneratedAnswer, GenerationConfig, RetrievedPassage
@@ -90,9 +91,16 @@ def generate_answer(query: str, passages: list[RetrievedPassage], settings: Sett
     system_prompt = _load_system_prompt(settings.prompt_version)
     messages = build_messages(query, passages, system_prompt)
 
+    # The model actually used for this answer -- settings.llm_model
+    # unchanged unless use_model_routing sends this specific question to
+    # the cheaper model (see app/generation/router.py). Recorded in
+    # GenerationConfig.llm_model below, not settings.llm_model, so the
+    # config attached to each answer reflects what actually produced it.
+    model = choose_generation_model(query, passages, settings)
+
     cache = get_cache_for_settings(settings)
-    key_parts = ("generate_answer", settings.llm_model, settings.prompt_version, query, [p.chunk_id for p in passages])
-    result, cache_hit = cached_call(cache, key_parts, lambda: _call_generation_api(messages, settings.llm_model))
+    key_parts = ("generate_answer", model, settings.prompt_version, query, [p.chunk_id for p in passages])
+    result, cache_hit = cached_call(cache, key_parts, lambda: _call_generation_api(messages, model))
 
     raw_citations = [CitationDetail(**c) for c in result["citations"]]
     citation_details = _filter_to_retrieved_chunks(raw_citations, passages)
@@ -105,7 +113,7 @@ def generate_answer(query: str, passages: list[RetrievedPassage], settings: Sett
             doc_ids.append(citation.doc_id)
 
     config = GenerationConfig(
-        llm_model=settings.llm_model,
+        llm_model=model,
         embedding_model=settings.embedding_model,
         prompt_version=settings.prompt_version,
         chunk_size=settings.chunk_size,

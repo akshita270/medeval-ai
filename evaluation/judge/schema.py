@@ -48,6 +48,11 @@ class EvaluationResult(BaseModel):
     prompt_tokens: int
     completion_tokens: int
     estimated_cost_usd: float
+    # Which model actually generated this answer (GeneratedAnswer.config.llm_model),
+    # not necessarily settings.llm_model -- model routing (app/generation/router.py)
+    # can send a given question to a cheaper model. "" = not recorded (a historical
+    # run predating this field, or a pipeline-failure placeholder with no real answer).
+    generation_model: str = ""
 
 
 class MetricSummary(BaseModel):

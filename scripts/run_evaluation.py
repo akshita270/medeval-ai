@@ -22,11 +22,15 @@ from evaluation.tracking.mlflow_logger import log_evaluation_run
 
 def _strategy_label(settings) -> str:
     """Names the retrieval strategy for the output filename, so an
-    ablation run (dense vs hybrid vs hybrid+rerank) never overwrites a
-    previous run's results -- each config's report is comparable later.
+    ablation run (dense vs hybrid vs hybrid+rerank, routed vs not) never
+    overwrites a previous run's results -- each config's report is
+    comparable later. This is exactly how to validate model routing
+    before trusting it: run with use_model_routing off, then on, and
+    compare the two reports' metric_summaries (and MLflow runs).
     """
     base = "hybrid" if settings.use_hybrid_retrieval else "dense"
-    return f"{base}_rerank" if settings.use_reranking else base
+    label = f"{base}_rerank" if settings.use_reranking else base
+    return f"{label}_routed" if settings.use_model_routing else label
 
 
 def run_evaluation(dataset_version: str = "v1", question_ids: list[str] | None = None) -> None:
@@ -109,6 +113,13 @@ def run_evaluation(dataset_version: str = "v1", question_ids: list[str] | None =
         print(f"Mean generation latency (retrieve+generate, per question): {mean_gen_latency:.2f}s", flush=True)
     else:
         print("Mean generation latency: not measured for this run", flush=True)
+    if settings.use_model_routing:
+        routed_count = sum(1 for r in report.results if r.generation_model == settings.routing_simple_model)
+        print(
+            f"Model routing: {routed_count}/{report.total_questions} questions routed to "
+            f"{settings.routing_simple_model}",
+            flush=True,
+        )
     print(flush=True)
     for summary in sorted(report.metric_summaries, key=lambda s: s.metric.value):
         print(f"  {summary.metric.value:22s} mean={summary.mean_score:.3f}  (n={summary.count})", flush=True)

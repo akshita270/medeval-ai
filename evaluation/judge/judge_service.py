@@ -147,4 +147,5 @@ def evaluate_answer(
         prompt_tokens=total_prompt_tokens,
         completion_tokens=total_completion_tokens,
         estimated_cost_usd=estimate_cost_usd(judge_model, total_prompt_tokens, total_completion_tokens),
+        generation_model=generated.config.llm_model,
     )

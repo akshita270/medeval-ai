@@ -103,6 +103,22 @@ the whole corpus, on every rebuild. Deliberately **not** applied to the judge/
 evaluation path -- a cached judge score could silently mask a real regression,
 which would defeat the whole point of the quality gate.
 
+**Model routing**
+Off by default (`USE_MODEL_ROUTING=true` to turn it on). Sends a question to a
+cheaper model (`gpt-4o-mini`) instead of the full `llm_model` when three free
+signals all agree it's a simple, single-source lookup: the question is short, it
+has none of a fixed list of comparison/causal/multi-part phrasings ("compare",
+"why", "explain", "difference between", ...), and the top retrieved passage is a
+confident match. No extra API call either way -- unlike `guardrail_model`'s
+cheap-model swap (a safe, outright swap for a classification task), routing
+changes *which model answers the question*, so a misrouted hard question would
+silently lose answer quality. `GenerationConfig.llm_model` always records the
+model actually used for that specific answer, and `scripts/run_evaluation.py`
+labels a routed run distinctly (`..._routed`) and reports what fraction of
+questions got routed -- the intended way to validate this is comparing a routed
+run's metric means against an unrouted run's on the golden dataset before ever
+trusting it in production.
+
 **Not yet built**: Phase 6 (AWS deployment, no Docker/Kubernetes) and Phase 7
 (production monitoring + failure diagnosis).
 

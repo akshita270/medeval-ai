@@ -93,6 +93,24 @@ class Settings(BaseSettings):
     llm_cache_enabled: bool = Field(default=False)
     llm_cache_db_path: Path = Field(default=Path("./llm_cache.db"))
 
+    # Model routing (see app/generation/router.py) -- off by default.
+    # Unlike guardrail_model's cheap-model swap (a classification task,
+    # safe to swap outright), this changes which model answers a given
+    # question, so a misrouted "hard" question silently loses answer
+    # quality -- validate with scripts/run_evaluation.py before trusting
+    # it in production.
+    use_model_routing: bool = Field(default=False)
+    routing_simple_model: str = Field(default="gpt-4o-mini")
+    # A question longer than this (characters) is never routed cheap --
+    # long questions tend to pack in more sub-asks. Unvalidated initial
+    # estimate, same status as min_topic_relevance_score above.
+    routing_max_question_length: int = Field(default=80)
+    # The top retrieved passage's similarity score must be at least this
+    # to route cheap -- a confident, concentrated single-source match
+    # looks like a simple lookup; a weak or spread-out match looks like
+    # it needs real synthesis. Unvalidated initial estimate.
+    routing_min_top_similarity_for_simple: float = Field(default=0.5)
+
 
 @lru_cache
 def get_settings() -> Settings:
