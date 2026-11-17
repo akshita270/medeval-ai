@@ -2,6 +2,7 @@ import logging
 from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from app.config import get_settings
@@ -67,6 +68,16 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="MedEval AI", lifespan=lifespan)
+
+# Open to any origin: this is a public, no-auth, no-cookie demo API
+# (no real patient data, nothing session-scoped) meant to be called
+# directly from a browser-based frontend hosted elsewhere.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/health", response_model=HealthResponse)

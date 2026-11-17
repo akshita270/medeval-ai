@@ -5,12 +5,24 @@ import { ArrowUp, Sparkles } from "lucide-react";
 import { ChatMessageItem, TypingIndicator } from "./chat-message";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  sampleChat,
-  sampleSources,
-  suggestedQuestions,
-  type ChatMessage,
-} from "@/lib/mock-data";
+import type { ChatMessage } from "@/lib/chat-types";
+import { askQuestion, ApiError, type GeneratedAnswer } from "@/lib/api";
+
+const suggestedQuestions = [
+  "What are the major risk factors for Type 2 diabetes?",
+  "How is gestational diabetes diagnosed during pregnancy?",
+  "What HbA1c threshold defines prediabetes vs diabetes?",
+  "Summarize first-line pharmacologic therapy for T2D.",
+];
+
+const initialMessages: ChatMessage[] = [
+  {
+    id: "msg-welcome",
+    role: "assistant",
+    content:
+      "Ask a question about Type 2 diabetes research and I'll answer it live from the retrieved source documents, with chunk-level citations you can verify on the right.",
+  },
+];
 
 let idCounter = 100;
 function nextId() {
@@ -18,20 +30,33 @@ function nextId() {
   return `msg-${idCounter}`;
 }
 
-const fallbackAnswer =
-  "This is a portfolio demo of MedEval AI, so live generation isn't wired up — every response here is pre-scripted. In a real deployment this answer would be produced by the RAG pipeline shown in the Retrieval Inspector, grounded in the retrieved clinical sources on the right.";
+function toChatMessage(answer: GeneratedAnswer): ChatMessage {
+  return {
+    id: nextId(),
+    role: "assistant",
+    content: answer.answer,
+    blocked: Boolean(answer.blocked_by),
+    sources: answer.citation_details.map((c, i) => ({
+      id: `${c.chunk_id}-${i}`,
+      docId: c.doc_id,
+      chunkId: c.chunk_id,
+      snippet: c.quote,
+    })),
+  };
+}
 
-export function ChatPanel() {
-  const [messages, setMessages] = useState<ChatMessage[]>(sampleChat);
+export function ChatPanel({ onAnswer }: { onAnswer?: (answer: GeneratedAnswer) => void }) {
+  const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [lastQuestion, setLastQuestion] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages, isTyping]);
 
-  function sendMessage(text: string) {
+  async function sendMessage(text: string) {
     const trimmed = text.trim();
     if (!trimmed || isTyping) return;
 
@@ -39,33 +64,39 @@ export function ChatPanel() {
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsTyping(true);
+    setLastQuestion(trimmed);
 
-    setTimeout(() => {
-      const assistantMessage: ChatMessage = {
-        id: nextId(),
-        role: "assistant",
-        content: fallbackAnswer,
-        sources: sampleSources.slice(0, 2),
-      };
-      setMessages((prev) => [...prev, assistantMessage]);
+    try {
+      const answer = await askQuestion(trimmed);
+      setMessages((prev) => [...prev, toChatMessage(answer)]);
+      onAnswer?.(answer);
+    } catch (err) {
+      const detail = err instanceof ApiError ? err.message : "Something went wrong calling the backend.";
+      setMessages((prev) => [
+        ...prev,
+        { id: nextId(), role: "assistant", content: `⚠️ ${detail}` },
+      ]);
+    } finally {
       setIsTyping(false);
-    }, 1300);
+    }
   }
 
-  function regenerateLast() {
-    if (isTyping) return;
+  async function regenerateLast() {
+    if (isTyping || !lastQuestion) return;
     setIsTyping(true);
-    setTimeout(() => {
-      setMessages((prev) => {
-        const next = [...prev];
-        const lastIdx = next.length - 1;
-        if (lastIdx >= 0 && next[lastIdx].role === "assistant") {
-          next[lastIdx] = { ...next[lastIdx], id: nextId() };
-        }
-        return next;
-      });
+    try {
+      const answer = await askQuestion(lastQuestion);
+      setMessages((prev) => [...prev, toChatMessage(answer)]);
+      onAnswer?.(answer);
+    } catch (err) {
+      const detail = err instanceof ApiError ? err.message : "Something went wrong calling the backend.";
+      setMessages((prev) => [
+        ...prev,
+        { id: nextId(), role: "assistant", content: `⚠️ ${detail}` },
+      ]);
+    } finally {
       setIsTyping(false);
-    }, 900);
+    }
   }
 
   return (
@@ -76,9 +107,7 @@ export function ChatPanel() {
         </div>
         <div>
           <p className="text-[13.5px] font-semibold">Clinical QA Assistant</p>
-          <p className="text-[11.5px] text-muted-foreground">
-            gpt-4o-2026-08-01 · Hybrid retrieval + reranking
-          </p>
+          <p className="text-[11.5px] text-muted-foreground">Live MedEval AI backend</p>
         </div>
       </div>
 
@@ -88,7 +117,7 @@ export function ChatPanel() {
             <ChatMessageItem
               key={message.id}
               message={message}
-              onRegenerate={i === messages.length - 1 ? regenerateLast : undefined}
+              onRegenerate={i === messages.length - 1 && message.role === "assistant" ? regenerateLast : undefined}
             />
           ))}
           {isTyping && <TypingIndicator />}
@@ -96,7 +125,7 @@ export function ChatPanel() {
         </div>
       </div>
 
-      {messages.length <= 2 && (
+      {messages.length <= 1 && (
         <div className="flex flex-wrap gap-2 border-t border-border px-5 py-3">
           {suggestedQuestions.map((q) => (
             <button
@@ -135,7 +164,7 @@ export function ChatPanel() {
           </Button>
         </div>
         <p className="mt-1.5 px-1 text-[10.5px] text-muted-foreground">
-          Demo data only — responses are scripted, not generated live.
+          Calls the real backend — set its address above if it&apos;s not on localhost.
         </p>
       </div>
     </div>

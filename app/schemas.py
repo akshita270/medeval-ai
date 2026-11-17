@@ -79,6 +79,8 @@ class GenerationConfig(BaseModel):
     chunk_size: int
     chunk_overlap: int
     retrieval_top_k: int
+    use_hybrid_retrieval: bool = False
+    use_reranking: bool = False
 
 
 class GeneratedAnswer(BaseModel):

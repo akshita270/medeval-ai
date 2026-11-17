@@ -119,6 +119,8 @@ def generate_answer(query: str, passages: list[RetrievedPassage], settings: Sett
         chunk_size=settings.chunk_size,
         chunk_overlap=settings.chunk_overlap,
         retrieval_top_k=settings.retrieval_top_k,
+        use_hybrid_retrieval=settings.use_hybrid_retrieval,
+        use_reranking=settings.use_reranking,
     )
 
     # A cache hit means no API call was made *this time* -- reporting 0

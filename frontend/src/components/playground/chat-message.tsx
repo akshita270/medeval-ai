@@ -6,7 +6,7 @@ import remarkGfm from "remark-gfm";
 import { motion } from "framer-motion";
 import { Check, Copy, FileText, RotateCcw, Sparkles, User } from "lucide-react";
 import { toast } from "sonner";
-import type { ChatMessage as ChatMessageType } from "@/lib/mock-data";
+import type { ChatMessage as ChatMessageType } from "@/lib/chat-types";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -44,6 +44,11 @@ export function ChatMessageItem({
       </div>
 
       <div className={cn("flex max-w-[82%] flex-col gap-2", isUser && "items-end")}>
+        {!isUser && message.blocked && (
+          <span className="rounded-full border border-warning/20 bg-warning/10 px-2 py-0.5 text-[10.5px] font-medium text-warning">
+            Blocked by guardrails
+          </span>
+        )}
         <div
           className={cn(
             "rounded-2xl px-4 py-3 text-[13.5px] leading-relaxed",
@@ -75,10 +80,10 @@ export function ChatMessageItem({
                     {i + 1}
                   </span>
                   <div className="min-w-0">
-                    <p className="truncate font-medium text-foreground">{source.title}</p>
+                    <p className="truncate font-medium text-foreground">&ldquo;{source.snippet}&rdquo;</p>
                     <p className="flex items-center gap-1 text-muted-foreground">
                       <FileText className="h-3 w-3 shrink-0" />
-                      {source.document} · p.{source.page}
+                      {source.docId} · {source.chunkId}
                     </p>
                   </div>
                 </div>
