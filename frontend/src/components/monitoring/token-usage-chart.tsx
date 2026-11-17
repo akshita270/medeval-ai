@@ -9,14 +9,14 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { tokenUsageTrend } from "@/lib/mock-data";
+import type { DailyStat } from "@/lib/api";
 import { ChartTooltip } from "@/components/shared/chart-tooltip";
 
-export function TokenUsageChart() {
+export function TokenUsageChart({ data }: { data: DailyStat[] }) {
   return (
     <div className="h-[240px] w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={tokenUsageTrend} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
+        <AreaChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
           <defs>
             <linearGradient id="inputFill" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="var(--chart-1)" stopOpacity={0.3} />
@@ -33,19 +33,18 @@ export function TokenUsageChart() {
             tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
             axisLine={{ stroke: "var(--border)" }}
             tickLine={false}
-            interval={2}
           />
           <YAxis
             tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
             axisLine={false}
             tickLine={false}
             width={44}
-            tickFormatter={(v) => `${(v / 1000000).toFixed(1)}M`}
+            tickFormatter={(v) => `${(v / 1000).toFixed(1)}k`}
           />
           <Tooltip content={<ChartTooltip />} cursor={{ stroke: "var(--border)" }} />
           <Area
             type="monotone"
-            dataKey="input"
+            dataKey="prompt_tokens"
             name="Input tokens"
             stackId="1"
             stroke="var(--chart-1)"
@@ -54,7 +53,7 @@ export function TokenUsageChart() {
           />
           <Area
             type="monotone"
-            dataKey="output"
+            dataKey="completion_tokens"
             name="Output tokens"
             stackId="1"
             stroke="var(--chart-2)"

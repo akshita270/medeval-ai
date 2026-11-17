@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ArrowDownRight, ArrowUpRight, Minus } from "lucide-react";
-import type { Kpi } from "@/lib/mock-data";
+import type { Kpi } from "@/lib/ui-types";
 import { iconMap } from "@/lib/icon-map";
 import { cn } from "@/lib/utils";
 import { AnimatedNumber } from "./animated-number";
@@ -24,7 +24,10 @@ export function KpiCard({ kpi, index = 0 }: { kpi: Kpi; index?: number }) {
             maximumFractionDigits: 1,
           }).format(v)
       : kpi.format === "currency"
-        ? (v: number) => `$${Math.round(v).toLocaleString()}`
+        ? // Real per-run/per-day spend on this project is often sub-dollar --
+          // rounding straight to whole dollars would show "$0" for a real
+          // $0.08 run, which reads as broken rather than small.
+          (v: number) => (v < 1 ? `$${v.toFixed(4)}` : `$${Math.round(v).toLocaleString()}`)
         : undefined;
 
   return (

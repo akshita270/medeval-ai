@@ -17,6 +17,7 @@ mlflow.db
 
 # LLM response cache (local, regenerable; see app/llm_cache.py)
 llm_cache.db
+request_log.db
 
 # Evaluation run outputs (generated, not source)
 evaluation/regression/runs/

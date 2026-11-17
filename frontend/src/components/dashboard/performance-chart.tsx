@@ -9,30 +9,38 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { performanceOverTime } from "@/lib/mock-data";
+import type { EvalRunSummary } from "@/lib/api";
 import { ChartTooltip } from "@/components/shared/chart-tooltip";
 
 const series = [
-  { key: "correctness", name: "Correctness", color: "var(--chart-1)" },
-  { key: "faithfulness", name: "Faithfulness", color: "var(--chart-2)" },
-  { key: "contextRecall", name: "Context Recall", color: "var(--chart-3)" },
+  { key: "correctness", metric: "answer_correctness", name: "Correctness", color: "var(--chart-1)" },
+  { key: "faithfulness", metric: "faithfulness", name: "Faithfulness", color: "var(--chart-2)" },
+  { key: "contextRecall", metric: "context_recall", name: "Context Recall", color: "var(--chart-3)" },
 ];
 
-export function PerformanceChart() {
+export function PerformanceChart({ runs }: { runs: EvalRunSummary[] }) {
+  const data = [...runs].reverse().map((run) => {
+    const point: Record<string, number | string> = { run: run.label.split(" (")[0] };
+    for (const s of series) {
+      const summary = run.metric_summaries.find((m) => m.metric === s.metric);
+      point[s.key] = summary ? Math.round(summary.mean_score * 1000) / 10 : 0;
+    }
+    return point;
+  });
+
   return (
     <div className="h-[300px] w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={performanceOverTime} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
+        <LineChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
           <XAxis
-            dataKey="date"
+            dataKey="run"
             tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
             axisLine={{ stroke: "var(--border)" }}
             tickLine={false}
-            interval={2}
           />
           <YAxis
-            domain={[80, 100]}
+            domain={[0, 100]}
             tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
             axisLine={false}
             tickLine={false}
@@ -51,7 +59,7 @@ export function PerformanceChart() {
               name={s.name}
               stroke={s.color}
               strokeWidth={2.25}
-              dot={false}
+              dot={{ r: 3 }}
               activeDot={{ r: 4 }}
             />
           ))}

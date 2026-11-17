@@ -1,11 +1,15 @@
 import { CheckCircle2, XCircle } from "lucide-react";
-import { qualityGates } from "@/lib/mock-data";
+import type { QualityGate } from "@/lib/eval-helpers";
 import { cn } from "@/lib/utils";
 
-export function QualityGates() {
+export function QualityGates({ gates }: { gates: QualityGate[] }) {
+  if (gates.length === 0) {
+    return <p className="text-[12.5px] text-muted-foreground">No metrics available to check against thresholds.</p>;
+  }
+
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
-      {qualityGates.map((gate) => (
+      {gates.map((gate) => (
         <div
           key={gate.id}
           className={cn(

@@ -67,7 +67,7 @@ an aggregate score). A GitHub Actions PR pipeline runs lint/format/unit tests fo
 free on every PR (including forks), then a sampled 10-question evaluation + quality
 gate when `OPENAI_API_KEY` is available — skipped (not failed) for fork PRs, since
 GitHub withholds secrets from them by design. A release pipeline runs the full
-30-question evaluation on every push to `main`. 67 unit tests cover deterministic
+30-question evaluation on every push to `main`. 186 unit tests cover deterministic
 logic and mocked API calls at zero cost.
 
 **Guardrails**
@@ -126,8 +126,45 @@ run distinctly (`..._routed`) and reports what fraction of questions got routed
 against an unrouted run's on the golden dataset before ever trusting it in
 production.
 
-**Not yet built**: Phase 6 (AWS deployment, no Docker/Kubernetes) and Phase 7
-(production monitoring + failure diagnosis).
+**Phase 6 — Deployment**
+Runs live on a single AWS EC2 instance (`t3.small`, no Docker/Kubernetes, per the
+original scope) behind `systemd` (`Restart=always`, so the process recovers on its
+own from a crash) with CORS enabled for a browser-hosted frontend. Deliberately
+stopped between uses rather than left running 24/7 -- EC2 compute is free-tier
+eligible for 12 months, but AWS's post-2024 hourly public-IPv4 charge is not, so
+"start it, demo it, stop it" keeps real cost near zero instead of accruing for a
+personal/portfolio deployment that isn't serving continuous traffic. Because the
+server's address changes on every start/stop cycle, the frontend's backend URL is
+a runtime-editable, browser-persisted setting (`src/lib/api.ts`), not a build-time
+constant.
+
+**Phase 7 — Monitoring**
+A local SQLite log (`app/request_log.py`) records every `/ask` call -- latency,
+tokens, estimated cost, and which guardrail (if any) blocked it -- surfaced live
+on the frontend's Monitoring page. One CloudWatch alarm watches for sustained high
+CPU. Deliberately *not* built: an EC2-auto-recovery alarm and an on-box health-check
+cron -- both were tried, and installing even a small extra package on a `t3.micro`
+(the original, free-tier instance size) was enough to starve it of memory and
+freeze the whole box, which is what actually motivated the upsize to `t3.small`.
+Full automated failure diagnosis (beyond "the GitHub Actions run failed, here's
+the real status") is still open.
+
+**Frontend dashboard**
+A Next.js UI (`frontend/`) with five pages, all reading real data through a handful
+of read-only endpoints added to `app/main.py` (`/stats/*`, `/evaluation/runs*`,
+`/pipeline/runs*`) -- none of it mocked:
+- **Playground** -- a live chat against the real `/ask` endpoint, with real
+  citations, real guardrail status, and real token/model usage per answer.
+- **Dashboard** and **Monitoring** -- real KPIs and trend charts from the request
+  log above and from the evaluation runs actually saved to disk.
+- **Evaluation Lab** and **Experiments** -- browse and compare the real runs in
+  `evaluation/regression/runs/`, including real per-question judge reasoning.
+  There is deliberately no "run a new evaluation" button wired to a live trigger:
+  this API has no auth, and a public button that spends OpenAI credits on click
+  would be a real abuse vector, so this page replays saved runs instead.
+- **Pipeline** -- the real GitHub Actions run history for this repository (via
+  `app/ci_status.py`), including real failures, plus quality-gate cards computed
+  from the latest real evaluation run against `app/config.py`'s actual thresholds.
 
 ## A known, documented limitation
 
@@ -147,7 +184,8 @@ evaluation/     Golden dataset, LLM-as-judge, regression quality gates, MLflow t
 scripts/        build_index.py, run_evaluation.py, ci_quality_gate.py
 tests/          Unit tests (deterministic + mocked-API) and integration tests
 docs/           CI/CD setup and known-limitations documentation
-frontend/       Next.js dashboard UI (mock data only, not wired to the backend)
+frontend/       Next.js dashboard UI, wired to the real backend (see app/main.py's
+                /stats, /evaluation/runs, and /pipeline/runs endpoints)
 .github/        GitHub Actions workflows (pr.yml, release.yml)
 ```
 
@@ -171,7 +209,16 @@ Run a real evaluation (costs real API credits):
 python scripts/run_evaluation.py
 ```
 
+Run the dashboard against that local backend:
+```bash
+cd frontend && npm install && npm run dev
+```
+Open the app, go to Playground, and set the backend address field (top of the
+page) to wherever the API is actually running -- `http://localhost:8000` for the
+command above.
+
 ## Tech stack
 
 FastAPI, Pydantic, ChromaDB, OpenAI API, rank-bm25, sentence-transformers
-(cross-encoder reranking), MLflow, pytest, ruff, GitHub Actions.
+(cross-encoder reranking), MLflow, pytest, ruff, GitHub Actions, AWS EC2.
+Frontend: Next.js, React, Tailwind, Recharts.

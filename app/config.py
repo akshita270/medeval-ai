@@ -80,6 +80,16 @@ class Settings(BaseSettings):
     # estimate, not yet calibrated against real off-topic questions.
     min_topic_relevance_score: float = Field(default=0.15)
 
+    # Real GitHub Actions run history for the frontend's Pipeline page
+    # (see app/ci_status.py) -- read-only, no token needed on a public repo.
+    github_repo: str = Field(default="akshita270/medeval-ai")
+
+    # Local SQLite log of every /ask call (see app/request_log.py), powering
+    # the frontend's Dashboard/Monitoring pages with real traffic/latency/
+    # cost numbers. Always on -- there's no ablation reason to ever disable
+    # recording what actually happened, unlike llm_cache_enabled below.
+    request_log_db_path: Path = Field(default=Path("./request_log.db"))
+
     # Rate limiting -- in-memory, per-process (see app/rate_limiter.py),
     # keyed by client IP since there's no auth/API-key layer. 0 or
     # negative disables it entirely (used in tests, where a shared

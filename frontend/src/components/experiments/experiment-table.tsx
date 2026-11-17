@@ -10,13 +10,16 @@ import {
 } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { experiments } from "@/lib/mock-data";
+import type { EvalRunSummary } from "@/lib/api";
+import { parseRunConfig, runMetricMean } from "@/lib/eval-helpers";
 import { cn } from "@/lib/utils";
 
 export function ExperimentTable({
+  runs,
   selected,
   onToggle,
 }: {
+  runs: EvalRunSummary[];
   selected: string[];
   onToggle: (id: string) => void;
 }) {
@@ -26,68 +29,62 @@ export function ExperimentTable({
         <TableHeader>
           <TableRow>
             <TableHead className="w-8" />
-            <TableHead>Experiment</TableHead>
+            <TableHead>Run</TableHead>
             <TableHead>Model</TableHead>
-            <TableHead>Chunk size</TableHead>
             <TableHead>Retrieval</TableHead>
             <TableHead>Reranking</TableHead>
             <TableHead className="text-right">Correctness</TableHead>
             <TableHead className="text-right">Faithfulness</TableHead>
-            <TableHead className="text-right">Latency</TableHead>
-            <TableHead className="text-right">Cost / 1k</TableHead>
+            <TableHead className="text-right">Avg latency</TableHead>
+            <TableHead className="text-right">Total cost</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {experiments.map((exp) => {
-            const isSelected = selected.includes(exp.id);
+          {runs.map((run) => {
+            const isSelected = selected.includes(run.run_id);
+            const config = parseRunConfig(run);
+            const correctness = runMetricMean(run, "answer_correctness");
+            const faithfulness = runMetricMean(run, "faithfulness");
+            const avgLatency =
+              run.total_generation_latency_seconds != null
+                ? run.total_generation_latency_seconds / run.total_questions
+                : null;
             return (
               <TableRow
-                key={exp.id}
-                onClick={() => onToggle(exp.id)}
+                key={run.run_id}
+                onClick={() => onToggle(run.run_id)}
                 className={cn("cursor-pointer", isSelected && "bg-primary/5")}
               >
                 <TableCell onClick={(e) => e.stopPropagation()}>
-                  <Checkbox
-                    checked={isSelected}
-                    onCheckedChange={() => onToggle(exp.id)}
-                  />
+                  <Checkbox checked={isSelected} onCheckedChange={() => onToggle(run.run_id)} />
                 </TableCell>
-                <TableCell className="font-mono text-[12.5px] font-medium">
-                  {exp.name}
-                </TableCell>
-                <TableCell className="text-[12.5px] text-muted-foreground">
-                  {exp.model}
-                </TableCell>
-                <TableCell className="font-mono text-[12.5px] text-muted-foreground">
-                  {exp.chunkSize}
-                </TableCell>
-                <TableCell className="text-[12.5px] text-muted-foreground">
-                  {exp.retrieval}
-                </TableCell>
+                <TableCell className="font-mono text-[12.5px] font-medium">{run.label}</TableCell>
+                <TableCell className="text-[12.5px] text-muted-foreground">{run.generation_model || "--"}</TableCell>
+                <TableCell className="text-[12.5px] text-muted-foreground">{config.retrieval}</TableCell>
                 <TableCell>
                   <Badge
                     variant="outline"
                     className={cn(
                       "text-[10.5px]",
-                      exp.reranking
+                      config.reranking
                         ? "border-success/20 bg-success/10 text-success"
                         : "border-border bg-muted text-muted-foreground",
                     )}
                   >
-                    {exp.reranking ? "Enabled" : "Off"}
+                    {config.reranking ? "Enabled" : "Off"}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right font-mono text-[12.5px] tabular-nums">
-                  {exp.correctness.toFixed(1)}%
+                  {correctness != null ? `${(correctness * 100).toFixed(1)}%` : "--"}
                 </TableCell>
                 <TableCell className="text-right font-mono text-[12.5px] tabular-nums">
-                  {exp.faithfulness.toFixed(1)}%
+                  {faithfulness != null ? `${(faithfulness * 100).toFixed(1)}%` : "--"}
                 </TableCell>
                 <TableCell className="text-right font-mono text-[12.5px] tabular-nums">
-                  {(exp.latencyMs / 1000).toFixed(2)}s
+                  {avgLatency != null ? `${avgLatency.toFixed(2)}s` : "--"}
                 </TableCell>
                 <TableCell className="text-right font-mono text-[12.5px] tabular-nums">
-                  ${exp.costPer1k.toFixed(2)}
+                  ${run.total_cost_usd.toFixed(4)}
                 </TableCell>
               </TableRow>
             );

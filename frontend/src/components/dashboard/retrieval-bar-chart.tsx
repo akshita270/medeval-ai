@@ -1,21 +1,23 @@
 "use client";
 
 import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { retrievalConfigComparison } from "@/lib/mock-data";
+import type { EvalRunSummary } from "@/lib/api";
 import { ChartTooltip } from "@/components/shared/chart-tooltip";
 
-const colors = ["var(--chart-5)", "var(--chart-5)", "var(--chart-2)", "var(--chart-1)"];
+const colors = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)", "var(--chart-4)", "var(--chart-5)"];
 
-export function RetrievalBarChart() {
+export function RetrievalBarChart({ runs }: { runs: EvalRunSummary[] }) {
+  const data = runs
+    .map((run) => {
+      const correctness = run.metric_summaries.find((m) => m.metric === "answer_correctness");
+      return { config: run.label, correctness: correctness ? Math.round(correctness.mean_score * 1000) / 10 : 0 };
+    })
+    .filter((d) => d.correctness > 0);
+
   return (
     <div className="h-[260px] w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart
-          data={retrievalConfigComparison}
-          layout="vertical"
-          margin={{ top: 4, right: 24, bottom: 0, left: 0 }}
-          barCategoryGap={18}
-        >
+        <BarChart data={data} layout="vertical" margin={{ top: 4, right: 24, bottom: 0, left: 0 }} barCategoryGap={18}>
           <XAxis
             type="number"
             domain={[0, 100]}
@@ -28,7 +30,7 @@ export function RetrievalBarChart() {
             type="category"
             dataKey="config"
             width={150}
-            tick={{ fontSize: 12, fill: "var(--foreground)" }}
+            tick={{ fontSize: 11, fill: "var(--foreground)" }}
             axisLine={false}
             tickLine={false}
           />
@@ -37,8 +39,8 @@ export function RetrievalBarChart() {
             cursor={{ fill: "var(--accent)" }}
           />
           <Bar dataKey="correctness" name="Correctness" radius={[0, 6, 6, 0]} barSize={22}>
-            {retrievalConfigComparison.map((entry, i) => (
-              <Cell key={entry.config} fill={colors[i]} />
+            {data.map((entry, i) => (
+              <Cell key={entry.config} fill={colors[i % colors.length]} />
             ))}
           </Bar>
         </BarChart>

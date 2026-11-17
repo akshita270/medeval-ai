@@ -1,19 +1,25 @@
 "use client";
 
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
-import { passFailDistribution } from "@/lib/mock-data";
+import type { EvalRunDetail } from "@/lib/api";
+import { countPassFail } from "@/lib/eval-helpers";
 import { ChartTooltip } from "@/components/shared/chart-tooltip";
 
-export function PassFailChart() {
-  const total = passFailDistribution.reduce((acc, d) => acc + d.value, 0);
-  const passRate = ((passFailDistribution[0].value / total) * 100).toFixed(1);
+export function PassFailChart({ detail }: { detail: EvalRunDetail }) {
+  const { passed, failed } = countPassFail(detail);
+  const total = passed + failed;
+  const passRate = total > 0 ? ((passed / total) * 100).toFixed(1) : "0.0";
+  const data = [
+    { name: "Passed", value: passed, color: "var(--chart-1)" },
+    { name: "Failed", value: failed, color: "var(--destructive)" },
+  ];
 
   return (
     <div className="relative h-[220px] w-full">
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
-            data={passFailDistribution}
+            data={data}
             dataKey="value"
             nameKey="name"
             innerRadius={62}
@@ -23,7 +29,7 @@ export function PassFailChart() {
             endAngle={-270}
             stroke="none"
           >
-            {passFailDistribution.map((entry) => (
+            {data.map((entry) => (
               <Cell key={entry.name} fill={entry.color} />
             ))}
           </Pie>

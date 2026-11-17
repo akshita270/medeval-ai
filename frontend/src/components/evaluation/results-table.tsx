@@ -20,36 +20,41 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { StatusBadge } from "@/components/shared/status-badge";
-import { evaluationDetailRows, type EvalDetailRow } from "@/lib/mock-data";
+import type { EvalResult } from "@/lib/api";
+import { metricScore, resultStatus } from "@/lib/eval-helpers";
 import { cn } from "@/lib/utils";
 
-type SortKey = "correctness" | "faithfulness";
+type SortKey = "answer_correctness" | "faithfulness";
 
 const PAGE_SIZE = 4;
 
 export function ResultsTable({
+  results,
   onSelectRow,
 }: {
-  onSelectRow: (row: EvalDetailRow) => void;
+  results: EvalResult[];
+  onSelectRow: (row: EvalResult) => void;
 }) {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<"all" | "passed" | "failed">("all");
-  const [sortKey, setSortKey] = useState<SortKey>("correctness");
+  const [sortKey, setSortKey] = useState<SortKey>("answer_correctness");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [page, setPage] = useState(1);
 
   const filtered = useMemo(() => {
-    let rows = evaluationDetailRows;
-    if (status !== "all") rows = rows.filter((r) => r.status === status);
+    let rows = results;
+    if (status !== "all") rows = rows.filter((r) => resultStatus(r) === status);
     if (search.trim()) {
       const q = search.toLowerCase();
       rows = rows.filter((r) => r.question.toLowerCase().includes(q));
     }
-    rows = [...rows].sort((a, b) =>
-      sortDir === "asc" ? a[sortKey] - b[sortKey] : b[sortKey] - a[sortKey],
-    );
+    rows = [...rows].sort((a, b) => {
+      const av = metricScore(a, sortKey) ?? 0;
+      const bv = metricScore(b, sortKey) ?? 0;
+      return sortDir === "asc" ? av - bv : bv - av;
+    });
     return rows;
-  }, [search, status, sortKey, sortDir]);
+  }, [results, search, status, sortKey, sortDir]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const paged = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -89,9 +94,7 @@ export function ResultsTable({
         >
           <SelectTrigger className="w-full sm:w-40">
             <SelectValue>
-              {(value: string) =>
-                ({ all: "All statuses", passed: "Passed", failed: "Failed" })[value] ?? value
-              }
+              {(value: string) => ({ all: "All statuses", passed: "Passed", failed: "Failed" })[value] ?? value}
             </SelectValue>
           </SelectTrigger>
           <SelectContent>
@@ -108,18 +111,12 @@ export function ResultsTable({
             <TableRow>
               <TableHead>Question</TableHead>
               <TableHead>
-                <button
-                  onClick={() => toggleSort("correctness")}
-                  className="flex items-center gap-1 hover:text-foreground"
-                >
+                <button onClick={() => toggleSort("answer_correctness")} className="flex items-center gap-1 hover:text-foreground">
                   Correctness <ArrowUpDown className="h-3 w-3" />
                 </button>
               </TableHead>
               <TableHead>
-                <button
-                  onClick={() => toggleSort("faithfulness")}
-                  className="flex items-center gap-1 hover:text-foreground"
-                >
+                <button onClick={() => toggleSort("faithfulness")} className="flex items-center gap-1 hover:text-foreground">
                   Faithfulness <ArrowUpDown className="h-3 w-3" />
                 </button>
               </TableHead>
@@ -134,36 +131,34 @@ export function ResultsTable({
                 </TableCell>
               </TableRow>
             )}
-            {paged.map((row) => (
-              <TableRow
-                key={row.id}
-                onClick={() => onSelectRow(row)}
-                className="cursor-pointer"
-              >
-                <TableCell className="max-w-xs truncate text-[13px] font-medium">
-                  {row.question}
-                </TableCell>
-                <TableCell
-                  className={cn(
-                    "font-mono text-[12.5px] tabular-nums",
-                    row.correctness < 70 && "text-destructive",
-                  )}
-                >
-                  {row.correctness.toFixed(1)}%
-                </TableCell>
-                <TableCell
-                  className={cn(
-                    "font-mono text-[12.5px] tabular-nums",
-                    row.faithfulness < 70 && "text-destructive",
-                  )}
-                >
-                  {row.faithfulness.toFixed(1)}%
-                </TableCell>
-                <TableCell>
-                  <StatusBadge status={row.status} />
-                </TableCell>
-              </TableRow>
-            ))}
+            {paged.map((row) => {
+              const correctness = metricScore(row, "answer_correctness");
+              const faithfulness = metricScore(row, "faithfulness");
+              return (
+                <TableRow key={row.question_id} onClick={() => onSelectRow(row)} className="cursor-pointer">
+                  <TableCell className="max-w-xs truncate text-[13px] font-medium">{row.question}</TableCell>
+                  <TableCell
+                    className={cn(
+                      "font-mono text-[12.5px] tabular-nums",
+                      correctness != null && correctness < 0.7 && "text-destructive",
+                    )}
+                  >
+                    {correctness != null ? `${(correctness * 100).toFixed(1)}%` : "--"}
+                  </TableCell>
+                  <TableCell
+                    className={cn(
+                      "font-mono text-[12.5px] tabular-nums",
+                      faithfulness != null && faithfulness < 0.7 && "text-destructive",
+                    )}
+                  >
+                    {faithfulness != null ? `${(faithfulness * 100).toFixed(1)}%` : "--"}
+                  </TableCell>
+                  <TableCell>
+                    <StatusBadge status={resultStatus(row)} />
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </div>
@@ -174,12 +169,7 @@ export function ResultsTable({
           {Math.min(page * PAGE_SIZE, filtered.length)} of {filtered.length}
         </span>
         <div className="flex items-center gap-1.5">
-          <Button
-            variant="outline"
-            size="icon-sm"
-            disabled={page === 1}
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-          >
+          <Button variant="outline" size="icon-sm" disabled={page === 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>
             <ChevronLeft className="h-3.5 w-3.5" />
           </Button>
           <span className="px-1.5">

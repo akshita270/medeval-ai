@@ -1,11 +1,14 @@
 import logging
+import time
 from contextlib import asynccontextmanager
 
-from fastapi import Depends, FastAPI, Request
+from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
+from app.ci_status import CiStatusError, get_ci_run_jobs, get_recent_ci_runs
 from app.config import get_settings
+from app.eval_reports import EvalRunNotFoundError, get_eval_run, list_eval_runs
 from app.generation.generator import generate_answer
 from app.guardrails.pipeline import (
     build_blocked_answer,
@@ -14,6 +17,7 @@ from app.guardrails.pipeline import (
     run_output_guardrails,
 )
 from app.rate_limiter import RateLimiter, enforce_rate_limit
+from app.request_log import RequestLogEntry, get_request_log
 from app.retrieval.bm25_index import build_bm25_index
 from app.retrieval.pipeline import retrieve_passages
 from app.schemas import GeneratedAnswer
@@ -64,6 +68,8 @@ async def lifespan(app: FastAPI):
         window_seconds=60.0,
     )
     logger.info("Rate limiter: %d requests/minute per client", settings.rate_limit_requests_per_minute)
+
+    app.state.request_log = get_request_log(str(settings.request_log_db_path))
     yield
 
 
@@ -93,11 +99,34 @@ def health(request: Request) -> HealthResponse:
     )
 
 
+def _log_request(request_log, result: GeneratedAnswer, started_at: float) -> None:
+    latency_ms = (time.perf_counter() - started_at) * 1000
+    blocked = bool(result.blocked_by)
+    # A real generation call always produces some completion tokens, so
+    # zero tokens on a request nothing blocked can only mean the answer
+    # came from the LLM response cache (app/llm_cache.py), not a fresh call.
+    cache_hit = not blocked and result.total_tokens == 0
+    request_log.log(
+        RequestLogEntry(
+            model=result.config.llm_model,
+            latency_ms=latency_ms,
+            prompt_tokens=result.prompt_tokens,
+            completion_tokens=result.completion_tokens,
+            blocked=blocked,
+            cache_hit=cache_hit,
+            blocked_reasons=tuple(result.blocked_by or ()),
+        )
+    )
+
+
 @app.post("/ask", response_model=GeneratedAnswer, dependencies=[Depends(enforce_rate_limit)])
 def ask(request: Request, body: AskRequest) -> GeneratedAnswer:
     settings = get_settings()
     collection = request.app.state.collection
     bm25_index = request.app.state.bm25_index
+    request_log = request.app.state.request_log
+    started_at = time.perf_counter()
+
     passages = retrieve_passages(body.question, collection, settings, bm25_index)
 
     # Guardrails run after retrieval (reusing its similarity scores, no
@@ -105,7 +134,9 @@ def ask(request: Request, body: AskRequest) -> GeneratedAnswer:
     # never reaches the expensive LLM call.
     decision = run_input_guardrails(body.question, passages, settings)
     if decision.blocked:
-        return build_blocked_answer(body.question, decision, settings)
+        result = build_blocked_answer(body.question, decision, settings)
+        _log_request(request_log, result, started_at)
+        return result
 
     answer = generate_answer(body.question, passages, settings)
 
@@ -115,6 +146,76 @@ def ask(request: Request, body: AskRequest) -> GeneratedAnswer:
     # only decides what's shown to the user.
     output_decision = run_output_guardrails(body.question, answer, settings)
     if output_decision.blocked:
-        return redact_blocked_answer(answer, output_decision)
+        result = redact_blocked_answer(answer, output_decision)
+        _log_request(request_log, result, started_at)
+        return result
 
+    _log_request(request_log, answer, started_at)
     return answer
+
+
+@app.get("/stats/overview")
+def stats_overview(request: Request) -> dict:
+    """Real aggregate traffic/cost stats for the Dashboard page's KPI
+    cards -- everything /ask has actually been asked since this server
+    started (the SQLite log survives restarts; in-memory state wouldn't).
+    """
+    return request.app.state.request_log.overview()
+
+
+@app.get("/stats/daily")
+def stats_daily(request: Request, days: int = 14) -> list[dict]:
+    """Real per-day traffic/latency/cost series for the Monitoring
+    page's trend charts, covering the last `days` days.
+    """
+    return request.app.state.request_log.daily_series(days=days)
+
+
+@app.get("/stats/guardrail-events")
+def stats_guardrail_events(request: Request) -> list[dict]:
+    """How many requests each guardrail check has actually blocked,
+    for the Monitoring page's guardrail-activity chart.
+    """
+    return request.app.state.request_log.guardrail_event_counts()
+
+
+@app.get("/evaluation/runs")
+def evaluation_runs() -> list[dict]:
+    """Every real evaluation run saved to disk, for the Evaluation Lab
+    and Experiments pages. Read-only -- see app/eval_reports.py for why
+    there is no endpoint that triggers a new (paid) run.
+    """
+    return list_eval_runs()
+
+
+@app.get("/evaluation/runs/{run_id}")
+def evaluation_run_detail(run_id: str) -> dict:
+    try:
+        return get_eval_run(run_id)
+    except EvalRunNotFoundError:
+        raise HTTPException(status_code=404, detail=f"No evaluation run found with id '{run_id}'")
+
+
+@app.get("/pipeline/runs")
+def pipeline_runs() -> list[dict]:
+    """Real GitHub Actions run history for the Pipeline page -- including
+    real failures, since the point of this feature is to stop fabricating
+    a CI status that always says 'passed'.
+    """
+    settings = get_settings()
+    try:
+        return get_recent_ci_runs(settings)
+    except CiStatusError as exc:
+        raise HTTPException(status_code=502, detail=str(exc))
+
+
+@app.get("/pipeline/runs/{run_id}/jobs")
+def pipeline_run_jobs(run_id: int) -> list[dict]:
+    """Real per-job, per-step breakdown of one CI run, for the Pipeline
+    page's "latest run" step-by-step view.
+    """
+    settings = get_settings()
+    try:
+        return get_ci_run_jobs(settings, run_id)
+    except CiStatusError as exc:
+        raise HTTPException(status_code=502, detail=str(exc))
