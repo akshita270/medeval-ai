@@ -2,76 +2,116 @@
 cheaper, faster model when it looks like a simple, single-source
 factual lookup, and reserves the full llm_model for everything else.
 
-Entirely free -- no extra API call. Routing decisions come only from
-signals already available for free: the question text itself, and the
-retrieval scores retrieve_passages() already computed before
-generate_answer() is ever called.
+Uses a real (cheap) LLM call to judge complexity -- the same Layer-2
+shape app/guardrails/classifier.py already uses -- rather than free
+text heuristics (question length, trigger words). Heuristics were
+tried first and didn't hold up: in this domain, a simple factual
+question is often phrased at real length ("approximately what
+proportion of patients needing renal replacement therapy have diabetic
+retinopathy..."), so "short question" is a poor proxy for "simple
+question." A real classifier actually reads the question instead of
+guessing from its shape. The call is cached (see app/llm_cache.py), so
+a repeated question is never classified twice, and it uses
+routing_simple_model itself (already cheap) rather than a third model.
 
-Off by default (use_model_routing=False). Unlike guardrail_model's
-cheap-model swap (a 5-way classification task, safe to swap outright),
-this changes which model answers the question -- a misrouted "hard"
-question silently loses answer quality. Validate with
-scripts/run_evaluation.py (compare a routed run against an unrouted one
-on the golden dataset) before trusting this in production.
+Off by default (use_model_routing=False). This changes which model
+answers the question, so a misrouted "hard" question silently loses
+answer quality -- validate with scripts/run_evaluation.py (compare a
+routed run against an unrouted one on the golden dataset) before
+trusting this in production.
 """
 
-import re
+import logging
+from enum import Enum
+
+from pydantic import BaseModel
 
 from app.config import Settings
+from app.llm_cache import cached_call, get_cache_for_settings
+from app.llm_client import get_openai_client
 from app.schemas import RetrievedPassage
 
-# Signals that a question needs multi-source reasoning, not a single
-# factual lookup -- comparison, causal/explanatory, and multi-part
-# phrasing. Deliberately conservative: a false "complex" verdict only
-# costs a bit more money (routed to the full model anyway); a false
-# "simple" verdict costs answer quality, so any one of these is enough
-# to rule out the cheap model.
-_COMPLEX_SIGNAL_PATTERNS = [
-    re.compile(p, re.IGNORECASE)
-    for p in [
-        r"\bcompare\b",
-        r"\bdifference between\b",
-        r"\brelationship between\b",
-        r"\bversus\b|\bvs\.?\b",
-        r"\bwhy\b",
-        r"\bexplain\b",
-        r"\band\b.*\?.*\band\b",  # multiple question-ish clauses joined by "and"
-    ]
-]
+logger = logging.getLogger(__name__)
+
+_SYSTEM_PROMPT = """You are a routing classifier for a healthcare research assistant. \
+Decide whether the user's question can be answered with a simple, single-source factual \
+lookup, or whether it requires deeper reasoning, synthesis across multiple sources, \
+comparison, or causal explanation -- regardless of how long or short the question is worded.
+
+- simple: a direct factual lookup, answerable from one passage (e.g. a specific statistic, \
+a definition, a recommended dose, a single reported finding) -- even if the question itself \
+is phrased in a long, detailed way.
+- complex: requires comparing options, explaining why or how something happens, synthesizing \
+across multiple documents, or multi-step reasoning.
+
+Respond with the category and a one-sentence reason."""
 
 
-def is_simple_question(question: str, passages: list[RetrievedPassage], settings: Settings) -> bool:
-    """True if `question` looks safe to route to the cheaper model.
+class ComplexityClassification(str, Enum):
+    SIMPLE = "simple"
+    COMPLEX = "complex"
 
-    All three free signals must agree for a "simple" verdict:
-    1. Short question -- long questions tend to pack in more sub-asks.
-    2. No complexity-signal phrasing (comparison/causal/multi-part).
-    3. Retrieval is confident and concentrated: the top passage's score
-       meets the threshold, meaning this looks like a single-source
-       lookup rather than something needing synthesis across sources.
+
+class ComplexityClassifierResponse(BaseModel):
+    """Structured output shape the complexity classifier LLM must return."""
+
+    classification: ComplexityClassification
+    reasoning: str
+
+
+def _call_complexity_classifier_api(question: str, model: str) -> dict:
+    """Isolated into its own function so cached_call() can skip it
+    entirely on a cache hit. Returns a plain JSON-serializable dict, not
+    the ComplexityClassifierResponse object, since that's what the
+    cache stores.
     """
-    if len(question) > settings.routing_max_question_length:
-        return False
+    client = get_openai_client()
+    response = client.chat.completions.parse(
+        model=model,
+        messages=[
+            {"role": "system", "content": _SYSTEM_PROMPT},
+            {"role": "user", "content": question},
+        ],
+        response_format=ComplexityClassifierResponse,
+    )
+    parsed = response.choices[0].message.parsed
+    assert parsed is not None  # response_format guarantees this on success
+    return {"classification": parsed.classification.value, "reasoning": parsed.reasoning}
 
-    if any(pattern.search(question) for pattern in _COMPLEX_SIGNAL_PATTERNS):
-        return False
 
-    if not passages:
-        return False
-
-    top_score = max(p.similarity_score for p in passages)
-    return top_score >= settings.routing_min_top_similarity_for_simple
+def classify_question_complexity(question: str, settings: Settings) -> ComplexityClassification:
+    cache = get_cache_for_settings(settings)
+    key_parts = ("classify_question_complexity", settings.routing_simple_model, question)
+    result, _ = cached_call(
+        cache, key_parts, lambda: _call_complexity_classifier_api(question, settings.routing_simple_model)
+    )
+    return ComplexityClassification(result["classification"])
 
 
 def choose_generation_model(question: str, passages: list[RetrievedPassage], settings: Settings) -> str:
     """Returns the model generate_answer() should actually call.
 
-    Returns settings.llm_model unchanged when routing is disabled -- the
-    ablation-toggle default -- so this function is a pure passthrough
-    unless use_model_routing is explicitly turned on.
+    Returns settings.llm_model unchanged when routing is disabled, when
+    nothing was retrieved, when the top retrieval match is too weak (a
+    free gate, checked before spending the classifier call), or when
+    the classifier call itself fails -- a failed cost optimization
+    should never turn into a failed (or silently downgraded) request.
     """
     if not settings.use_model_routing:
         return settings.llm_model
-    if is_simple_question(question, passages, settings):
+    if not passages:
+        return settings.llm_model
+
+    top_score = max(p.similarity_score for p in passages)
+    if top_score < settings.routing_min_top_similarity_for_simple:
+        return settings.llm_model
+
+    try:
+        classification = classify_question_complexity(question, settings)
+    except Exception:
+        logger.warning("Complexity classification failed; falling back to llm_model.", exc_info=True)
+        return settings.llm_model
+
+    if classification == ComplexityClassification.SIMPLE:
         return settings.routing_simple_model
     return settings.llm_model

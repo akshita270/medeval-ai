@@ -105,19 +105,26 @@ which would defeat the whole point of the quality gate.
 
 **Model routing**
 Off by default (`USE_MODEL_ROUTING=true` to turn it on). Sends a question to a
-cheaper model (`gpt-4o-mini`) instead of the full `llm_model` when three free
-signals all agree it's a simple, single-source lookup: the question is short, it
-has none of a fixed list of comparison/causal/multi-part phrasings ("compare",
-"why", "explain", "difference between", ...), and the top retrieved passage is a
-confident match. No extra API call either way -- unlike `guardrail_model`'s
-cheap-model swap (a safe, outright swap for a classification task), routing
-changes *which model answers the question*, so a misrouted hard question would
-silently lose answer quality. `GenerationConfig.llm_model` always records the
-model actually used for that specific answer, and `scripts/run_evaluation.py`
-labels a routed run distinctly (`..._routed`) and reports what fraction of
-questions got routed -- the intended way to validate this is comparing a routed
-run's metric means against an unrouted run's on the golden dataset before ever
-trusting it in production.
+cheaper model (`gpt-4o-mini`) instead of the full `llm_model` when it looks like a
+simple, single-source lookup. A free heuristic (question length + trigger words
+like "compare"/"why") was tried first and didn't hold up empirically: in this
+domain a simple factual question is often phrased at real length ("approximately
+what proportion of patients needing renal replacement therapy have diabetic
+retinopathy...", 126 characters), so "short question" turned out to be a poor
+proxy for "simple question" -- a live validation run routed 0/10 sampled
+questions for exactly this reason. Routing now works in two steps instead: a free
+gate first (the top retrieved passage must be a confident match -- a weak or
+spread-out match needs synthesis regardless of what anything else says), then,
+only if that passes, a real but cheap classifier call (same Layer-2 shape as
+`app/guardrails/classifier.py`, cached like every other call in this list) that
+actually reads the question rather than guessing from its length. A failed
+classifier call falls back to the full model rather than failing the request or
+silently guessing. `GenerationConfig.llm_model` always records the model actually
+used for that specific answer, and `scripts/run_evaluation.py` labels a routed
+run distinctly (`..._routed`) and reports what fraction of questions got routed
+-- the intended way to validate this is comparing a routed run's metric means
+against an unrouted run's on the golden dataset before ever trusting it in
+production.
 
 **Not yet built**: Phase 6 (AWS deployment, no Docker/Kubernetes) and Phase 7
 (production monitoring + failure diagnosis).

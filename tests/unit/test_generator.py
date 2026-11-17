@@ -2,6 +2,7 @@ from unittest.mock import Mock, patch
 
 from app.config import Settings
 from app.generation.generator import GenerationOutput, build_messages, generate_answer
+from app.generation.router import ComplexityClassification, ComplexityClassifierResponse
 from app.schemas import CitationDetail, RetrievedPassage
 
 PASSAGES = [
@@ -190,18 +191,24 @@ class TestModelRouting:
         settings = _settings(
             use_model_routing=True,
             routing_simple_model="gpt-4o-mini",
-            routing_max_question_length=80,
             routing_min_top_similarity_for_simple=0.5,
         )
-        fake_client = Mock()
-        fake_client.chat.completions.parse.return_value = _FakeParsedResponse(
+        fake_classifier_client = Mock()
+        fake_classifier_client.chat.completions.parse.return_value = _FakeParsedResponse(
+            ComplexityClassifierResponse(classification=ComplexityClassification.SIMPLE, reasoning="single fact")
+        )
+        fake_generation_client = Mock()
+        fake_generation_client.chat.completions.parse.return_value = _FakeParsedResponse(
             GenerationOutput(answer="An answer.", citations=[])
         )
 
-        with patch("app.generation.generator.get_openai_client", return_value=fake_client):
+        with (
+            patch("app.generation.router.get_openai_client", return_value=fake_classifier_client),
+            patch("app.generation.generator.get_openai_client", return_value=fake_generation_client),
+        ):
             result = generate_answer("What is X?", PASSAGES, settings)
 
-        _, kwargs = fake_client.chat.completions.parse.call_args
+        _, kwargs = fake_generation_client.chat.completions.parse.call_args
         assert kwargs["model"] == "gpt-4o-mini"
         # The config attached to the answer must reflect what actually
         # produced it, not settings.llm_model's nominal value.
@@ -211,31 +218,41 @@ class TestModelRouting:
         settings = _settings(
             use_model_routing=True,
             routing_simple_model="gpt-4o-mini",
-            routing_max_question_length=80,
             routing_min_top_similarity_for_simple=0.5,
         )
-        fake_client = Mock()
-        fake_client.chat.completions.parse.return_value = _FakeParsedResponse(
+        fake_classifier_client = Mock()
+        fake_classifier_client.chat.completions.parse.return_value = _FakeParsedResponse(
+            ComplexityClassifierResponse(classification=ComplexityClassification.COMPLEX, reasoning="needs synthesis")
+        )
+        fake_generation_client = Mock()
+        fake_generation_client.chat.completions.parse.return_value = _FakeParsedResponse(
             GenerationOutput(answer="An answer.", citations=[])
         )
 
-        with patch("app.generation.generator.get_openai_client", return_value=fake_client):
+        with (
+            patch("app.generation.router.get_openai_client", return_value=fake_classifier_client),
+            patch("app.generation.generator.get_openai_client", return_value=fake_generation_client),
+        ):
             result = generate_answer("Compare X and Y.", PASSAGES, settings)
 
-        _, kwargs = fake_client.chat.completions.parse.call_args
+        _, kwargs = fake_generation_client.chat.completions.parse.call_args
         assert kwargs["model"] == "gpt-5-mini"
         assert result.config.llm_model == "gpt-5-mini"
 
-    def test_routing_disabled_always_uses_llm_model(self):
+    def test_routing_disabled_always_uses_llm_model_and_never_calls_the_classifier(self):
         settings = _settings(use_model_routing=False)
-        fake_client = Mock()
-        fake_client.chat.completions.parse.return_value = _FakeParsedResponse(
+        fake_generation_client = Mock()
+        fake_generation_client.chat.completions.parse.return_value = _FakeParsedResponse(
             GenerationOutput(answer="An answer.", citations=[])
         )
 
-        with patch("app.generation.generator.get_openai_client", return_value=fake_client):
+        with (
+            patch("app.generation.router.get_openai_client") as mock_router_client,
+            patch("app.generation.generator.get_openai_client", return_value=fake_generation_client),
+        ):
             result = generate_answer("What is X?", PASSAGES, settings)
 
-        _, kwargs = fake_client.chat.completions.parse.call_args
+        mock_router_client.assert_not_called()
+        _, kwargs = fake_generation_client.chat.completions.parse.call_args
         assert kwargs["model"] == "gpt-5-mini"
         assert result.config.llm_model == "gpt-5-mini"
