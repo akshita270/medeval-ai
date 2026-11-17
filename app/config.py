@@ -20,6 +20,11 @@ class Settings(BaseSettings):
     # OpenAI
     openai_api_key: str = Field(default="")
 
+    # Shared-secret auth for the paid /ask endpoint (checked via the
+    # X-API-Key header, see app/auth.py). Empty means auth is off --
+    # fine for local dev, not for a public deployment.
+    api_key: str = Field(default="")
+
     # Application
     app_env: str = Field(default="development")
     log_level: str = Field(default="INFO")

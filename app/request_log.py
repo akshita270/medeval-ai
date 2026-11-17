@@ -28,6 +28,14 @@ class RequestLogEntry:
     blocked: bool
     cache_hit: bool
     blocked_reasons: tuple[str, ...] = ()
+    # Per-stage breakdown of latency_ms above (see app/schemas.py's
+    # stage_timings_ms). None for a stage that didn't run on this
+    # request, e.g. generation_ms is None when an input guardrail
+    # blocked the request before generation ever started.
+    retrieval_ms: float | None = None
+    input_guardrails_ms: float | None = None
+    generation_ms: float | None = None
+    output_guardrails_ms: float | None = None
 
 
 class RequestLog:
@@ -56,14 +64,23 @@ class RequestLog:
                 )
                 """
             )
+            # Added after the table above shipped -- ALTER TABLE ADD COLUMN
+            # against a pre-existing on-disk DB, so a database created by an
+            # older version of this app upgrades in place instead of needing
+            # a manual migration or a fresh file.
+            existing_columns = {row[1] for row in self._conn.execute("PRAGMA table_info(requests)").fetchall()}
+            for column in ("retrieval_ms", "input_guardrails_ms", "generation_ms", "output_guardrails_ms"):
+                if column not in existing_columns:
+                    self._conn.execute(f"ALTER TABLE requests ADD COLUMN {column} REAL")
             self._conn.commit()
 
     def log(self, entry: RequestLogEntry) -> None:
         with self._lock:
             self._conn.execute(
                 "INSERT INTO requests "
-                "(ts, model, latency_ms, prompt_tokens, completion_tokens, blocked, cache_hit, blocked_reasons) "
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                "(ts, model, latency_ms, prompt_tokens, completion_tokens, blocked, cache_hit, blocked_reasons, "
+                "retrieval_ms, input_guardrails_ms, generation_ms, output_guardrails_ms) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (
                     time.time(),
                     entry.model,
@@ -73,6 +90,10 @@ class RequestLog:
                     int(entry.blocked),
                     int(entry.cache_hit),
                     ",".join(entry.blocked_reasons),
+                    entry.retrieval_ms,
+                    entry.input_guardrails_ms,
+                    entry.generation_ms,
+                    entry.output_guardrails_ms,
                 ),
             )
             self._conn.commit()
@@ -150,6 +171,32 @@ class RequestLog:
             }
             for day, b in sorted(buckets.items())
         ]
+
+    def latency_breakdown(self) -> dict:
+        """Average time spent in each stage across every logged request
+        that recorded stage timings, for the Monitoring page's "where did
+        the latency go" chart -- a single total latency number can't
+        show whether a slow request is retrieval, guardrails, or the LLM
+        call itself. Requests logged before this instrumentation existed
+        have NULL stage columns and are excluded by AVG(), not counted as
+        zero.
+        """
+        with self._lock:
+            row = self._conn.execute(
+                "SELECT AVG(retrieval_ms), AVG(input_guardrails_ms), "
+                "AVG(generation_ms), AVG(output_guardrails_ms), COUNT(*) "
+                "FROM requests WHERE retrieval_ms IS NOT NULL"
+            ).fetchone()
+        avg_retrieval, avg_input_guardrails, avg_generation, avg_output_guardrails, sample_count = row
+        return {
+            "avg_retrieval_ms": round(avg_retrieval, 1) if avg_retrieval is not None else 0.0,
+            "avg_input_guardrails_ms": round(avg_input_guardrails, 1) if avg_input_guardrails is not None else 0.0,
+            "avg_generation_ms": round(avg_generation, 1) if avg_generation is not None else 0.0,
+            "avg_output_guardrails_ms": round(avg_output_guardrails, 1)
+            if avg_output_guardrails is not None
+            else 0.0,
+            "sample_count": sample_count,
+        }
 
     def guardrail_event_counts(self) -> list[dict]:
         """How many logged requests each guardrail check has blocked,

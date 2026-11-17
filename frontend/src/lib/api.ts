@@ -43,6 +43,7 @@ export interface GeneratedAnswer {
 
 const DEFAULT_API_BASE_URL = "http://localhost:8000";
 const STORAGE_KEY = "medeval-api-base-url";
+const API_KEY_STORAGE_KEY = "medeval-api-key";
 
 export function getApiBaseUrl(): string {
   if (typeof window === "undefined") return DEFAULT_API_BASE_URL;
@@ -62,6 +63,26 @@ export function setApiBaseUrl(url: string): void {
   }
 }
 
+// The backend only checks this when API_KEY is set server-side (see
+// app/auth.py) -- blank here is fine against a backend with auth off.
+export function getApiKey(): string {
+  if (typeof window === "undefined") return "";
+  try {
+    return window.localStorage.getItem(API_KEY_STORAGE_KEY) || "";
+  } catch {
+    return "";
+  }
+}
+
+export function setApiKey(key: string): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(API_KEY_STORAGE_KEY, key);
+  } catch {
+    // Private browsing / blocked storage -- the key just won't persist.
+  }
+}
+
 export class ApiError extends Error {}
 
 function normalizedBase(baseUrl?: string): string {
@@ -70,15 +91,22 @@ function normalizedBase(baseUrl?: string): string {
 
 export async function askQuestion(question: string, baseUrl?: string): Promise<GeneratedAnswer> {
   const base = normalizedBase(baseUrl);
+  const apiKey = getApiKey();
   let res: Response;
   try {
     res = await fetch(`${base}/ask`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...(apiKey ? { "X-API-Key": apiKey } : {}),
+      },
       body: JSON.stringify({ question }),
     });
   } catch {
     throw new ApiError(`Couldn't reach the backend at ${base}. Is the server running?`);
+  }
+  if (res.status === 401) {
+    throw new ApiError("Backend rejected the API key. Set the correct key above and try again.");
   }
   if (!res.ok) {
     const detail = await res.text().catch(() => "");
@@ -149,6 +177,18 @@ export function getDailyStats(days = 14, baseUrl?: string): Promise<DailyStat[]>
 
 export function getGuardrailEvents(baseUrl?: string): Promise<GuardrailEventCount[]> {
   return getJson<GuardrailEventCount[]>("/stats/guardrail-events", baseUrl);
+}
+
+export interface LatencyBreakdown {
+  avg_retrieval_ms: number;
+  avg_input_guardrails_ms: number;
+  avg_generation_ms: number;
+  avg_output_guardrails_ms: number;
+  sample_count: number;
+}
+
+export function getLatencyBreakdown(baseUrl?: string): Promise<LatencyBreakdown> {
+  return getJson<LatencyBreakdown>("/stats/latency-breakdown", baseUrl);
 }
 
 // --- Evaluation Lab / Experiments: real past evaluation runs ---

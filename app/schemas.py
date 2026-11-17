@@ -111,3 +111,10 @@ class GeneratedAnswer(BaseModel):
     # holds the blocked-request message rather than a generated one --
     # no LLM call was made, hence token counts of 0 above.
     blocked_by: list[str] | None = None
+    # Wall-clock time spent in each stage of this request (retrieval,
+    # input guardrails, generation, output guardrails), in milliseconds.
+    # Only the stages that actually ran are present -- e.g. an
+    # input-blocked request has no "generation" key, since generation
+    # never happened. Powers the Monitoring page's per-stage latency
+    # breakdown instead of only a single opaque total.
+    stage_timings_ms: dict[str, float] = Field(default_factory=dict)

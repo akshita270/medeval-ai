@@ -56,6 +56,10 @@
   --shadow-color: 220 20% 50%;
 }
 
+/* Clinical teal/cyan palette -- deliberately not the generic
+   indigo/violet + pink "AI product" look. Teal reads as clinical/trust
+   (medical software, lab equipment) and pairs with the existing
+   success-green semantics instead of competing with them. */
 :root {
   --background: #f8fafc;
   --foreground: #0f172a;
@@ -63,14 +67,14 @@
   --card-foreground: #0f172a;
   --popover: #ffffff;
   --popover-foreground: #0f172a;
-  --primary: #6366f1;
+  --primary: #0e7490;
   --primary-foreground: #ffffff;
   --secondary: #f1f5f9;
   --secondary-foreground: #334155;
   --muted: #f1f5f9;
   --muted-foreground: #64748b;
-  --accent: #eef2ff;
-  --accent-foreground: #4338ca;
+  --accent: #ecfeff;
+  --accent-foreground: #0e7490;
   --teal: #14b8a6;
   --teal-foreground: #ffffff;
   --destructive: #ef4444;
@@ -81,21 +85,21 @@
   --warning-foreground: #78350f;
   --border: #e2e8f0;
   --input: #e2e8f0;
-  --ring: #a5b4fc;
-  --chart-1: #6366f1;
-  --chart-2: #14b8a6;
-  --chart-3: #f59e0b;
-  --chart-4: #ec4899;
-  --chart-5: #64748b;
+  --ring: #38bdf8;
+  --chart-1: #0e7490;
+  --chart-2: #0d9488;
+  --chart-3: #d97706;
+  --chart-4: #475569;
+  --chart-5: #2563eb;
   --radius: 0.875rem;
   --sidebar: #ffffff;
   --sidebar-foreground: #334155;
-  --sidebar-primary: #6366f1;
+  --sidebar-primary: #0e7490;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #eef2ff;
-  --sidebar-accent-foreground: #4338ca;
+  --sidebar-accent: #ecfeff;
+  --sidebar-accent-foreground: #0e7490;
   --sidebar-border: #e2e8f0;
-  --sidebar-ring: #a5b4fc;
+  --sidebar-ring: #38bdf8;
 }
 
 .dark {
@@ -105,14 +109,14 @@
   --card-foreground: #e7eaf3;
   --popover: #10141f;
   --popover-foreground: #e7eaf3;
-  --primary: #818cf8;
+  --primary: #22d3ee;
   --primary-foreground: #0a0e1a;
   --secondary: #1a1f2e;
   --secondary-foreground: #cbd5e1;
   --muted: #161b29;
   --muted-foreground: #8792a8;
-  --accent: #1b2036;
-  --accent-foreground: #a5b4fc;
+  --accent: #0c2b33;
+  --accent-foreground: #67e8f9;
   --teal: #2dd4bf;
   --teal-foreground: #0a0e1a;
   --destructive: #f87171;
@@ -123,20 +127,20 @@
   --warning-foreground: #0a0e1a;
   --border: rgba(255, 255, 255, 0.08);
   --input: rgba(255, 255, 255, 0.12);
-  --ring: #6366f1;
-  --chart-1: #818cf8;
+  --ring: #22d3ee;
+  --chart-1: #22d3ee;
   --chart-2: #2dd4bf;
   --chart-3: #fbbf24;
-  --chart-4: #f472b6;
-  --chart-5: #94a3b8;
+  --chart-4: #94a3b8;
+  --chart-5: #60a5fa;
   --sidebar: #0d1119;
   --sidebar-foreground: #cbd5e1;
-  --sidebar-primary: #818cf8;
+  --sidebar-primary: #22d3ee;
   --sidebar-primary-foreground: #0a0e1a;
-  --sidebar-accent: #1b2036;
-  --sidebar-accent-foreground: #a5b4fc;
+  --sidebar-accent: #0c2b33;
+  --sidebar-accent-foreground: #67e8f9;
   --sidebar-border: rgba(255, 255, 255, 0.08);
-  --sidebar-ring: #6366f1;
+  --sidebar-ring: #22d3ee;
 }
 
 @layer base {

@@ -6,6 +6,7 @@ from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
+from app.auth import require_api_key
 from app.ci_status import CiStatusError, get_ci_run_jobs, get_recent_ci_runs
 from app.config import get_settings
 from app.eval_reports import EvalRunNotFoundError, get_eval_run, list_eval_runs
@@ -115,11 +116,19 @@ def _log_request(request_log, result: GeneratedAnswer, started_at: float) -> Non
             blocked=blocked,
             cache_hit=cache_hit,
             blocked_reasons=tuple(result.blocked_by or ()),
+            retrieval_ms=result.stage_timings_ms.get("retrieval_ms"),
+            input_guardrails_ms=result.stage_timings_ms.get("input_guardrails_ms"),
+            generation_ms=result.stage_timings_ms.get("generation_ms"),
+            output_guardrails_ms=result.stage_timings_ms.get("output_guardrails_ms"),
         )
     )
 
 
-@app.post("/ask", response_model=GeneratedAnswer, dependencies=[Depends(enforce_rate_limit)])
+@app.post(
+    "/ask",
+    response_model=GeneratedAnswer,
+    dependencies=[Depends(require_api_key), Depends(enforce_rate_limit)],
+)
 def ask(request: Request, body: AskRequest) -> GeneratedAnswer:
     settings = get_settings()
     collection = request.app.state.collection
@@ -127,29 +136,44 @@ def ask(request: Request, body: AskRequest) -> GeneratedAnswer:
     request_log = request.app.state.request_log
     started_at = time.perf_counter()
 
+    stage_timings: dict[str, float] = {}
+
+    retrieval_started = time.perf_counter()
     passages = retrieve_passages(body.question, collection, settings, bm25_index)
+    stage_timings["retrieval_ms"] = (time.perf_counter() - retrieval_started) * 1000
 
     # Guardrails run after retrieval (reusing its similarity scores, no
     # extra embedding call) but before generation, so a blocked request
     # never reaches the expensive LLM call.
+    input_guardrails_started = time.perf_counter()
     decision = run_input_guardrails(body.question, passages, settings)
+    stage_timings["input_guardrails_ms"] = (time.perf_counter() - input_guardrails_started) * 1000
     if decision.blocked:
-        result = build_blocked_answer(body.question, decision, settings)
+        result = build_blocked_answer(body.question, decision, settings).model_copy(
+            update={"stage_timings_ms": stage_timings}
+        )
         _log_request(request_log, result, started_at)
         return result
 
+    generation_started = time.perf_counter()
     answer = generate_answer(body.question, passages, settings)
+    stage_timings["generation_ms"] = (time.perf_counter() - generation_started) * 1000
 
     # Output guardrails run after generation -- catches the LLM slipping
     # into personalized advice despite the prompt's rules and the input
     # checks above. The generation cost is already spent either way; this
     # only decides what's shown to the user.
+    output_guardrails_started = time.perf_counter()
     output_decision = run_output_guardrails(body.question, answer, settings)
+    stage_timings["output_guardrails_ms"] = (time.perf_counter() - output_guardrails_started) * 1000
     if output_decision.blocked:
-        result = redact_blocked_answer(answer, output_decision)
+        result = redact_blocked_answer(answer, output_decision).model_copy(
+            update={"stage_timings_ms": stage_timings}
+        )
         _log_request(request_log, result, started_at)
         return result
 
+    answer = answer.model_copy(update={"stage_timings_ms": stage_timings})
     _log_request(request_log, answer, started_at)
     return answer
 
@@ -169,6 +193,15 @@ def stats_daily(request: Request, days: int = 14) -> list[dict]:
     page's trend charts, covering the last `days` days.
     """
     return request.app.state.request_log.daily_series(days=days)
+
+
+@app.get("/stats/latency-breakdown")
+def stats_latency_breakdown(request: Request) -> dict:
+    """Average per-stage latency (retrieval / input guardrails / generation
+    / output guardrails) across every request that recorded stage timings,
+    for the Monitoring page's latency-breakdown chart.
+    """
+    return request.app.state.request_log.latency_breakdown()
 
 
 @app.get("/stats/guardrail-events")

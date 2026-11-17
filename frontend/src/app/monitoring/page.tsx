@@ -9,14 +9,22 @@ import { LatencyDistributionChart } from "@/components/monitoring/latency-distri
 import { TokenUsageChart } from "@/components/monitoring/token-usage-chart";
 import { ApiSpendChart } from "@/components/monitoring/api-spend-chart";
 import { GuardrailFrequencyChart } from "@/components/monitoring/guardrail-frequency-chart";
+import { LatencyBreakdownChart } from "@/components/monitoring/latency-breakdown-chart";
 import { ModelQualityChart } from "@/components/monitoring/model-quality-chart";
 import { buildMonitoringKpis } from "@/components/monitoring/kpis";
-import { useDailyStats, useEvalRuns, useGuardrailEvents, useStatsOverview } from "@/lib/use-api-data";
+import {
+  useDailyStats,
+  useEvalRuns,
+  useGuardrailEvents,
+  useLatencyBreakdown,
+  useStatsOverview,
+} from "@/lib/use-api-data";
 
 export default function MonitoringPage() {
   const overviewState = useStatsOverview();
   const dailyState = useDailyStats(14);
   const guardrailState = useGuardrailEvents();
+  const latencyBreakdownState = useLatencyBreakdown();
   const runsState = useEvalRuns();
 
   return (
@@ -51,6 +59,14 @@ export default function MonitoringPage() {
         </ChartCard>
         <ChartCard title="Guardrail Event Frequency" subtitle="Real blocks by category, since this server started">
           <AsyncBoundary state={guardrailState}>{(data) => <GuardrailFrequencyChart data={data} />}</AsyncBoundary>
+        </ChartCard>
+        <ChartCard
+          title="Request Latency Breakdown"
+          subtitle="Avg time per stage (retrieval, guardrails, generation), not just one total"
+        >
+          <AsyncBoundary state={latencyBreakdownState}>
+            {(data) => <LatencyBreakdownChart data={data} />}
+          </AsyncBoundary>
         </ChartCard>
         <ChartCard title="Model Quality Trend" subtitle="Correctness & faithfulness across real evaluation runs">
           <AsyncBoundary state={runsState}>{(runs) => <ModelQualityChart runs={runs} />}</AsyncBoundary>

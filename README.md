@@ -20,16 +20,25 @@ that blocks a merge on a real measured drop in quality, not a vibe check.
 
 ## Architecture
 
-```
-Documents --> chunk --> embed --> ChromaDB
-                                     |
-Question ----------------------> retrieve (dense, or hybrid BM25+dense via RRF)
-                                     |
-                                reranking (cross-encoder, optional)
-                                     |
-                                 generate (gpt-5-mini)
-                                     |
-                                  answer + citations
+**Live request path** — what happens when a real question comes in through `/ask`:
+
+```mermaid
+flowchart LR
+    Docs[("Documents\n(PubMed/PMC)")] -->|chunk + embed| Chroma[("ChromaDB")]
+    Q["User question"] --> AuthRL["API key + rate limit"]
+    AuthRL --> Retrieve["Retrieve\n(dense, or hybrid BM25+dense)"]
+    Chroma --> Retrieve
+    Retrieve --> Rerank["Rerank\n(cross-encoder, optional)"]
+    Rerank --> InGuard{"Input guardrails\n(prompt injection, PII, off-topic)"}
+    InGuard -- blocked --> Refused1["Refused, no LLM call"]
+    InGuard -- allowed --> Generate["Generate\n(gpt-5-mini, or routed gpt-4o-mini)"]
+    Generate --> OutGuard{"Output guardrails\n(citation grounding, advice leak)"}
+    OutGuard -- blocked --> Redacted["Answer redacted"]
+    OutGuard -- allowed --> Answer["Answer + citations\n+ config snapshot"]
+
+    style Refused1 fill:#f8d7da,stroke:#dc3545
+    style Redacted fill:#f8d7da,stroke:#dc3545
+    style Answer fill:#d4edda,stroke:#28a745
 ```
 
 Every generated answer is paired with a snapshot of the exact config that produced
@@ -70,6 +79,30 @@ GitHub withholds secrets from them by design. A release pipeline runs the full
 30-question evaluation on every push to `main`. 186 unit tests cover deterministic
 logic and mocked API calls at zero cost.
 
+```mermaid
+flowchart TD
+    subgraph PR["Every pull request"]
+        direction TB
+        P1["Lint + format + unit tests\n(free, always runs)"] --> P2{"OPENAI_API_KEY\navailable?"}
+        P2 -- "no (fork PR)" --> P3["Skipped, not failed"]
+        P2 -- yes --> P4["Sample 10 of 30 golden questions"]
+        P4 --> P5["Generate answer + LLM-judge score\nfor each"]
+        P5 --> P6{"Per-question, per-metric\nregression vs baseline_v1.json?"}
+        P6 -- "fails threshold" --> P7["Block merge"]
+        P6 -- "within threshold" --> P8["Merge allowed"]
+    end
+
+    subgraph Release["Every push to main"]
+        direction TB
+        R1["Same lint/format/test step"] --> R2["Full 30-question evaluation\n(not sampled)"]
+        R2 --> R3["Quality gate vs baseline"]
+        R3 --> R4["Deploy + smoke test"]
+    end
+
+    style P7 fill:#f8d7da,stroke:#dc3545
+    style P8 fill:#d4edda,stroke:#28a745
+```
+
 **Guardrails**
 Two-layer, cost-cascading checks on both the input and the output: free regex-based
 checks first (prompt injection, personalized-advice requests, off-topic questions,
@@ -87,7 +120,12 @@ evidence, applied live to every answer. A 19-case adversarial test suite exercis
 the real pipeline end to end (19/19 passing) and is tracked in its own MLflow
 experiment (`medeval-ai-guardrails`), separate from RAG-quality evaluation runs so
 neither trend contaminates the other. A simple in-memory, per-client rate limiter
-protects the (paid) `/ask` endpoint from being hit without limit.
+protects the (paid) `/ask` endpoint from being hit without limit. An optional
+shared-secret `API_KEY` env var (checked via the `X-API-Key` header, see
+`app/auth.py`) gates `/ask` itself -- blank disables it for local dev, but any
+public deployment should set one so a found URL can't be used to spend your
+OpenAI budget. The frontend's Playground has a matching API-key field next to
+the backend-address field, also persisted in the browser.
 
 Guardrails never run inside `scripts/run_evaluation.py` -- the golden-dataset
 evaluation calls `generate_answer()` directly and is judged on the raw output, so a
@@ -165,6 +203,38 @@ of read-only endpoints added to `app/main.py` (`/stats/*`, `/evaluation/runs*`,
 - **Pipeline** -- the real GitHub Actions run history for this repository (via
   `app/ci_status.py`), including real failures, plus quality-gate cards computed
   from the latest real evaluation run against `app/config.py`'s actual thresholds.
+
+## Results
+
+Real numbers pulled directly from saved runs in `evaluation/regression/runs/`,
+not invented for this README. The retrieval-strategy and routing comparisons
+below use the same 10-question sample, same `gpt-5-mini` generation model and
+prompt version, varying only the one setting named -- see the limitation
+below for why a delta under ~0.10 on one run isn't proof of a real effect by
+itself.
+
+**Retrieval strategy:**
+
+| Retrieval strategy    | Answer correctness | Faithfulness | Context precision | Run                            |
+| ---------------------- | ------------------- | ------------- | ------------------- | -------------------------------- |
+| Dense only             | 0.83                 | 0.76          | 0.87                 | `run_v1_dense_sample10`          |
+| Hybrid (BM25 + dense)  | 0.87                 | 0.99          | 0.65                 | `run_v1_hybrid_sample10`         |
+| Hybrid + rerank        | 0.93                 | 0.98          | 0.61                 | `run_v1_hybrid_rerank_sample10`  |
+
+**Model routing** (`USE_MODEL_ROUTING=true`): the two-step gate (free
+similarity check, then a real classifier call) routed 3 of the 10 sampled
+questions to the cheaper `gpt-4o-mini` instead of `gpt-5-mini`, at no
+measured quality cost on this sample:
+
+| Routing  | Answer correctness | Faithfulness | Cost (10 questions) | Run                         |
+| -------- | ------------------- | ------------- | --------------------- | ------------------------------ |
+| Off      | 0.83                 | 0.76          | $0.0823                | `run_v1_dense_sample10`        |
+| On       | 0.89                 | 1.00          | $0.0800                | `run_v1_dense_routed_sample10` |
+
+**Full 30-question dense baseline** (`run_v1_dense`): answer correctness
+0.90, faithfulness 0.99, answer relevance 0.99, abstention quality 0.93 --
+the approved baseline every PR's sampled evaluation is regression-tested
+against.
 
 ## A known, documented limitation
 

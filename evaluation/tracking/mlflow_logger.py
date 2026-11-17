@@ -7,12 +7,15 @@ generated artifact store, not source).
 """
 
 import subprocess
+from pathlib import Path
 
 import mlflow
 
 from app.config import Settings
 from evaluation.guardrails.report import AdversarialReport
 from evaluation.judge.schema import EvaluationReport
+
+_PROMPTS_DIR = Path(__file__).parent.parent.parent / "app" / "generation" / "prompts"
 
 _EXPERIMENT_NAME = "medeval-ai-rag-evaluation"
 # Its own experiment, separate from the RAG-quality one above -- this
@@ -29,6 +32,22 @@ def _get_git_commit() -> str:
         # No commits yet, or not a git repo at all -- a real, expected
         # state early in a project, not something to crash the run over.
         return "uncommitted"
+
+
+def _log_prompt_artifact(prompt_version: str) -> None:
+    """Logs the actual system-prompt text for this run, not just its
+    version label. `prompt_version` (e.g. "v1") only proves the wording
+    didn't change if someone remembers to bump it whenever they edit the
+    prompt file -- storing the real text here means a run is always
+    provably tied to the exact wording that produced it, version-bump
+    discipline or not.
+    """
+    prompt_path = _PROMPTS_DIR / f"{prompt_version}.txt"
+    try:
+        prompt_text = prompt_path.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        return
+    mlflow.log_text(prompt_text, f"prompts/{prompt_version}.txt")
 
 
 def log_evaluation_run(report: EvaluationReport, settings: Settings, strategy_label: str) -> str:
@@ -59,6 +78,7 @@ def log_evaluation_run(report: EvaluationReport, settings: Settings, strategy_la
                 "git_commit": _get_git_commit(),
             }
         )
+        _log_prompt_artifact(settings.prompt_version)
 
         for summary in report.metric_summaries:
             mlflow.log_metric(summary.metric.value, summary.mean_score)
@@ -122,6 +142,7 @@ def log_adversarial_run(report: AdversarialReport, settings: Settings) -> str:
                 "git_commit": _get_git_commit(),
             }
         )
+        _log_prompt_artifact(settings.prompt_version)
 
         mlflow.log_metric("total_cases", report.total_cases)
         mlflow.log_metric("total_passed", report.total_passed)

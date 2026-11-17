@@ -9,11 +9,13 @@ import {
   type EvalRunDetail,
   type EvalRunSummary,
   type GuardrailEventCount,
+  type LatencyBreakdown,
   type StatsOverview,
   getCiRunJobs,
   getDailyStats,
   getEvalRun,
   getGuardrailEvents,
+  getLatencyBreakdown,
   getStatsOverview,
   listCiRuns,
   listEvalRuns,
@@ -105,6 +107,20 @@ export function useGuardrailEvents(): AsyncState<GuardrailEventCount[]> {
   useEffect(() => {
     let cancelled = false;
     getGuardrailEvents()
+      .then((data) => !cancelled && setState({ status: "ready", data }))
+      .catch((err) => !cancelled && setState({ status: "error", message: errorMessage(err) }));
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+  return state;
+}
+
+export function useLatencyBreakdown(): AsyncState<LatencyBreakdown> {
+  const [state, setState] = useState<AsyncState<LatencyBreakdown>>({ status: "loading" });
+  useEffect(() => {
+    let cancelled = false;
+    getLatencyBreakdown()
       .then((data) => !cancelled && setState({ status: "ready", data }))
       .catch((err) => !cancelled && setState({ status: "error", message: errorMessage(err) }));
     return () => {

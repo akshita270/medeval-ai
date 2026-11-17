@@ -3,12 +3,13 @@
 import { useEffect, useState } from "react";
 import { Loader2, Wifi, WifiOff } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { checkHealth, getApiBaseUrl, setApiBaseUrl } from "@/lib/api";
+import { checkHealth, getApiBaseUrl, getApiKey, setApiBaseUrl, setApiKey } from "@/lib/api";
 
 type Status = "checking" | "online" | "offline";
 
 export function ApiEndpointBar() {
   const [url, setUrl] = useState<string>(() => getApiBaseUrl());
+  const [apiKey, setApiKeyState] = useState<string>(() => getApiKey());
   const [status, setStatus] = useState<Status>("checking");
 
   useEffect(() => {
@@ -30,6 +31,11 @@ export function ApiEndpointBar() {
     setStatus("checking");
   }
 
+  function handleApiKeyChange(value: string) {
+    setApiKeyState(value);
+    setApiKey(value);
+  }
+
   return (
     <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-3 py-2 shadow-soft">
       {status === "checking" && <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin text-muted-foreground" />}
@@ -43,6 +49,13 @@ export function ApiEndpointBar() {
         onChange={(e) => handleChange(e.target.value)}
         placeholder="http://<server-ip>:8000"
         className="h-7 w-56 font-mono text-[11px]"
+      />
+      <Input
+        value={apiKey}
+        onChange={(e) => handleApiKeyChange(e.target.value)}
+        type="password"
+        placeholder="API key (if set on server)"
+        className="h-7 w-48 font-mono text-[11px]"
       />
     </div>
   );
