@@ -6,7 +6,7 @@ import { ChatMessageItem, TypingIndicator } from "./chat-message";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import type { ChatMessage } from "@/lib/chat-types";
-import { askQuestion, ApiError, type GeneratedAnswer } from "@/lib/api";
+import { streamQuestion, ApiError, type GeneratedAnswer } from "@/lib/api";
 
 const suggestedQuestions = [
   "What are the major risk factors for Type 2 diabetes?",
@@ -30,9 +30,9 @@ function nextId() {
   return `msg-${idCounter}`;
 }
 
-function toChatMessage(answer: GeneratedAnswer): ChatMessage {
+function finalizeChatMessage(id: string, answer: GeneratedAnswer): ChatMessage {
   return {
-    id: nextId(),
+    id,
     role: "assistant",
     content: answer.answer,
     blocked: Boolean(answer.blocked_by),
@@ -56,6 +56,53 @@ export function ChatPanel({ onAnswer }: { onAnswer?: (answer: GeneratedAnswer) =
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages, isTyping]);
 
+  async function streamInto(question: string) {
+    const assistantId = nextId();
+    // The placeholder starts empty and isTyping stays true until the
+    // first delta lands, so the typing indicator covers retrieval +
+    // guardrails + the model's time-to-first-token, exactly like before
+    // streaming existed -- only once text starts arriving does it make
+    // way for the message bubble filling in live.
+    let started = false;
+
+    try {
+      const answer = await streamQuestion(question, {
+        onDelta: (piece) => {
+          if (!started) {
+            started = true;
+            setIsTyping(false);
+            setMessages((prev) => [...prev, { id: assistantId, role: "assistant", content: "" }]);
+          }
+          setMessages((prev) =>
+            prev.map((m) => (m.id === assistantId ? { ...m, content: m.content + piece } : m)),
+          );
+        },
+        onRedact: (text) => {
+          setMessages((prev) => prev.map((m) => (m.id === assistantId ? { ...m, content: text } : m)));
+        },
+      });
+
+      setMessages((prev) => {
+        const finalized = finalizeChatMessage(assistantId, answer);
+        // A blocked request never streamed any deltas -- the placeholder
+        // was never inserted, so this is the first and only message added.
+        return prev.some((m) => m.id === assistantId)
+          ? prev.map((m) => (m.id === assistantId ? finalized : m))
+          : [...prev, finalized];
+      });
+      onAnswer?.(answer);
+    } catch (err) {
+      const detail = err instanceof ApiError ? err.message : "Something went wrong calling the backend.";
+      setMessages((prev) =>
+        prev.some((m) => m.id === assistantId)
+          ? prev.map((m) => (m.id === assistantId ? { ...m, content: `⚠️ ${detail}` } : m))
+          : [...prev, { id: assistantId, role: "assistant", content: `⚠️ ${detail}` }],
+      );
+    } finally {
+      setIsTyping(false);
+    }
+  }
+
   async function sendMessage(text: string) {
     const trimmed = text.trim();
     if (!trimmed || isTyping) return;
@@ -65,38 +112,13 @@ export function ChatPanel({ onAnswer }: { onAnswer?: (answer: GeneratedAnswer) =
     setInput("");
     setIsTyping(true);
     setLastQuestion(trimmed);
-
-    try {
-      const answer = await askQuestion(trimmed);
-      setMessages((prev) => [...prev, toChatMessage(answer)]);
-      onAnswer?.(answer);
-    } catch (err) {
-      const detail = err instanceof ApiError ? err.message : "Something went wrong calling the backend.";
-      setMessages((prev) => [
-        ...prev,
-        { id: nextId(), role: "assistant", content: `⚠️ ${detail}` },
-      ]);
-    } finally {
-      setIsTyping(false);
-    }
+    await streamInto(trimmed);
   }
 
   async function regenerateLast() {
     if (isTyping || !lastQuestion) return;
     setIsTyping(true);
-    try {
-      const answer = await askQuestion(lastQuestion);
-      setMessages((prev) => [...prev, toChatMessage(answer)]);
-      onAnswer?.(answer);
-    } catch (err) {
-      const detail = err instanceof ApiError ? err.message : "Something went wrong calling the backend.";
-      setMessages((prev) => [
-        ...prev,
-        { id: nextId(), role: "assistant", content: `⚠️ ${detail}` },
-      ]);
-    } finally {
-      setIsTyping(false);
-    }
+    await streamInto(lastQuestion);
   }
 
   return (

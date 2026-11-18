@@ -1,16 +1,19 @@
+import json
 import logging
 import time
+from collections.abc import Iterator
 from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
 from app.auth import require_api_key
 from app.ci_status import CiStatusError, get_ci_run_jobs, get_recent_ci_runs
 from app.config import get_settings
 from app.eval_reports import EvalRunNotFoundError, get_eval_run, list_eval_runs
-from app.generation.generator import generate_answer
+from app.generation.generator import generate_answer, generate_answer_stream
 from app.guardrails.pipeline import (
     build_blocked_answer,
     redact_blocked_answer,
@@ -176,6 +179,86 @@ def ask(request: Request, body: AskRequest) -> GeneratedAnswer:
     answer = answer.model_copy(update={"stage_timings_ms": stage_timings})
     _log_request(request_log, answer, started_at)
     return answer
+
+
+def _sse(event: str, data: dict) -> str:
+    return f"event: {event}\ndata: {json.dumps(data)}\n\n"
+
+
+@app.post(
+    "/ask/stream",
+    dependencies=[Depends(require_api_key), Depends(enforce_rate_limit)],
+)
+def ask_stream(request: Request, body: AskRequest) -> StreamingResponse:
+    """Server-Sent Events counterpart to /ask: streams the answer text as
+    it's generated instead of making the caller wait out the full ~15-20s
+    generation latency for one blocking response.
+
+    Retrieval and input guardrails still run synchronously first, exactly
+    as in /ask -- a request that's going to be blocked never reaches the
+    (expensive, slow) generation call just to stream a canned message one
+    character at a time.
+
+    Output guardrails still run on the *complete* answer after streaming
+    finishes, same as /ask -- they can't evaluate a partial answer. If
+    they trigger, the raw text already streamed to the client is already
+    unsafe to leave on screen, so a "redact" event tells the frontend to
+    replace it with the safe message; this is strictly a rarer second
+    safety net behind the input guardrails and the system prompt, which
+    is what keeps that window meaningfully small in practice.
+
+    Every event is JSON on a single `data:` line, SSE-framed:
+      event: delta   {"text": "..."}       -- zero or more, answer text chunks
+      event: redact  {"text": "..."}       -- zero or one, output-guardrail override
+      event: done    {...GeneratedAnswer}  -- exactly one, always last
+    """
+    settings = get_settings()
+    collection = request.app.state.collection
+    bm25_index = request.app.state.bm25_index
+    request_log = request.app.state.request_log
+    started_at = time.perf_counter()
+
+    def event_stream() -> Iterator[str]:
+        stage_timings: dict[str, float] = {}
+
+        retrieval_started = time.perf_counter()
+        passages = retrieve_passages(body.question, collection, settings, bm25_index)
+        stage_timings["retrieval_ms"] = (time.perf_counter() - retrieval_started) * 1000
+
+        input_guardrails_started = time.perf_counter()
+        decision = run_input_guardrails(body.question, passages, settings)
+        stage_timings["input_guardrails_ms"] = (time.perf_counter() - input_guardrails_started) * 1000
+        if decision.blocked:
+            result = build_blocked_answer(body.question, decision, settings).model_copy(
+                update={"stage_timings_ms": stage_timings}
+            )
+            _log_request(request_log, result, started_at)
+            yield _sse("done", result.model_dump())
+            return
+
+        generation_started = time.perf_counter()
+        answer: GeneratedAnswer | None = None
+        for kind, payload in generate_answer_stream(body.question, passages, settings):
+            if kind == "delta":
+                yield _sse("delta", {"text": payload})
+            else:
+                assert isinstance(payload, GeneratedAnswer)
+                answer = payload
+        assert answer is not None
+        stage_timings["generation_ms"] = (time.perf_counter() - generation_started) * 1000
+
+        output_guardrails_started = time.perf_counter()
+        output_decision = run_output_guardrails(body.question, answer, settings)
+        stage_timings["output_guardrails_ms"] = (time.perf_counter() - output_guardrails_started) * 1000
+        if output_decision.blocked:
+            answer = redact_blocked_answer(answer, output_decision)
+            yield _sse("redact", {"text": answer.answer})
+
+        answer = answer.model_copy(update={"stage_timings_ms": stage_timings})
+        _log_request(request_log, answer, started_at)
+        yield _sse("done", answer.model_dump())
+
+    return StreamingResponse(event_stream(), media_type="text/event-stream")
 
 
 @app.get("/stats/overview")

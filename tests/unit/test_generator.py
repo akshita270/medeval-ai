@@ -1,7 +1,13 @@
 from unittest.mock import Mock, patch
 
 from app.config import Settings
-from app.generation.generator import GenerationOutput, build_messages, generate_answer
+from app.generation.generator import (
+    GenerationOutput,
+    _extract_streamed_answer,
+    build_messages,
+    generate_answer,
+    generate_answer_stream,
+)
 from app.generation.router import ComplexityClassification, ComplexityClassifierResponse
 from app.schemas import CitationDetail, RetrievedPassage
 
@@ -184,6 +190,122 @@ class TestGenerationCaching:
             generate_answer("Same question", PASSAGES, settings)
 
         assert fake_client.chat.completions.parse.call_count == 2
+
+
+class TestExtractStreamedAnswer:
+    """_extract_streamed_answer runs on raw, possibly-incomplete JSON
+    text -- these exercise it directly against the shapes a real
+    streamed response actually produces, including mid-escape-sequence
+    text that must not be decoded until the escape is complete.
+    """
+
+    def test_no_answer_key_yet(self):
+        assert _extract_streamed_answer("") == ""
+        assert _extract_streamed_answer("{") == ""
+
+    def test_value_not_started_yet(self):
+        assert _extract_streamed_answer('{"answer"') == ""
+        assert _extract_streamed_answer('{"answer":') == ""
+
+    def test_plain_text_still_open(self):
+        assert _extract_streamed_answer('{"answer": "The sky') == "The sky"
+
+    def test_plain_text_closed(self):
+        assert _extract_streamed_answer('{"answer": "The sky is blue."') == "The sky is blue."
+
+    def test_does_not_decode_a_dangling_incomplete_escape(self):
+        # A lone trailing backslash means the model hasn't finished
+        # writing its escape sequence yet (e.g. "\n" mid-stream) --
+        # decoding it now would either crash or guess wrong.
+        assert _extract_streamed_answer('{"answer": "line one.\\') == "line one."
+
+    def test_decodes_a_completed_escape_sequence(self):
+        assert _extract_streamed_answer('{"answer": "line one.\\n"') == "line one.\n"
+
+    def test_stops_at_the_citations_field_once_answer_is_closed(self):
+        raw = '{"answer": "Done.", "citations": [{"doc_id": "docA"'
+        assert _extract_streamed_answer(raw) == "Done."
+
+
+class _FakeDeltaEvent:
+    def __init__(self, snapshot):
+        self.type = "content.delta"
+        self.snapshot = snapshot
+
+
+class _FakeStreamManager:
+    """Stands in for the `with client.chat.completions.stream(...) as stream:`
+    context manager: iterating it yields fake delta events, and
+    get_final_completion() returns the fully-parsed response -- exactly
+    the two things _stream_generation_api actually uses.
+    """
+
+    def __init__(self, events, final_completion):
+        self._events = events
+        self._final_completion = final_completion
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        return False
+
+    def __iter__(self):
+        return iter(self._events)
+
+    def get_final_completion(self):
+        return self._final_completion
+
+
+class TestGenerateAnswerStream:
+    def test_yields_only_the_new_text_on_each_delta_then_the_final_answer(self):
+        # Each event's `snapshot` is the raw, possibly-incomplete JSON
+        # text accumulated so far -- "answer"'s string value grows
+        # across events exactly like a real OpenAI stream produces.
+        events = [
+            _FakeDeltaEvent('{"answer": "The'),
+            _FakeDeltaEvent('{"answer": "The sky'),
+            _FakeDeltaEvent('{"answer": "The sky is blue."'),
+        ]
+        final = _FakeParsedResponse(
+            GenerationOutput(
+                answer="The sky is blue.",
+                citations=[CitationDetail(doc_id="docA", chunk_id="docA::0001", quote="Some fact.")],
+            )
+        )
+        fake_client = Mock()
+        fake_client.chat.completions.stream.return_value = _FakeStreamManager(events, final)
+
+        with patch("app.generation.generator.get_openai_client", return_value=fake_client):
+            results = list(generate_answer_stream("What color is the sky?", PASSAGES, _settings()))
+
+        deltas = [payload for kind, payload in results if kind == "delta"]
+        assert deltas == ["The", " sky", " is blue."]
+
+        kind, answer = results[-1]
+        assert kind == "answer"
+        assert answer.answer == "The sky is blue."
+        assert answer.citations == ["docA"]
+
+    def test_filters_citations_to_actually_retrieved_chunks(self):
+        events = [_FakeDeltaEvent('{"answer": "An answer."')]
+        final = _FakeParsedResponse(
+            GenerationOutput(
+                answer="An answer.",
+                citations=[
+                    CitationDetail(doc_id="docA", chunk_id="docA::0001", quote="Some fact."),
+                    CitationDetail(doc_id="docZ", chunk_id="docZ::0001", quote="made up"),
+                ],
+            )
+        )
+        fake_client = Mock()
+        fake_client.chat.completions.stream.return_value = _FakeStreamManager(events, final)
+
+        with patch("app.generation.generator.get_openai_client", return_value=fake_client):
+            results = list(generate_answer_stream("Q", PASSAGES, _settings()))
+
+        _, answer = results[-1]
+        assert answer.citations == ["docA"]
 
 
 class TestModelRouting:

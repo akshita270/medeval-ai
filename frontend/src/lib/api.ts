@@ -115,6 +115,92 @@ export async function askQuestion(question: string, baseUrl?: string): Promise<G
   return res.json();
 }
 
+export interface StreamCallbacks {
+  onDelta: (text: string) => void;
+  onRedact?: (text: string) => void;
+}
+
+// EventSource can't send a POST body or a custom X-API-Key header, so the
+// SSE stream from /ask/stream is read by hand: fetch() for the request,
+// then split the raw text on the blank-line-terminated "event: ... \ndata:
+// ...\n\n" frames the backend writes (see app/main.py's _sse()).
+function parseSseFrame(frame: string): { event: string; data: unknown } | null {
+  let event = "message";
+  let data = "";
+  for (const line of frame.split("\n")) {
+    if (line.startsWith("event:")) event = line.slice("event:".length).trim();
+    else if (line.startsWith("data:")) data = line.slice("data:".length).trim();
+  }
+  if (!data) return null;
+  return { event, data: JSON.parse(data) };
+}
+
+/**
+ * Streaming counterpart to askQuestion: calls onDelta with each new piece
+ * of the answer as it's generated, then resolves with the same
+ * GeneratedAnswer shape askQuestion returns once the stream completes.
+ */
+export async function streamQuestion(
+  question: string,
+  callbacks: StreamCallbacks,
+  baseUrl?: string,
+): Promise<GeneratedAnswer> {
+  const base = normalizedBase(baseUrl);
+  const apiKey = getApiKey();
+  let res: Response;
+  try {
+    res = await fetch(`${base}/ask/stream`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(apiKey ? { "X-API-Key": apiKey } : {}),
+      },
+      body: JSON.stringify({ question }),
+    });
+  } catch {
+    throw new ApiError(`Couldn't reach the backend at ${base}. Is the server running?`);
+  }
+  if (res.status === 401) {
+    throw new ApiError("Backend rejected the API key. Set the correct key above and try again.");
+  }
+  if (!res.ok || !res.body) {
+    const detail = await res.text().catch(() => "");
+    throw new ApiError(`Backend returned ${res.status}${detail ? `: ${detail.slice(0, 200)}` : ""}`);
+  }
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  let finalAnswer: GeneratedAnswer | null = null;
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+
+    let separatorIndex: number;
+    while ((separatorIndex = buffer.indexOf("\n\n")) !== -1) {
+      const frame = buffer.slice(0, separatorIndex);
+      buffer = buffer.slice(separatorIndex + 2);
+      const parsed = parseSseFrame(frame);
+      if (!parsed) continue;
+
+      if (parsed.event === "delta") {
+        callbacks.onDelta((parsed.data as { text: string }).text);
+      } else if (parsed.event === "redact") {
+        callbacks.onRedact?.((parsed.data as { text: string }).text);
+      } else if (parsed.event === "done") {
+        finalAnswer = parsed.data as GeneratedAnswer;
+      }
+    }
+  }
+
+  if (!finalAnswer) {
+    throw new ApiError("Stream ended without a final answer.");
+  }
+  return finalAnswer;
+}
+
 export async function checkHealth(baseUrl?: string): Promise<boolean> {
   const base = normalizedBase(baseUrl);
   try {
