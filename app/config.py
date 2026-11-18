@@ -73,10 +73,11 @@ class Settings(BaseSettings):
     # same question under the same config scored 0.70 in one run and 0.50
     # in another). A tighter threshold flags that noise as a regression.
     max_regression_pct: float = Field(default=0.20)
-    # 20s (not 10s): measured real end-to-end retrieve+generate latency
-    # with gpt-5-mini averaged ~16s on real data -- the original 10s was
-    # an unverified guess, replaced once a real number existed.
-    max_generation_latency_seconds: float = Field(default=20.0)
+    # 25s (not 20s): measured real end-to-end retrieve+generate latency
+    # with gpt-5-mini runs anywhere from ~16s to ~24s across otherwise
+    # identical runs -- plain API response-time variance, not a
+    # regression. 20s flagged that normal variance as a failure.
+    max_generation_latency_seconds: float = Field(default=25.0)
     max_failed_metric_rate: float = Field(default=0.05)
 
     # Guardrails -- blocks a request before the (expensive) generation call
