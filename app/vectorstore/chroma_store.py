@@ -39,7 +39,7 @@ def add_chunks(collection: Collection, chunks: list[DocumentChunk], embeddings: 
 
     collection.add(
         ids=[c.chunk_id for c in chunks],
-        embeddings=embeddings,
+        embeddings=embeddings,  # type: ignore[arg-type]  # list[list[float]] is valid; stub is narrower than reality
         documents=[c.text for c in chunks],
         metadatas=[{"doc_id": c.doc_id, "chunk_index": c.chunk_index, "token_count": c.token_count} for c in chunks],
     )

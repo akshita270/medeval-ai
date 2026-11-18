@@ -38,6 +38,9 @@ jobs:
       - name: Validate configuration loads
         run: python -c "from app.config import get_settings; get_settings()"
 
+      - name: Type check
+        run: mypy app
+
       - name: Unit tests (deterministic + mocked API -- zero real API calls)
         run: python -m pytest tests/unit/ -v
 

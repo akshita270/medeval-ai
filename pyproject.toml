@@ -8,3 +8,8 @@ exclude = ["frontend", ".venv"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "W"]  # pyflakes + pycodestyle + import sorting
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+exclude = ["frontend", ".venv"]

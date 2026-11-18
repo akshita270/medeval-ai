@@ -20,20 +20,25 @@ def dense_search(query: str, collection: Collection, embedding_model: str, n_res
     query_embedding = embed_texts([query], embedding_model).vectors[0]
 
     results = collection.query(
-        query_embeddings=[query_embedding],
+        query_embeddings=[query_embedding],  # type: ignore[arg-type]  # list[float] is valid; stub is narrower
         n_results=n_results,
         include=["documents", "metadatas", "distances"],
     )
 
+    # Chroma's return type is Optional for each of these, but we always
+    # pass `include=[...]` for them above, so they're never actually None.
+    documents = results["documents"]
+    metadatas = results["metadatas"]
+    distances = results["distances"]
+    assert documents is not None and metadatas is not None and distances is not None
+
     passages: list[RetrievedPassage] = []
-    for chunk_id, document, metadata, distance in zip(
-        results["ids"][0], results["documents"][0], results["metadatas"][0], results["distances"][0]
-    ):
+    for chunk_id, document, metadata, distance in zip(results["ids"][0], documents[0], metadatas[0], distances[0]):
         passages.append(
             RetrievedPassage(
                 chunk_id=chunk_id,
-                doc_id=metadata["doc_id"],
-                chunk_index=metadata["chunk_index"],
+                doc_id=str(metadata["doc_id"]),
+                chunk_index=int(metadata["chunk_index"]),  # type: ignore[arg-type]  # always numeric; stub is too broad
                 text=document,
                 similarity_score=1 - distance,
             )

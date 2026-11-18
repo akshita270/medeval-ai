@@ -30,5 +30,6 @@ httpx==0.28.1
 # --- Testing / code quality ---
 pytest==9.2.0
 ruff==0.17.3
+mypy==2.4.1
 
 # Still to come: langchain (retrieval orchestration).

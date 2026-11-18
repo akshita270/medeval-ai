@@ -33,10 +33,16 @@ class BM25Index:
 
 def build_bm25_index(collection: Collection) -> BM25Index:
     data = collection.get(include=["documents", "metadatas"])
+    # Chroma's return type is Optional for these, but we always pass
+    # `include=[...]` for them above, so they're never actually None.
+    documents = data["documents"]
+    metadatas = data["metadatas"]
+    assert documents is not None and metadatas is not None
+
     chunk_ids: list[str] = data["ids"]
-    texts: list[str] = data["documents"]
-    doc_ids = [m["doc_id"] for m in data["metadatas"]]
-    chunk_indices = [m["chunk_index"] for m in data["metadatas"]]
+    texts: list[str] = documents
+    doc_ids = [str(m["doc_id"]) for m in metadatas]
+    chunk_indices = [int(m["chunk_index"]) for m in metadatas]  # type: ignore[arg-type]  # always numeric; stub too broad
 
     tokenized_corpus = [_tokenize(t) for t in texts]
     bm25 = BM25Okapi(tokenized_corpus)

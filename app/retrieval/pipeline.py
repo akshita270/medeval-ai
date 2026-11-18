@@ -29,6 +29,7 @@ def retrieve_passages(
     n_results = settings.retrieval_candidate_pool_size if settings.use_reranking else settings.retrieval_top_k
 
     if settings.use_hybrid_retrieval:
+        assert bm25_index is not None  # guaranteed by the check above
         candidates = hybrid_retrieve(
             query, collection, bm25_index, settings.embedding_model, n_results, settings.retrieval_candidate_pool_size
         )

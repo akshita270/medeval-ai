@@ -76,14 +76,20 @@ def _call_generation_api(messages: list[dict], model: str) -> dict:
     cache stores and replays.
     """
     client = get_openai_client()
-    response = client.chat.completions.parse(model=model, messages=messages, response_format=GenerationOutput)
+    response = client.chat.completions.parse(
+        model=model,
+        messages=messages,  # type: ignore[arg-type]  # plain dicts are valid at runtime; only a stub shape mismatch
+        response_format=GenerationOutput,
+    )
     parsed = response.choices[0].message.parsed
     assert parsed is not None  # response_format guarantees this on success
+    usage = response.usage
+    assert usage is not None  # always present on a non-streaming chat completion
     return {
         "answer": parsed.answer,
         "citations": [c.model_dump() for c in parsed.citations],
-        "prompt_tokens": response.usage.prompt_tokens,
-        "completion_tokens": response.usage.completion_tokens,
+        "prompt_tokens": usage.prompt_tokens,
+        "completion_tokens": usage.completion_tokens,
     }
 
 
