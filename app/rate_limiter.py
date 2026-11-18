@@ -58,6 +58,31 @@ class RateLimiter:
             hits.append(now)
 
 
+def _client_ip(request: Request) -> str:
+    """The real caller's IP, for rate-limiting purposes.
+
+    `request.client.host` is only the real caller's IP when nothing sits
+    in front of this app. Behind any reverse proxy (nginx, a load
+    balancer, Vercel's own edge) it's the PROXY's IP for every request,
+    which would make this limiter see "one caller" no matter how many
+    people are actually hitting it -- silently disabling it. `X-Forwarded-For`
+    (its first, left-most entry -- the original client, by convention) is
+    preferred when present.
+
+    This trusts that header at face value, which only holds when the
+    deployment's own proxy sets/overwrites it rather than passing through
+    whatever a client sent -- true for EC2 behind nginx/an ALB as
+    documented in this project's Phase 6, not true if this app is ever
+    exposed directly to the internet with no proxy in front of it (the
+    header would then be fully attacker-controlled, trivially spoofable
+    to defeat rate limiting). Revisit if the deployment topology changes.
+    """
+    forwarded_for = request.headers.get("x-forwarded-for")
+    if forwarded_for:
+        return forwarded_for.split(",")[0].strip()
+    return request.client.host if request.client else "unknown"
+
+
 def enforce_rate_limit(request: Request) -> None:
     """FastAPI dependency: blocks a request once its client exceeds the
     limit configured on `app.state.rate_limiter` (set up in main.py's
@@ -67,5 +92,4 @@ def enforce_rate_limit(request: Request) -> None:
     limiter: RateLimiter | None = getattr(request.app.state, "rate_limiter", None)
     if limiter is None:
         return
-    client_id = request.client.host if request.client else "unknown"
-    limiter.check(client_id)
+    limiter.check(_client_ip(request))

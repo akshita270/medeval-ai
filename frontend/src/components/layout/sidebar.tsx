@@ -146,14 +146,18 @@ export function Sidebar() {
       {/* Bottom section */}
       <div className="border-t border-sidebar-border px-3 py-3">
         <ul className="flex flex-col gap-1">
-          <SidebarActionItem
+          <SidebarActionLink
             icon={Settings}
             label="Settings"
+            href="/settings"
+            active={pathname.startsWith("/settings")}
             collapsed={collapsed}
           />
-          <SidebarActionItem
+          <SidebarActionLink
             icon={BookOpen}
             label="Documentation"
+            href="https://github.com/akshita270/medeval-ai#readme"
+            external
             collapsed={collapsed}
           />
           <li>
@@ -199,27 +203,48 @@ export function Sidebar() {
   );
 }
 
-function SidebarActionItem({
+function SidebarActionLink({
   icon: Icon,
   label,
+  href,
+  active = false,
+  external = false,
   collapsed,
 }: {
   icon: typeof Settings;
   label: string;
+  href: string;
+  active?: boolean;
+  external?: boolean;
   collapsed: boolean;
 }) {
+  const className = cn(
+    "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-medium transition-colors duration-150",
+    active
+      ? "bg-sidebar-accent text-sidebar-accent-foreground"
+      : "text-sidebar-foreground/80 hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground",
+    collapsed && "justify-center px-0",
+  );
+  const content = (
+    <>
+      <Icon
+        className={cn("h-[18px] w-[18px] shrink-0", active ? "text-primary" : "text-muted-foreground")}
+      />
+      {!collapsed && <span>{label}</span>}
+    </>
+  );
+
   return (
     <li>
-      <button
-        type="button"
-        className={cn(
-          "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-medium text-sidebar-foreground/80 transition-colors duration-150 hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground",
-          collapsed && "justify-center px-0",
-        )}
-      >
-        <Icon className="h-[18px] w-[18px] shrink-0 text-muted-foreground" />
-        {!collapsed && <span>{label}</span>}
-      </button>
+      {external ? (
+        <a href={href} target="_blank" rel="noopener noreferrer" className={className}>
+          {content}
+        </a>
+      ) : (
+        <Link href={href} className={className}>
+          {content}
+        </Link>
+      )}
     </li>
   );
 }
