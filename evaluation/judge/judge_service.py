@@ -9,6 +9,7 @@ is grading is structural, not just a label.
 """
 
 import time
+from collections.abc import Callable
 from pathlib import Path
 
 from pydantic import BaseModel, Field
@@ -46,9 +47,11 @@ def _call_judge(metric: MetricName, user_content: str, judge_model: str) -> tupl
     )
     parsed = response.choices[0].message.parsed
     assert parsed is not None  # response_format guarantees this on success
+    usage = response.usage
+    assert usage is not None  # always present on a non-streaming chat completion
 
     score = MetricScore(metric=metric, score=parsed.score, reasoning=parsed.reasoning, is_llm_judged=True)
-    return score, response.usage.prompt_tokens, response.usage.completion_tokens
+    return score, usage.prompt_tokens, usage.completion_tokens
 
 
 def judge_answer_correctness(question: str, generated_answer: str, expected_answer: str, judge_model: str):
@@ -107,7 +110,7 @@ def evaluate_answer(
 
     context_text = "\n\n".join(f"[{p.doc_id}] {p.text}" for p in generated.retrieved_passages)
 
-    calls: dict[MetricName, callable] = {
+    calls: dict[MetricName, Callable[[], tuple[MetricScore, int, int]]] = {
         MetricName.ANSWER_CORRECTNESS: lambda: judge_answer_correctness(
             golden.question, generated.answer, golden.expected_answer, judge_model
         ),

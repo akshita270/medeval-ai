@@ -197,12 +197,15 @@ def _stream_generation_api(messages: list[dict], model: str) -> Iterator[tuple[s
     assert parsed is not None  # response_format guarantees this on success
     usage = final.usage
     assert usage is not None  # always present on a completed chat completion
-    yield "done", {
-        "answer": parsed.answer,
-        "citations": [c.model_dump() for c in parsed.citations],
-        "prompt_tokens": usage.prompt_tokens,
-        "completion_tokens": usage.completion_tokens,
-    }
+    yield (
+        "done",
+        {
+            "answer": parsed.answer,
+            "citations": [c.model_dump() for c in parsed.citations],
+            "prompt_tokens": usage.prompt_tokens,
+            "completion_tokens": usage.completion_tokens,
+        },
+    )
 
 
 def generate_answer_stream(
@@ -252,16 +255,19 @@ def generate_answer_stream(
         use_reranking=settings.use_reranking,
     )
 
-    yield "answer", GeneratedAnswer(
-        query=query,
-        answer=result["answer"],
-        citations=doc_ids,
-        citation_details=citation_details,
-        retrieved_passages=passages,
-        config=config,
-        prompt_tokens=result["prompt_tokens"],
-        completion_tokens=result["completion_tokens"],
-        total_tokens=result["prompt_tokens"] + result["completion_tokens"],
+    yield (
+        "answer",
+        GeneratedAnswer(
+            query=query,
+            answer=result["answer"],
+            citations=doc_ids,
+            citation_details=citation_details,
+            retrieved_passages=passages,
+            config=config,
+            prompt_tokens=result["prompt_tokens"],
+            completion_tokens=result["completion_tokens"],
+            total_tokens=result["prompt_tokens"] + result["completion_tokens"],
+        ),
     )
 
 

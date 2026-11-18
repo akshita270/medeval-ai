@@ -192,9 +192,7 @@ class RequestLog:
             "avg_retrieval_ms": round(avg_retrieval, 1) if avg_retrieval is not None else 0.0,
             "avg_input_guardrails_ms": round(avg_input_guardrails, 1) if avg_input_guardrails is not None else 0.0,
             "avg_generation_ms": round(avg_generation, 1) if avg_generation is not None else 0.0,
-            "avg_output_guardrails_ms": round(avg_output_guardrails, 1)
-            if avg_output_guardrails is not None
-            else 0.0,
+            "avg_output_guardrails_ms": round(avg_output_guardrails, 1) if avg_output_guardrails is not None else 0.0,
             "sample_count": sample_count,
         }
 

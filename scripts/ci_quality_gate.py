@@ -49,7 +49,7 @@ def main() -> int:
 
     strategy = "hybrid" if settings.use_hybrid_retrieval else "dense"
     strategy += "_rerank" if settings.use_reranking else ""
-    suffix = "" if args.full else f"_sample{len(question_ids)}"
+    suffix = "" if question_ids is None else f"_sample{len(question_ids)}"
     candidate_path = Path(f"evaluation/regression/runs/run_v1_{strategy}{suffix}.json")
 
     baseline = EvaluationReport.model_validate_json(_BASELINE_PATH.read_text())

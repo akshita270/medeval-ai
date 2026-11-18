@@ -170,9 +170,7 @@ def ask(request: Request, body: AskRequest) -> GeneratedAnswer:
     output_decision = run_output_guardrails(body.question, answer, settings)
     stage_timings["output_guardrails_ms"] = (time.perf_counter() - output_guardrails_started) * 1000
     if output_decision.blocked:
-        result = redact_blocked_answer(answer, output_decision).model_copy(
-            update={"stage_timings_ms": stage_timings}
-        )
+        result = redact_blocked_answer(answer, output_decision).model_copy(update={"stage_timings_ms": stage_timings})
         _log_request(request_log, result, started_at)
         return result
 

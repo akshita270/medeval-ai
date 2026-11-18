@@ -22,7 +22,9 @@ def build_report(dataset_version: str, results: list[EvaluationResult]) -> Evalu
     # silently treating "unmeasured" as "zero seconds" would understate
     # the total rather than honestly flagging the gap.
     generation_latencies = [r.generation_latency_seconds for r in results]
-    total_generation_latency = None if any(g is None for g in generation_latencies) else sum(generation_latencies)
+    total_generation_latency = (
+        None if any(g is None for g in generation_latencies) else sum(g for g in generation_latencies if g is not None)
+    )
 
     return EvaluationReport(
         dataset_version=dataset_version,
