@@ -6,7 +6,7 @@ pydantic-settings==2.16.2
 python-dotenv==1.2.4
 
 # --- Phase 1, Step 2: document ingestion (loading) ---
-pypdf==6.21.4
+pypdf==7.1.0
 
 # --- Phase 1, Step 4: chunking (token-aware) ---
 tiktoken==0.14.0
