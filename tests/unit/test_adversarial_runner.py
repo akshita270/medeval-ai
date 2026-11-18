@@ -76,7 +76,7 @@ class TestRunAdversarialCase:
             patch("evaluation.guardrails.runner.generate_answer", return_value=_fake_generated_answer()),
             patch(
                 "evaluation.guardrails.runner.run_output_guardrails",
-                return_value=_block_decision("personalized_advice_leak"),
+                return_value=(_block_decision("personalized_advice_leak"), _fake_generated_answer()),
             ),
         ):
             result = run_adversarial_case(case, collection=None, bm25_index=None, settings=None)
@@ -93,7 +93,10 @@ class TestRunAdversarialCase:
             patch("evaluation.guardrails.runner.retrieve_passages", return_value=[]),
             patch("evaluation.guardrails.runner.run_input_guardrails", return_value=_ALLOW),
             patch("evaluation.guardrails.runner.generate_answer", return_value=_fake_generated_answer()),
-            patch("evaluation.guardrails.runner.run_output_guardrails", return_value=_ALLOW),
+            patch(
+                "evaluation.guardrails.runner.run_output_guardrails",
+                return_value=(_ALLOW, _fake_generated_answer()),
+            ),
         ):
             result = run_adversarial_case(case, collection=None, bm25_index=None, settings=None)
 
@@ -108,7 +111,10 @@ class TestRunAdversarialCase:
             patch("evaluation.guardrails.runner.retrieve_passages", return_value=[]),
             patch("evaluation.guardrails.runner.run_input_guardrails", return_value=_ALLOW),
             patch("evaluation.guardrails.runner.generate_answer", return_value=_fake_generated_answer()),
-            patch("evaluation.guardrails.runner.run_output_guardrails", return_value=_ALLOW),
+            patch(
+                "evaluation.guardrails.runner.run_output_guardrails",
+                return_value=(_ALLOW, _fake_generated_answer()),
+            ),
         ):
             result = run_adversarial_case(case, collection=None, bm25_index=None, settings=None)
 

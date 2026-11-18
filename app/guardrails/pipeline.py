@@ -1,5 +1,5 @@
 from app.config import Settings
-from app.guardrails.citation_guardrails import check_citation_grounding
+from app.guardrails.citation_guardrails import filter_grounded_citations
 from app.guardrails.classifier import check_output_safety, check_semantic_intent
 from app.guardrails.input_guardrails import (
     check_personalized_advice_request,
@@ -8,7 +8,7 @@ from app.guardrails.input_guardrails import (
 )
 from app.guardrails.output_guardrails import check_personalized_dosing_leak
 from app.guardrails.pii_guardrails import check_patient_identifier
-from app.guardrails.schema import GuardrailAction, GuardrailDecision
+from app.guardrails.schema import GuardrailAction, GuardrailCheckResult, GuardrailDecision
 from app.schemas import GeneratedAnswer, GenerationConfig, RetrievedPassage
 
 # Shown to the user in place of a generated answer when a check blocks the
@@ -96,29 +96,56 @@ def build_blocked_answer(query: str, decision: GuardrailDecision, settings: Sett
     )
 
 
-def run_output_guardrails(question: str, generated: GeneratedAnswer, settings: Settings) -> GuardrailDecision:
+def run_output_guardrails(
+    question: str, generated: GeneratedAnswer, settings: Settings
+) -> tuple[GuardrailDecision, GeneratedAnswer]:
     """Mirrors run_input_guardrails's two-layer, cost-cascading shape:
     Layer 1 (free, deterministic checks) first, Layer 2 (one real API
     call) only if Layer 1 found nothing in the generated answer.
 
-    Takes the full GeneratedAnswer (not just the answer text) because
-    check_citation_grounding needs the structured citation_details and
-    retrieved_passages alongside it, not just the rendered text.
+    citation_grounding is handled differently from every other check
+    here: instead of blocking the whole answer over one bad quote, it
+    drops only the citation(s) that can't be verified and lets the rest
+    of the answer through -- one misquoted citation doesn't mean every
+    other claim in the answer is untrustworthy. The (possibly trimmed)
+    GeneratedAnswer is returned alongside the decision so the caller
+    shows what was actually verified, not what the model originally
+    claimed. Only if *every* citation the model made turns out
+    ungrounded does this still block -- there'd be nothing verified left
+    to show.
     """
+    grounded_citations, dropped_reasons = filter_grounded_citations(
+        generated.citation_details, generated.retrieved_passages
+    )
+
+    if generated.citation_details and not grounded_citations:
+        result = GuardrailCheckResult(
+            check_name="citation_grounding",
+            action=GuardrailAction.BLOCK,
+            reason=" ".join(dropped_reasons),
+        )
+        return GuardrailDecision(action=GuardrailAction.BLOCK, triggered_checks=[result]), generated
+
+    if dropped_reasons:
+        doc_ids: list[str] = []
+        for citation in grounded_citations:
+            if citation.doc_id not in doc_ids:
+                doc_ids.append(citation.doc_id)
+        generated = generated.model_copy(update={"citation_details": grounded_citations, "citations": doc_ids})
+
     layer1_results = [
-        check_citation_grounding(generated.citation_details, generated.retrieved_passages),
         check_patient_identifier(generated.answer),
         check_personalized_dosing_leak(generated.answer),
     ]
     triggered = [r for r in layer1_results if r.action == GuardrailAction.BLOCK]
     if triggered:
-        return GuardrailDecision(action=GuardrailAction.BLOCK, triggered_checks=triggered)
+        return GuardrailDecision(action=GuardrailAction.BLOCK, triggered_checks=triggered), generated
 
     layer2_result = check_output_safety(question, generated.answer, settings)
     if layer2_result.action == GuardrailAction.BLOCK:
-        return GuardrailDecision(action=GuardrailAction.BLOCK, triggered_checks=[layer2_result])
+        return GuardrailDecision(action=GuardrailAction.BLOCK, triggered_checks=[layer2_result]), generated
 
-    return GuardrailDecision(action=GuardrailAction.ALLOW, triggered_checks=[])
+    return GuardrailDecision(action=GuardrailAction.ALLOW, triggered_checks=[]), generated
 
 
 def redact_blocked_answer(generated: GeneratedAnswer, decision: GuardrailDecision) -> GeneratedAnswer:

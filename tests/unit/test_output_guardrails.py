@@ -73,7 +73,7 @@ class TestRunOutputGuardrails:
             "app.guardrails.pipeline.check_output_safety",
             return_value=GuardrailCheckResult(check_name="output_semantic_safety", action=GuardrailAction.ALLOW),
         ) as mock_layer2:
-            decision = run_output_guardrails(
+            decision, _ = run_output_guardrails(
                 "What is the starting dose of metformin?",
                 generated,
                 settings=None,  # not used by the mocked Layer 2; Layer 1 needs no settings either
@@ -84,7 +84,7 @@ class TestRunOutputGuardrails:
     def test_layer2_not_called_when_layer1_already_blocked(self):
         generated = _generated_answer("You should take 500mg of metformin twice daily.")
         with patch("app.guardrails.pipeline.check_output_safety") as mock_layer2:
-            decision = run_output_guardrails("What is the starting dose of metformin?", generated, settings=None)
+            decision, _ = run_output_guardrails("What is the starting dose of metformin?", generated, settings=None)
         assert decision.blocked
         mock_layer2.assert_not_called()
 
@@ -96,28 +96,59 @@ class TestRunOutputGuardrails:
                 check_name="personalized_advice_leak", action=GuardrailAction.BLOCK, reason="flagged by classifier"
             ),
         ):
-            decision = run_output_guardrails("What is the starting dose of metformin?", generated, settings=None)
+            decision, _ = run_output_guardrails("What is the starting dose of metformin?", generated, settings=None)
         assert decision.blocked
         assert decision.triggered_checks[0].check_name == "personalized_advice_leak"
 
-    def test_blocks_on_citation_grounding_failure_before_layer2(self):
-        # A citation naming a real, retrieved chunk but quoting text that
-        # chunk doesn't actually contain -- a misquoted/fabricated
-        # citation -- must block without ever reaching Layer 2.
+    def test_blocks_when_every_citation_is_ungrounded(self):
+        # A single citation naming a real, retrieved chunk but quoting
+        # text that chunk doesn't actually contain -- a misquoted/
+        # fabricated citation, and the *only* one the answer made -- must
+        # still block: dropping it would leave nothing verified to show.
         generated = _generated_answer(
             "Metformin reduces HbA1c significantly.",
             citation_details=[CitationDetail(doc_id="docA", chunk_id="docA::0001", quote="not in the chunk at all")],
         )
         with patch("app.guardrails.pipeline.check_output_safety") as mock_layer2:
-            decision = run_output_guardrails("Q", generated, settings=None)
+            decision, _ = run_output_guardrails("Q", generated, settings=None)
         assert decision.blocked
         assert decision.triggered_checks[0].check_name == "citation_grounding"
         mock_layer2.assert_not_called()
 
+    def test_drops_single_ungrounded_citation_without_blocking_whole_answer(self):
+        # Two citations, one grounded and one not -- the bad one is
+        # dropped, but the rest of the answer still gets through since a
+        # verified citation remains.
+        passages = [
+            RetrievedPassage(
+                chunk_id="docA::0001", doc_id="docA", chunk_index=0, text="real text", similarity_score=0.8
+            ),
+            RetrievedPassage(
+                chunk_id="docB::0001", doc_id="docB", chunk_index=0, text="other text", similarity_score=0.7
+            ),
+        ]
+        generated = _generated_answer(
+            "Metformin reduces HbA1c. It also has a modest effect on weight.",
+            citation_details=[
+                CitationDetail(doc_id="docA", chunk_id="docA::0001", quote="real text"),
+                CitationDetail(doc_id="docB", chunk_id="docB::0001", quote="fabricated quote not in chunk"),
+            ],
+            passages=passages,
+        )
+        with patch(
+            "app.guardrails.pipeline.check_output_safety",
+            return_value=GuardrailCheckResult(check_name="output_semantic_safety", action=GuardrailAction.ALLOW),
+        ):
+            decision, result = run_output_guardrails("Q", generated, settings=None)
+        assert not decision.blocked
+        assert [c.chunk_id for c in result.citation_details] == ["docA::0001"]
+        assert result.citations == ["docA"]
+        assert "Metformin reduces HbA1c" in result.answer
+
     def test_blocks_on_patient_identifier_in_answer(self):
         generated = _generated_answer("Contact the patient at jane.doe@example.com for follow-up.")
         with patch("app.guardrails.pipeline.check_output_safety") as mock_layer2:
-            decision = run_output_guardrails("Q", generated, settings=None)
+            decision, _ = run_output_guardrails("Q", generated, settings=None)
         assert decision.blocked
         assert decision.triggered_checks[0].check_name == "patient_identifier"
         mock_layer2.assert_not_called()

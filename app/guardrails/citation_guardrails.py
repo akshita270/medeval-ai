@@ -13,7 +13,6 @@ applied here to the model's own citations, live, on every answer.
 
 import re
 
-from app.guardrails.schema import GuardrailAction, GuardrailCheckResult
 from app.schemas import CitationDetail, RetrievedPassage
 
 
@@ -50,12 +49,19 @@ def _is_grounded(quote: str, chunk_text: str) -> bool:
     return True
 
 
-def check_citation_grounding(citations: list[CitationDetail], passages: list[RetrievedPassage]) -> GuardrailCheckResult:
-    """BLOCKs on the first citation whose quote isn't grounded in the
-    chunk it names (see _is_grounded). An empty `citations` list (e.g.
-    an abstention answer) trivially ALLOWs -- there's nothing to check.
+def filter_grounded_citations(
+    citations: list[CitationDetail], passages: list[RetrievedPassage]
+) -> tuple[list[CitationDetail], list[str]]:
+    """Splits citations into the ones actually grounded in the chunk they
+    name (see _is_grounded) and the ones that aren't, instead of failing
+    the whole answer over a single bad quote. One ungrounded citation
+    doesn't mean the rest of the answer is untrustworthy -- it means that
+    one claim's "proof" can't be verified, so only that citation should be
+    dropped. Returns (kept_citations, reasons_for_each_dropped_citation).
     """
     passages_by_chunk_id = {p.chunk_id: p for p in passages}
+    kept: list[CitationDetail] = []
+    dropped_reasons: list[str] = []
 
     for citation in citations:
         passage = passages_by_chunk_id.get(citation.chunk_id)
@@ -63,21 +69,17 @@ def check_citation_grounding(citations: list[CitationDetail], passages: list[Ret
             # Shouldn't happen -- generate_answer() already filters to
             # retrieved chunk_ids -- but a defense-in-depth check should
             # never assume an earlier filter always ran correctly.
-            return GuardrailCheckResult(
-                check_name="citation_grounding",
-                action=GuardrailAction.BLOCK,
-                reason=f"Citation references chunk_id {citation.chunk_id!r}, which was not retrieved.",
-            )
+            dropped_reasons.append(f"Citation references chunk_id {citation.chunk_id!r}, which was not retrieved.")
+            continue
 
         if not _is_grounded(citation.quote, _normalize(passage.text)):
-            return GuardrailCheckResult(
-                check_name="citation_grounding",
-                action=GuardrailAction.BLOCK,
-                reason=(
-                    f"Quote for chunk {citation.chunk_id!r} is not a verbatim substring (or verbatim "
-                    "spans joined by an elision) of that chunk's text -- the citation may be "
-                    "misquoted or fabricated."
-                ),
+            dropped_reasons.append(
+                f"Quote for chunk {citation.chunk_id!r} is not a verbatim substring (or verbatim "
+                "spans joined by an elision) of that chunk's text -- the citation may be "
+                "misquoted or fabricated."
             )
+            continue
 
-    return GuardrailCheckResult(check_name="citation_grounding", action=GuardrailAction.ALLOW)
+        kept.append(citation)
+
+    return kept, dropped_reasons

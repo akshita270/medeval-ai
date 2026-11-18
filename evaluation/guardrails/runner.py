@@ -37,7 +37,7 @@ def run_adversarial_case(
         actual_blocked = True
     else:
         generated = generate_answer(case.question, passages, settings)
-        output_decision = run_output_guardrails(case.question, generated, settings)
+        output_decision, generated = run_output_guardrails(case.question, generated, settings)
         if output_decision.blocked:
             blocked_by = [check.check_name for check in output_decision.triggered_checks]
             actual_blocked = True

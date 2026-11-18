@@ -167,7 +167,7 @@ def ask(request: Request, body: AskRequest) -> GeneratedAnswer:
     # checks above. The generation cost is already spent either way; this
     # only decides what's shown to the user.
     output_guardrails_started = time.perf_counter()
-    output_decision = run_output_guardrails(body.question, answer, settings)
+    output_decision, answer = run_output_guardrails(body.question, answer, settings)
     stage_timings["output_guardrails_ms"] = (time.perf_counter() - output_guardrails_started) * 1000
     if output_decision.blocked:
         result = redact_blocked_answer(answer, output_decision).model_copy(update={"stage_timings_ms": stage_timings})
@@ -246,7 +246,7 @@ def ask_stream(request: Request, body: AskRequest) -> StreamingResponse:
         stage_timings["generation_ms"] = (time.perf_counter() - generation_started) * 1000
 
         output_guardrails_started = time.perf_counter()
-        output_decision = run_output_guardrails(body.question, answer, settings)
+        output_decision, answer = run_output_guardrails(body.question, answer, settings)
         stage_timings["output_guardrails_ms"] = (time.perf_counter() - output_guardrails_started) * 1000
         if output_decision.blocked:
             answer = redact_blocked_answer(answer, output_decision)
