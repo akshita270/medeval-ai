@@ -1,16 +1,26 @@
 from functools import lru_cache
-
-from sentence_transformers import CrossEncoder
+from typing import TYPE_CHECKING
 
 from app.schemas import RetrievedPassage
 
+if TYPE_CHECKING:
+    from sentence_transformers import CrossEncoder
+
 
 @lru_cache
-def _get_reranker(model_name: str) -> CrossEncoder:
+def _get_reranker(model_name: str) -> "CrossEncoder":
     """Cached per model name -- loading a cross-encoder is expensive
     (model weights into memory); we want exactly one load per model per
     process, not one per rerank() call.
+
+    Imports sentence_transformers/torch here rather than at module level:
+    reranking is off by default (use_reranking=False), and that import
+    alone pulls several hundred MB into every process regardless of
+    whether reranking is ever used -- too costly to pay unconditionally
+    on a memory-constrained deploy target.
     """
+    from sentence_transformers import CrossEncoder
+
     return CrossEncoder(model_name)
 
 
