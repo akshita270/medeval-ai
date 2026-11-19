@@ -41,7 +41,10 @@ export interface GeneratedAnswer {
   blocked_by: string[] | null;
 }
 
-const DEFAULT_API_BASE_URL = "http://localhost:8000";
+// Baked in at build time for the deployed site so recruiters see live data
+// with zero setup; still overridable per-browser (see getApiBaseUrl below)
+// for local dev against a different backend.
+const DEFAULT_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
 const STORAGE_KEY = "medeval-api-base-url";
 const API_KEY_STORAGE_KEY = "medeval-api-key";
 
