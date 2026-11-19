@@ -24,7 +24,10 @@ class BM25Index:
     of it that could drift out of sync.
     """
 
-    bm25: BM25Okapi
+    # None when the collection has zero chunks -- BM25Okapi itself divides
+    # by the corpus size internally, so it can't be constructed over an
+    # empty corpus at all (not just "finds nothing").
+    bm25: BM25Okapi | None
     chunk_ids: list[str]
     doc_ids: list[str]
     chunk_indices: list[int]
@@ -45,7 +48,7 @@ def build_bm25_index(collection: Collection) -> BM25Index:
     chunk_indices = [int(m["chunk_index"]) for m in metadatas]  # type: ignore[arg-type]  # always numeric; stub too broad
 
     tokenized_corpus = [_tokenize(t) for t in texts]
-    bm25 = BM25Okapi(tokenized_corpus)
+    bm25 = BM25Okapi(tokenized_corpus) if tokenized_corpus else None
 
     return BM25Index(bm25=bm25, chunk_ids=chunk_ids, doc_ids=doc_ids, chunk_indices=chunk_indices, texts=texts)
 
@@ -57,6 +60,9 @@ def bm25_search(index: BM25Index, query: str, top_n: int) -> list[RetrievedPassa
     0 -- that's expected BM25 behavior, not an error, and such results
     simply contribute minimally once fused with dense results via RRF.
     """
+    if index.bm25 is None:
+        return []
+
     scores = index.bm25.get_scores(_tokenize(query))
     ranked_positions = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)[:top_n]
 

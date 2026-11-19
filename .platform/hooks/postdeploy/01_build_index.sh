@@ -6,7 +6,9 @@
 set -e
 
 source /var/app/venv/*/bin/activate
-source /opt/elasticbeanstalk/support/envvars
+# Amazon Linux 2023 platforms expose env vars at this path (the old AL2
+# path /opt/elasticbeanstalk/support/envvars doesn't exist here).
+source /opt/elasticbeanstalk/deployment/env
 
 cd /var/app/current
 python -m scripts.build_index
