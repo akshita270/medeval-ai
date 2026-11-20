@@ -1,6 +1,6 @@
 # MedEval AI
 
-**[Live demo](https://frontend-kygtgrcm3-akshita270s-projects.vercel.app)** -- a working dashboard, not just a repo.
+**[Live demo](https://medeval-ai.vercel.app)** -- a working dashboard, not just a repo.
 
 A production-style Retrieval-Augmented Generation (RAG) system for Type 2 diabetes
 research questions, built as an end-to-end evaluation and CI/CD platform rather than

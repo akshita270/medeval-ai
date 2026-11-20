@@ -1,0 +1,7 @@
+.venv
+data
+frontend/node_modules
+frontend/.next
+evaluation/regression/runs
+*.db
+*.sqlite3
