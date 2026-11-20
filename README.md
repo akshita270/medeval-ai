@@ -254,6 +254,11 @@ regressed more than the allowed 20% -- so `evaluate_quality_gates()` correctly
 looked like an improvement. That's the actual point of per-metric,
 per-question regression checks instead of a single aggregate score.
 
+The live Evaluation Lab's run picker shows each run's actual `retrieval_top_k`
+(and hybrid/reranking/routing flags) directly in its label -- e.g. "Dense
+retrieval, top_k=8" vs. "Approved baseline, top_k=5" -- so this table's
+distinction is visible on the dashboard itself, not just here in prose.
+
 ## A known, documented limitation
 
 LLM-judged scores carry real run-to-run variance even when nothing about the system
