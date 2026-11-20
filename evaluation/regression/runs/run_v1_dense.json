@@ -1,0 +1,1436 @@
+{
+  "dataset_version": "v1",
+  "total_questions": 30,
+  "metric_summaries": [
+    {
+      "metric": "answer_correctness",
+      "mean_score": 0.8766666666666666,
+      "count": 30
+    },
+    {
+      "metric": "faithfulness",
+      "mean_score": 0.8366666666666666,
+      "count": 30
+    },
+    {
+      "metric": "answer_relevance",
+      "mean_score": 0.99,
+      "count": 30
+    },
+    {
+      "metric": "context_precision",
+      "mean_score": 0.6033333333333334,
+      "count": 30
+    },
+    {
+      "metric": "abstention_quality",
+      "mean_score": 0.9099999999999999,
+      "count": 30
+    },
+    {
+      "metric": "context_recall",
+      "mean_score": 0.9090909090909091,
+      "count": 22
+    }
+  ],
+  "total_failed_metric_calls": 0,
+  "total_cost_usd": 0.27636374999999996,
+  "total_judge_latency_seconds": 1105.3741882049944,
+  "total_generation_latency_seconds": 692.1073491228744,
+  "total_prompt_tokens": 549015,
+  "total_completion_tokens": 69555,
+  "results": [
+    {
+      "question_id": "q0001",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 1.0,
+          "reasoning": "The generated answer matches the expected answer: it states inhibition of the renal SGLT2 transporter (proximal tubule), reduced renal glucose reabsorption, increased urinary glucose excretion (glucosuria), and that this lowers glucose independent of insulin. No key facts are missing or contradicted.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 1.0,
+          "reasoning": "All factual claims in the generated answer are directly supported by the retrieved context, which states that SGLT2 inhibitors inhibit the high-capacity SGLT2 transporter in the proximal convoluted tubule, reduce renal glucose reabsorption, increase urinary glucose excretion (glucosuria) and lower glucose levels independently of insulin.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 1.0,
+          "reasoning": "The generated answer directly and accurately explains the mechanism: SGLT2 inhibitors block the renal SGLT2 transporter in the proximal tubule, reducing glucose reabsorption and causing glucosuria, which lowers plasma glucose independently of insulin. It therefore fully addresses the question.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 0.9,
+          "reasoning": "Most retrieved passages (ranks 1–7) directly describe SGLT2 inhibitor action—blocking renal SGLT2 in the proximal tubule to reduce glucose reabsorption and increase urinary glucose excretion (glucuresis)—or provide closely related clinical consequences (natriuresis, osmotic diuresis, weight loss). Rank 8 (the nutritional sweeteners review) is irrelevant to the question and is the only off-topic passage; no irrelevant passage is ranked above clearly relevant ones.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 1.0,
+          "reasoning": "Correct behavior. The system provided a clear, factual mechanism: SGLT2 inhibitors block the SGLT2 transporter in the renal proximal tubule, reducing glucose reabsorption and increasing urinary glucose excretion (glucosuria), lowering blood glucose independently of insulin. This directly answers the question without unnecessary hedging or fabrication.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_recall",
+          "score": 1.0,
+          "reasoning": "The retrieved passages explicitly state that SGLT2 inhibitors are a relatively new class of (oral) antihyperglycaemic agents and describe that they reduce reabsorption of glucose in the kidneys and facilitate its excretion in the urine, thereby lowering plasma glucose levels—matching the supporting evidence verbatim/near-verbatim.",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 33.03859095799271,
+      "generation_latency_seconds": 15.268423457979225,
+      "prompt_tokens": 19930,
+      "completion_tokens": 1909,
+      "estimated_cost_usd": 0.0088005,
+      "generation_model": "gpt-5-mini"
+    },
+    {
+      "question_id": "q0002",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 1.0,
+          "reasoning": "The generated answer matches the expected answer exactly: it states semaglutide is a GLP-1 receptor agonist, that it stimulates insulin secretion and inhibits glucagon release in a glucose-dependent manner, and that this improves blood glucose with reduced risk of hypoglycaemia. No key facts are missing or incorrect.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 1.0,
+          "reasoning": "All factual claims in the generated answer are directly supported by the retrieved context: the context states semaglutide is a GLP‑1 receptor agonist that stimulates insulin secretion and inhibits glucagon release in a glucose‑dependent manner, improving blood glucose levels and reducing risk of hypoglycaemia.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 1.0,
+          "reasoning": "The answer directly explains the primary mechanism: semaglutide is a GLP‑1 receptor agonist that increases glucose‑dependent insulin secretion and suppresses glucagon, which lowers blood glucose and reduces hypoglycaemia risk. This addresses the question succinctly and on-topic.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 0.6,
+          "reasoning": "Most retrieved passages (ranks 1,2,4,6,7,8) are relevant—providing that semaglutide is a GLP‑1 receptor agonist that stimulates insulin and inhibits glucagon and giving PK context. However, ranks 3 and 5 are unrelated (dapagliflozin/SGLT2 inhibitor content) and thus irrelevant; they interrupt the otherwise relevant ordering.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 1.0,
+          "reasoning": "Correct behavior. The question was answerable and the system provided a concise, accurate mechanism: semaglutide is a GLP‑1 receptor agonist that increases glucose‑dependent insulin secretion and suppresses glucagon, lowering blood glucose and reducing hypoglycaemia risk. No unnecessary hedging or fabricated details were present.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_recall",
+          "score": 1.0,
+          "reasoning": "The retrieved passage (semaglutide_pharmacokinetics Introduction) contains the supporting sentence verbatim: it states that semaglutide stimulates insulin secretion and inhibits glucagon release depending on blood glucose concentration, improving blood glucose and reducing hypoglycaemia risk.",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 31.055185207980685,
+      "generation_latency_seconds": 21.730949249933474,
+      "prompt_tokens": 20182,
+      "completion_tokens": 1941,
+      "estimated_cost_usd": 0.0089275,
+      "generation_model": "gpt-5-mini"
+    },
+    {
+      "question_id": "q0003",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 1.0,
+          "reasoning": "The generated answer states the same key fact as the expected answer: the optimal HbA1c diagnostic cut-off identified was 6.03% for a previously undiagnosed population. The additional sensitivity (74%) and specificity (87.2%) figures in the generated answer do not contradict the expected answer and do not affect correctness.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 1.0,
+          "reasoning": "All factual claims in the generated answer are directly supported by the retrieved context: the review reports an optimal HbA1c cut-off of 6.03% for diagnosing diabetes in previously undiagnosed populations, with pooled sensitivity 74% (95% CI 68–79%) and specificity 87.2% (95% CI 82–91%). No unsupported claims were made.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 1.0,
+          "reasoning": "The answer directly and completely states the optimal HbA1c threshold (6.03%) and provides relevant diagnostic performance metrics (sensitivity and specificity), which fully addresses the question without extraneous information.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 1.0,
+          "reasoning": "All retrieved passages are directly relevant: they report the meta-analysis results and explicitly state the optimal HbA1c cut-off of 6.03% for diagnosing diabetes in previously undiagnosed populations. Relevance is high throughout and the most directly informative passages appear near the top of the ranking (no irrelevant passages or ordering errors).",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 1.0,
+          "reasoning": "Correct behavior. The question was answerable and the system provided a specific, substantive HbA1c threshold (6.03%) with associated sensitivity and specificity values, without unnecessary hedging or refusal. This matches the expected behavior for an answerable item.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_recall",
+          "score": 1.0,
+          "reasoning": "The retrieved passages explicitly state verbatim that \"The optimal cut off value for sensitivity and specificity for HbA1c for diagnosing diabetes in previously undiagnosed population was estimated as 6.03%.\" and additionally provide related pooled sensitivity/specificity at that threshold, so the supporting evidence is fully present.",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 27.596718584070913,
+      "generation_latency_seconds": 17.479681583005004,
+      "prompt_tokens": 18965,
+      "completion_tokens": 1539,
+      "estimated_cost_usd": 0.00781925,
+      "generation_model": "gpt-5-mini"
+    },
+    {
+      "question_id": "q0004",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 1.0,
+          "reasoning": "The generated answer matches the expected answer exactly: optimal FPG cut-off 104 mg/dL with pooled sensitivity 82.3% and specificity 89.4%. The generated response additionally reported 95% confidence intervals, which does not conflict with the expected facts.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 1.0,
+          "reasoning": "All factual claims in the generated answer (optimal FPG cut-off 104 mg/dL and pooled sensitivity 82.3% [95% CI: 74.6–88.1%] and specificity 89.4% [95% CI: 85.2–92.5%]) are explicitly stated in the retrieved context, so no unsupported claims were made.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 1.0,
+          "reasoning": "The answer directly states the optimal FPG cutoff (104 mg/dL) and provides the corresponding pooled sensitivity and specificity with confidence intervals, which exactly matches what the question asked.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 1.0,
+          "reasoning": "All retrieved passages are directly relevant: they report the meta-analysis results and explicitly state the optimal FPG cutoff (104 mg/dL) and its pooled sensitivity and specificity (82.3% and 89.4%, respectively). Relevant details appear near the top of the retrieval, and no clearly irrelevant passages are present.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 1.0,
+          "reasoning": "Correct behavior. The item was answerable (is_answerable=true) and the system provided a clear, substantive answer with specific cutoff, sensitivity, and specificity values without unnecessary hedging or fabrication. This matches the expected behavior for an answerable question.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_recall",
+          "score": 1.0,
+          "reasoning": "The retrieved passages explicitly state: “Estimated optimal cut off for FPG for diagnosing diabetes was 104 mg/dL with pooled sensitivity of 82.3% (95% CI: 74.6–88.1%) and specificity of 89.4% (95% CI:85.2–92.5%),” which matches the supporting evidence verbatim.",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 22.675168916000985,
+      "generation_latency_seconds": 12.338831624947488,
+      "prompt_tokens": 19070,
+      "completion_tokens": 1403,
+      "estimated_cost_usd": 0.0075735,
+      "generation_model": "gpt-5-mini"
+    },
+    {
+      "question_id": "q0005",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 1.0,
+          "reasoning": "The generated answer states that 71% of hemodialysis patients with type 2 diabetes had diabetic retinopathy of any stage in the 4D Study cohort, which is equivalent to the expected wording that 71% had diabetic retinopathy of some stage. No facts are missing or contradictory.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 1.0,
+          "reasoning": "The statement is directly supported by the retrieved context: the 4D Study baseline results report that diabetic retinopathy of any stage was present in 71% of the patients with type 2 diabetes on hemodialysis. No unsupported claims were made.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 1.0,
+          "reasoning": "The generated answer directly responds to the exact question by giving a specific proportion (71%) of hemodialysis patients with type 2 diabetes who had diabetic retinopathy in the 4D Study cohort, so it fully addresses the query.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 0.9,
+          "reasoning": "Passages 1, 2 and 4 (all from retinopathy_hemodialysis_risk_factors) directly report the 4D Study prevalence and baseline results (including the statement that 71% had DR) and are clearly relevant. Passage 3 (serum_albumin_retinopathy_nhanes) is unrelated (NHANES/serum albumin study) and therefore irrelevant; it is not ranked first. Overall most retrieved passages are relevant with a single irrelevant item ranked third.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 1.0,
+          "reasoning": "Correct behavior: the question was answerable and the system provided a specific substantive answer (71%) without unnecessary hedging or fabrication. This matches the expectation for an answerable item, so full credit is appropriate.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_recall",
+          "score": 1.0,
+          "reasoning": "The retrieved passages include the exact statement from the supporting evidence: “The prevalence of any stage of DR was 71% in our patients.” (also reiterated as “DR was present in 71% of the patients.”), so the necessary information is present verbatim.",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 28.906860999995843,
+      "generation_latency_seconds": 8.599526082980447,
+      "prompt_tokens": 20387,
+      "completion_tokens": 1665,
+      "estimated_cost_usd": 0.00842675,
+      "generation_model": "gpt-5-mini"
+    },
+    {
+      "question_id": "q0006",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 0.8,
+          "reasoning": "The generated answer correctly matches the recommended macronutrient ranges (40–50% carbs, 15–25% protein, 25–35% fat) and appropriately limits saturated fat. It adds specific fat-type percentages (PUFA/MUFA) which are compatible. It omits the additional recommended details: at least 14 g fiber per 1000 kcal and sodium under 2300 mg, so those minor supporting recommendations are missing.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 1.0,
+          "reasoning": "All numeric recommendations in the generated answer (40–50% carbohydrates; 15–25% proteins; 25–35% fats; <7% saturated fat; 10% polyunsaturated; 10% monounsaturated) are explicitly stated in the retrieved context (Authors’ Comments and Dietary Prescription sections). No additional factual claims were added beyond the provided text.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 1.0,
+          "reasoning": "The response directly provides specific percentage ranges for carbohydrates, protein, and fat and includes recommended saturated/polyunsaturated/monounsaturated fat targets, which exactly addresses the requested macronutrient breakdown for a Mediterranean-informed diabetes dietary prescription.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 0.9,
+          "reasoning": "Most retrieved passages directly discuss macronutrient distribution, Mediterranean diet recommendations, and give the explicit prescription (notably in the first-ranked passage). One passage (the one about unregulated supplements/herbal products) is off-topic for the specific question about macronutrient breakdown (it appears in the retrieved list after the top entry) and slightly lowers precision, but the most relevant material is ranked at or near the top.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 1.0,
+          "reasoning": "Correct behavior: the question was answerable and the system provided a clear, substantive macronutrient prescription (numeric ranges for carbs, protein, and fats plus fat-type targets) without unnecessary hedging or refusal. This matches the requirement to answer when evidence supports doing so.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_recall",
+          "score": 1.0,
+          "reasoning": "The retrieved passages include the authors’ exact recommended dietary prescription verbatim: 40–50% carbohydrates; 15–25% proteins; 25–35% fats (<7% saturated, 10% polyunsaturated, and 10% monounsaturated); at least 14 g of fiber per 1000 kcal; and <2300 mg sodium.",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 51.30236091604456,
+      "generation_latency_seconds": 16.969229083042592,
+      "prompt_tokens": 20629,
+      "completion_tokens": 3200,
+      "estimated_cost_usd": 0.01155725,
+      "generation_model": "gpt-5-mini"
+    },
+    {
+      "question_id": "q0007",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 1.0,
+          "reasoning": "The generated answer states that approximately 40% of patients needing renal replacement therapy have diabetic nephropathy, which exactly matches the expected answer's figure and wording. No facts are missing or contradictory.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 1.0,
+          "reasoning": "The retrieved context explicitly states: \"Diabetic nephropathy has been reported in approximately 40% of patients who need renal replacement therapy.\" Therefore the claim is fully supported by the provided material.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 1.0,
+          "reasoning": "The generated answer directly responds to the question by giving an approximate proportion (about 40%) of patients requiring renal replacement therapy whose underlying cause is diabetic nephropathy. It is concise and on-topic with no extraneous content.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 0.8,
+          "reasoning": "Most retrieved passages (all labeled retinopathy_hemodialysis_risk_factors at ranks 1,2,4,5, etc.) are directly relevant — they include the exact statement that \"diabetic nephropathy has been reported in approximately 40% of patients who need renal replacement therapy.\" One passage (serum_albumin_retinopathy_nhanes, ranked in the middle) is about serum albumin and DR in NHANES and is not relevant to the question. The irrelevant passage is not ranked first, so relevance is high near the top.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 1.0,
+          "reasoning": "Correct behavior. The item is marked answerable and the system provided a clear substantive numeric estimate (~40%) without unnecessary hedging or refusal. This is not a case of fabrication-when-should-have-abstained nor over-caution-when-should-have-answered.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_recall",
+          "score": 1.0,
+          "reasoning": "The retrieved passages include the exact sentence from the supporting evidence: \"Diabetic nephropathy has been reported in approximately 40% of patients who need renal replacement therapy,\" found in the retinopathy_hemodialysis_risk_factors Introduction.",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 35.794177582953125,
+      "generation_latency_seconds": 8.9982144999085,
+      "prompt_tokens": 19297,
+      "completion_tokens": 2350,
+      "estimated_cost_usd": 0.00952425,
+      "generation_model": "gpt-5-mini"
+    },
+    {
+      "question_id": "q0008",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 1.0,
+          "reasoning": "The generated answer correctly states that >99% of semaglutide is bound to plasma albumin and links this high binding to prolonged systemic exposure through slow elimination, matching the expected answer. The generated answer adds a minor, noncontradictory detail that delayed absorption also contributes to prolonged exposure, which does not conflict with the expected content.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 1.0,
+          "reasoning": "All factual claims in the generated answer are directly supported by the retrieved semaglutide pharmacokinetics text: the Introduction states that “more than 99% of the semaglutide is bound to plasma albumin” and explicitly that the prolonged exposure is “mainly driven by slow systemic elimination and, to a lesser extent, by delayed absorption,” noting this is in line with the high albumin binding.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 1.0,
+          "reasoning": "The answer directly states the percentage (>99%) bound to albumin and explains how that high binding relates to prolonged exposure, noting slow systemic elimination (and delayed absorption) as the main drivers. It fully addresses both parts of the question concisely.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 0.5,
+          "reasoning": "Rank 1 (semaglutide_pharmacokinetics) is directly relevant and contains the exact information (›99% albumin-bound and that slow systemic elimination drives prolonged exposure). Ranks 2 (serum_albumin_retinopathy_nhanes) and 3 (dapagliflozin_sglt2i_review) are irrelevant to the question: one concerns serum albumin associations with retinopathy, the other concerns a different drug (dapagliflozin).",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 1.0,
+          "reasoning": "Correct behavior. The question was answerable and the system provided a clear, substantive answer (stating >99% albumin binding) and appropriately linked high albumin binding to prolonged exposure driven mainly by slow systemic elimination. The response did not invent unsupported specifics or hedge unnecessarily.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_recall",
+          "score": 1.0,
+          "reasoning": "The retrieved semaglutide_pharmacokinetics Introduction includes the exact statement: \"The prolonged exposure of semaglutide as compared with native GLP-1 is mainly driven by slow systemic elimination and, to a lesser extent, by delayed absorption, in line with the observation that more than 99% of the semaglutide is bound to plasma albumin.\" This matches the supporting evidence verbatim.",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 37.29825379198883,
+      "generation_latency_seconds": 20.205831874976866,
+      "prompt_tokens": 20387,
+      "completion_tokens": 2384,
+      "estimated_cost_usd": 0.00986475,
+      "generation_model": "gpt-5-mini"
+    },
+    {
+      "question_id": "q0009",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 0.8,
+          "reasoning": "The response correctly describes that DSME improves glycemic control and other cardiometabolic risk factors and correctly summarizes the Mediterranean-style dietary recommendation and macronutrient ranges. It is missing the specific quantitative effect reported for DSME (≈0.64% HbA1c reduction versus standard care), which is the primary numerical detail in the expected answer.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 1.0,
+          "reasoning": "All factual claims in the generated answer are directly supported by the retrieved passages: the DSME meta-analysis documents improvements in HbA1c, FBG, cardiometabolic risk factors, and increases in diabetes knowledge and self-efficacy, and states face-to-face interventions with periodic telephone follow-up produce larger effects. The nutritional strategies review identifies the Mediterranean diet as having the highest level of evidence, reports improved glycemic control and reduced need for hypoglycemic medications in trials, and gives the recommended macronutrient distribution (~40–50% carbs, 15–25% protein, 25–35% fat). No unsupported claims were made.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 1.0,
+          "reasoning": "The response directly answers both parts of the question: it explains how DSME improves glycemic control (lowering HbA1c/fasting glucose via increased knowledge and self-efficacy, with delivery details) and how a Mediterranean-style diet contributes (evidence for improved glycemic control, reduced medication need, and a recommended macronutrient pattern). It stays on-topic and addresses the mechanisms and outcomes asked for.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 1.0,
+          "reasoning": "All retrieved passages are on-topic: multiple excerpts describe Mediterranean-style dietary therapy and other nutritional strategies for T2DM, and several excerpts report DSME/meta-analysis findings on glycaemic control. No passage is irrelevant and none are improperly ranked above an unrelated item.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 1.0,
+          "reasoning": "Correct behavior — the question was answerable and the system provided a substantive, specific answer without undue hedging. The response clearly described how DSME improves glycemic control (lowering HbA1c and fasting glucose) by increasing knowledge and self‑efficacy and noted stronger effects for face‑to‑face programs with telephone follow‑up. It also summarized the evidence supporting a Mediterranean‑style diet for improved glycemic control and reduced medication need, and gave a recommended long‑term macronutrient distribution. No inappropriate refusal or fabricated claims were made.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_recall",
+          "score": 1.0,
+          "reasoning": "Both required pieces appear verbatim in the retrieved passages: the DSME meta-analysis text states the HbA1c reductions (0.64% [95% CI: 0.45–0.83%] in RCTs and 1.27% [95% CI: -0.63–3.17%] in quasi-experimental studies), and the nutritional review’s authors’ comments and conclusions provide the Mediterranean diet prescription (40–50% carbs; 15–25% proteins; 25–35% fats with <7% saturated, 10% polyunsaturated, 10% monounsaturated; ≥14 g fiber/1000 kcal; <2300 mg sodium).",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 41.248335291980766,
+      "generation_latency_seconds": 100.88650799996685,
+      "prompt_tokens": 21114,
+      "completion_tokens": 2858,
+      "estimated_cost_usd": 0.0109945,
+      "generation_model": "gpt-5-mini"
+    },
+    {
+      "question_id": "q0010",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 0.8,
+          "reasoning": "The response correctly identifies statins/lipid‑lowering therapy as one pharmacologic approach, matching the expected answer. However it fails to name the specific glucose‑lowering drug class (SGLT2 inhibitors such as dapagliflozin, empagliflozin, canagliflozin) and their proven cardiovascular and renal benefits, instead giving a vague statement about choosing antihyperglycaemic agents that do not worsen CV risk.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 1.0,
+          "reasoning": "Both claims are directly supported by the retrieved context: the statin claim is supported by the statin_ascvd_prevention_t2dm passage which states statins are the drug of choice to reduce LDL‑C for primary and secondary prevention of ASCVD in T2DM; the glucose‑lowering agent claim is supported by the dapagliflozin_sglt2i_review passage which states AHAs should not aggravate and preferably should improve cardiovascular risk. There are no additional factual assertions in the answer that lack support in the provided context.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 1.0,
+          "reasoning": "The answer directly lists two distinct pharmacological approaches—lipid‑lowering with statins and selection of glucose‑lowering agents that do not worsen (and can improve) cardiovascular risk—which matches the question. It is concise and on-topic (though naming examples like SGLT2 inhibitors/GLP‑1 receptor agonists would be additional detail, it isn't required to be relevant).",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 0.5,
+          "reasoning": "Only two retrieved passages are directly relevant: rank 2 (dapagliflozin_sglt2i_review) and rank 7 (statin_ascvd_prevention_t2dm). The others (ranks 1, 3–6) are nutrition or exercise fragments and not about pharmacological CV-risk reduction, and the most relevant statin passage is ranked last, so relevance is mixed and not well ordered.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 1.0,
+          "reasoning": "Correct behavior. The question was answerable and the system gave a concise, substantive answer naming two distinct pharmacological approaches: lipid‑lowering with statins to reduce LDL-C/ASCVD risk, and selection of glucose‑lowering agents that do not worsen—and may improve—cardiovascular risk (e.g., cardioprotective antihyperglycaemic therapies). No unnecessary hedging or fabrication.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_recall",
+          "score": 0.5,
+          "reasoning": "The retrieved passages include the supporting sentence about statins verbatim (“Statins are the drug of choice in reducing LDL-C levels in the primary and secondary prevention of ASCVD among patients with T2DM”). However, the retrieved set does not contain the named SGLT2 outcome trials or their findings (DECLAR E-TIMI 58, EMPA-REG OUTCOME, CANVAS Program, empagliflozin, canagliflozin and the stated CV/renal benefits), so a significant part of the supporting evidence is missing.",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 49.65614112501498,
+      "generation_latency_seconds": 40.28520591708366,
+      "prompt_tokens": 19767,
+      "completion_tokens": 2949,
+      "estimated_cost_usd": 0.01083975,
+      "generation_model": "gpt-5-mini"
+    },
+    {
+      "question_id": "q0011",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 0.8,
+          "reasoning": "The generated answer correctly lists the key associations reported for the hemodialysis cohort (poor glycemic control, hypertension, higher BMI, other microvasculopathies, and lower leukocyte counts) and mentions serum albumin, but it does not explicitly state the expected point that lower serum albumin was 'strongly negatively linked' with diabetic retinopathy in the general NHANES population. It also adds extra study-specific findings (age differences, lipid/apolipoprotein anomalies, inflammation/NET mechanisms) that do not contradict the expected answer.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 1.0,
+          "reasoning": "All factual claims in the generated answer are directly supported by the retrieved passages: glycemic control, longer diabetes duration, hypertension/BP, BMI, and other microangiopathies are reported in the 4D hemodialysis study; longer dialysis time and high DR prevalence (71%) are reported; the contrasting age associations are shown in NHANES (older in DR) versus the hemodialysis cohort (older in non‑DR); atypical lipid/apolipoprotein findings (higher HDL, apo AI/AII) and lower leukocyte counts in DR are reported in the hemodialysis paper; chronic low‑grade inflammation, oxidative stress, NET mechanisms and investigation of serum albumin are described in the NHANES/serum albumin study; and the hemodialysis study reports no association for smoking. I found no unsupported factual claims in the answer.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 1.0,
+          "reasoning": "The answer directly lists the established and study-reported risk factors for diabetic retinopathy in type 2 diabetes (glycemic control, diabetes duration, blood pressure, BMI, other microvascular disease, age differences, dialysis-related risk, lipid/immune findings, inflammation) and notes variation across populations, so it fully addresses the question.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 0.9,
+          "reasoning": "Most retrieved passages (the multiple excerpts from the hemodialysis DR study at the top and the NHANES serum-albumin/DR study) are directly relevant to risk factors for diabetic retinopathy in T2DM populations and are ranked near the top. The only clearly irrelevant material is the umbrella review of risk factors for developing T2DM (ranks ~8–9), which addresses diabetes incidence rather than diabetic retinopathy and thus breaks perfect relevance but appears lower in the ranking.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 1.0,
+          "reasoning": "Correct behavior: the question was answerable and the system provided a substantive, evidence-based list of risk factors without unnecessary refusal or excessive hedging. The response names core, well-supported risk factors (poor glycemic control, longer diabetes duration, hypertension, obesity, concomitant microangiopathies) and appropriately notes population-specific findings (hemodialysis cohort differences, age associations varying by cohort, atypical lipid/apolipoprotein and leukocyte findings reported in one study). No fabricated or unsupported definitive claims were introduced and the answer retained appropriate nuance about variation across studies.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_recall",
+          "score": 0.5,
+          "reasoning": "The retrieved passages do include that glucometabolic control (glucose/HbA1c), hypertension, higher BMI, lower leukocyte counts, and other microvasculopathies (e.g., PN, NS) are associated with DR (found in the 4D hemodialysis study text). However, they do not contain the specific supporting statement that, when stratified by gender, serum albumin was strongly negatively linked with DR in both males and females with P < 0.01 — no gender-stratified negative association or the P-value is present (and the NHANES excerpt actually reports higher serum albumin in DR without the stratified analysis).",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 79.30147120798938,
+      "generation_latency_seconds": 50.00194104097318,
+      "prompt_tokens": 21727,
+      "completion_tokens": 4893,
+      "estimated_cost_usd": 0.01521775,
+      "generation_model": "gpt-5-mini"
+    },
+    {
+      "question_id": "q0012",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 0.5,
+          "reasoning": "The generated answer correctly reports the 2015 estimate (~415 million) and the projected ~642 million by 2040, matching the expected answer. It omits the separate 2021 estimate of 537 million adults (10.5%). It also includes prevalence percentages for 2015 and 2040 that were not provided in the expected answer.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 1.0,
+          "reasoning": "All factual claims in the generated answer are directly supported by the retrieved context: the umbrella review background explicitly states that T2DM prevalence has \"more than doubled during the past 20 years,\" cites the IDF estimates of 415 million in 2015 and ~642 million by 2040, and gives the corresponding prevalence estimates (8.8% [95% CI 7.2–11.4%] in 2015 and projected 10.4% [95% CI 8.5–13.5%] in 2040). No unsupported claims were added.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 1.0,
+          "reasoning": "The answer directly summarizes how global T2DM estimates have been reported — noting rising counts over recent decades, quoting a literature statement that prevalence has more than doubled, and giving specific IDF counts and prevalence estimates for 2015 and projections to 2040. These points address both different sources (literature statement vs. IDF) and different time horizons (past 20 years, 2015, 2040).",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 0.8,
+          "reasoning": "Rank 1 is directly relevant (gives IDF global prevalence and 2040 projection). Rank 2 is partly relevant (mentions the 2040 IDF projection and global burden) but contains large amounts of diagnostic-accuracy content not directly about global prevalence. Rank 3 is largely irrelevant (focuses on intervention/meta-analysis methods and outcomes rather than global prevalence estimates). The irrelevant/less-relevant passage is not ranked first.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 1.0,
+          "reasoning": "Correct behavior. The question was answerable and the system provided a substantive, specific summary (including IDF figures and prevalence estimates) without unnecessary hedging or fabrication. This matches the expectation for an answerable item: a clear, evidence-based response rather than an unwarranted decline or invented details.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_recall",
+          "score": 0.5,
+          "reasoning": "The retrieved passages contain the exact supporting statement from the umbrella review that “According to the International Diabetes Federation, 415 million people are living with T2DM in 2015, and by 2040 the number will be almost 642 million.” However, they do not include the 2021 estimate of 537 million (10.5%) adults aged 20–79 with diabetes, so a significant piece of the supporting evidence is missing.",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 50.56230995897204,
+      "generation_latency_seconds": 32.0940145830391,
+      "prompt_tokens": 20370,
+      "completion_tokens": 2904,
+      "estimated_cost_usd": 0.0109005,
+      "generation_model": "gpt-5-mini"
+    },
+    {
+      "question_id": "q0013",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 0.5,
+          "reasoning": "The generated answer correctly reported the US$548 billion 2013 estimate and mentioned the share in low- and middle-income countries and a predicted rising burden. It incorrectly stated no other numeric global estimate was provided — it omitted the US$966 billion 2021 estimate from the expected answer and therefore failed to compare the two figures or note the substantial increase over ~8 years.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 1.0,
+          "reasoning": "All factual claims in the generated answer are supported by the retrieved passages: the US$548 billion 2013 global cost is stated explicitly; the text states approximately one-fifth of diabetes health spending occurs in low- and middle-income countries; and the umbrella review notes an \"inexorable and unsustainable increase in global health expenditure attributable to T2DM.\" No unsupported claims were made.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 1.0,
+          "reasoning": "The answer directly addresses the question by reporting the single numeric global cost found (US$548 billion for 2013), summarizes other qualitative findings, and explains that no additional numeric estimates were available for comparison—therefore it fully responds to the request given the retrieved documents.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 0.2,
+          "reasoning": "Only the top-ranked passage (rank 1: t2dm_diagnostic_accuracy_review Introduction) gives a specific global economic cost figure (US$548 billion in 2013) and briefly comments on spending distribution; the remaining passages (ranks 2 onward) are methodological, diagnostic accuracy, prevalence or risk-factor content and do not provide additional estimates of global economic cost. Thus most retrieved passages are irrelevant, with at most one useful passage (rank 1).",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 0.4,
+          "reasoning": "Over-caution / unnecessary refusal to answer. The generated reply asserts only one numeric global cost (US$548 billion for 2013) and claims no other numeric estimates were available, yet the ground truth indicates the question was answerable from the retrieved documents. This is a failure to provide a substantive comparative answer despite sufficient evidence (not fabrication). The behavior matches the rubric's ‘is_answerable=true but the system refused to answer’ failure mode. A correct response should have extracted and compared the multiple numeric estimates present in the sources rather than hedging that no comparison was possible.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_recall",
+          "score": 0.5,
+          "reasoning": "The retrieved passages include the 2013 figure verbatim: “Globally, cost of diabetes including its related complications was US$ 548 billion in 2013.” However, they do not contain the 2021 global annual cost estimate of 966 billion USD or any equivalent statement, so a significant part of the supporting evidence is missing.",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 45.18774558301084,
+      "generation_latency_seconds": 23.1222531250678,
+      "prompt_tokens": 20280,
+      "completion_tokens": 2683,
+      "estimated_cost_usd": 0.010436,
+      "generation_model": "gpt-5-mini"
+    },
+    {
+      "question_id": "q0014",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 1.0,
+          "reasoning": "The generated answer includes the key expected fact — compensatory mechanisms such as increased energy intake that offset caloric loss — and therefore matches the expected answer. It also adds a correct additional point (early weight change reflects fluid loss), which does not contradict the expected answer.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 1.0,
+          "reasoning": "Both factual claims in the generated answer are directly supported by the retrieved context: the text states that weight loss with SGLT2 inhibitors is less than calculated from glucuresis and attributes this to compensatory mechanisms such as increased energy intake, and it also notes that the initial rapid decline in bodyweight may partly reflect fluid loss rather than sustained fat loss. No unsupported claims were made.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 1.0,
+          "reasoning": "The answer directly addresses the question by giving the main explanations: behavioral/physiologic compensatory increased energy intake and that early weight loss is partly from fluid rather than fat, both of which explain why observed weight loss is less than predicted from glucosuria calories alone.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 0.5,
+          "reasoning": "There is a mix of directly relevant and irrelevant passages. Ranks 1 and 6 clearly address why weight loss is less than predicted (compensatory increased energy intake, fluid loss), and rank 3 is tangentially relevant (volume depletion/diuresis). Several passages are irrelevant (rank 2, 4, 5, 7, 8, 9 — e.g., CV trial discussion, PK details for dapagliflozin or semaglutide) and at least one irrelevant passage (rank 2) appears near the top, breaking a clean relevance ordering.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 1.0,
+          "reasoning": "Correct behavior (is_answerable=true). The system provided a concise, substantive answer: it identified compensatory responses such as increased energy intake and noted that early weight loss is partly due to fluid loss rather than sustained fat loss. This matches established explanations and did not invent unsupported details or hedge unnecessarily.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_recall",
+          "score": 1.0,
+          "reasoning": "The exact supporting statement appears verbatim in the retrieved passages (dapagliflozin_sglt2i_review, Pharmacological Properties): “The loss in bodyweight with SGLT2 inhibitors is less than that calculated from calorie loss due to glucuresis, which may be because of compensatory mechanisms such as increased energy intake.”",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 34.1103049160447,
+      "generation_latency_seconds": 17.92953987501096,
+      "prompt_tokens": 20675,
+      "completion_tokens": 2439,
+      "estimated_cost_usd": 0.01004675,
+      "generation_model": "gpt-5-mini"
+    },
+    {
+      "question_id": "q0015",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 1.0,
+          "reasoning": "The generated answer states the same rationale as the expected answer: excluding diabetes onset before age 30 reduces inclusion of type 1 diabetes and ensures the sample represents type 2 diabetes (diagnostic age ≥30). No contradictory or missing facts.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 1.0,
+          "reasoning": "Both parts of the statement are directly supported by the retrieved text: the Methods state participants with diabetes onset before age 30 were removed “to even further lower the probability of type 1 diabetes,” and the DR status section defines T2DM as diagnosed at age ≥30 (per ADA), so saying the exclusion aligns with that T2DM definition is supported. No unsupported claims were made.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 1.0,
+          "reasoning": "The answer directly and completely addresses the question: it explains the exclusion was to avoid including likely type 1 diabetes cases and to align with the study's T2DM definition (diagnosis age ≥30). It is concise and on-topic.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 0.8,
+          "reasoning": "Most retrieved passages are from the NHANES serum albumin–retinopathy paper and directly state the exclusion (to reduce inclusion of type 1 diabetes and define a T2DM cohort), so they are highly relevant and appear near the top. The two passages labeled retinopathy_hemodialysis_risk_factors (interleaved in the list) are irrelevant to this NHANES exclusion criterion and break relevance ordering.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 1.0,
+          "reasoning": "Correct behavior. The model answered the question directly and accurately: participants with diabetes onset before age 30 were excluded to avoid including likely type 1 diabetes cases and to align the cohort with the study’s intent to analyze type 2 diabetes (diagnosis age ≥30). No undue hedging or fabrication occurred.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_recall",
+          "score": 1.0,
+          "reasoning": "The exact sentence \"It is well known that type 1 diabetes is prevalent in people younger than 30 years old.\" appears verbatim in the retrieved passages (under the Inclusion and exclusion criteria of the NHANES study), so the supporting evidence is fully present.",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 47.01749104203191,
+      "generation_latency_seconds": 11.34344891703222,
+      "prompt_tokens": 19414,
+      "completion_tokens": 2702,
+      "estimated_cost_usd": 0.0102575,
+      "generation_model": "gpt-5-mini"
+    },
+    {
+      "question_id": "q0016",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 1.0,
+          "reasoning": "The generated answer correctly states that supervision — not duration or frequency — is the key driver of HRV improvements and therefore programs should prioritize supervised delivery, matching the expected answer. The extra practical details (typical session length, frequency, intensity) are additional but do not contradict the expected point. No key facts from the expected answer are missing or incorrect.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 1.0,
+          "reasoning": "All substantive factual claims in the generated answer are supported by the retrieved context: the review found supervised training improved most HRV parameters while frequency and duration were not associated with HRV improvements, and the typical session parameters reported (≈45 min, ≈3 sessions/week, ≈60–70% intensity) are explicitly noted. The only minor element that is an inferred interpretation rather than a direct quote is the parenthetical framing of ‘supervision’ as involving oversight of quality/adherence/monitoring, which the review does not state verbatim but reasonably implies; this inference does not contradict the source.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 1.0,
+          "reasoning": "The answer directly addresses the question by stating that programs should prioritize supervised delivery/oversight rather than increasing session length or frequency, and it gives practical structuring guidance (typical session length, frequency, intensity) while noting limitations of evidence — all of which respond to what the finding suggests.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 1.0,
+          "reasoning": "All retrieved passages directly address the role of supervision, frequency, and duration of exercise on HRV in T2DM (including meta-analysis results and discussion/conclusion). The top-ranked passage (4.3) is the most directly relevant and subsequent passages consistently provide supportive details; no passage is irrelevant and relevance remains high down the list.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 0.7,
+          "reasoning": "Correct overall: the system correctly concluded that programs should prioritize supervised delivery/oversight rather than simply increasing session length or frequency, and gave a clear, substantive recommendation (appropriate for an answerable question). However, it then appended specific session parameters (\"about 45 minutes, ~3 sessions/week at ~60–70% intensity\") that were not warranted by the prompt and appear to be additional, ungrounded details. This is a minor instance of fabrication-when-should-have-abstained (adding specific parameters) rather than over-caution. Because the core recommendation was appropriate but the extra specifics were speculative, a partial penalty is applied.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_recall",
+          "score": 1.0,
+          "reasoning": "The retrieved passages explicitly state the sentence from the supporting evidence (“Supervised training improved most HRV parameters, without influence of duration and frequency of training.”) and provide supporting metaregression results showing supervised training improved HRV while session frequency/duration were not significantly associated with HRV changes.",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 39.99334241601173,
+      "generation_latency_seconds": 23.174241041997448,
+      "prompt_tokens": 20600,
+      "completion_tokens": 2574,
+      "estimated_cost_usd": 0.010298,
+      "generation_model": "gpt-5-mini"
+    },
+    {
+      "question_id": "q0017",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 1.0,
+          "reasoning": "The generated answer correctly states the core point from the expected answer: high HDL is normally considered protective, yet in this hemodialysis cohort it was associated with greater diabetic retinopathy (the opposite of expectation), which is why it was called \"paradoxical.\" It also adds plausible explanatory details (dysfunctional HDL in dialysis patients; microvascular disease driven more by glycemic control) that do not contradict the expected answer.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 1.0,
+          "reasoning": "All statements in the generated answer are directly supported by the retrieved passages: the authors describe the higher HDL in DR patients as surprising/paradoxical, propose accumulation of dysfunctional HDL in dialysis patients lacking normal protective effects, and contrast microvascular DR being more closely linked to glycemic control (with UKPDS data) versus lipid-driven macrovascular disease. No additional unsupported claims were made.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 1.0,
+          "reasoning": "The answer directly explains why the finding is unexpected (HDL is usually protective) and gives plausible explanations cited by researchers — dysfunctional HDL in dialysis patients and the different pathophysiology of microvascular diabetic retinopathy — which justify labeling the association as “paradoxical.”",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 0.9,
+          "reasoning": "Passages 1–7 (all labeled retinopathy_hemodialysis_risk_factors) directly address the unexpected/high HDL association with diabetic retinopathy in hemodialysis patients and offer explanations (e.g., dysfunctional HDL accumulation), so they are highly relevant and ranked near the top. Passage 8 (serum_albumin_retinopathy_nhanes) discusses serum albumin and DR and is not relevant to the HDL question, but it is ranked last and does not disrupt the ordering.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 1.0,
+          "reasoning": "Correct behavior. The question was answerable and the response gives a clear, substantive explanation: HDL is normally protective so higher HDL in patients with diabetic retinopathy is unexpected (“paradoxical”); the answer reasonably cites the authors’ suggested mechanism (accumulation of dysfunctional HDL in dialysis patients losing normal protective effects) and correctly contrasts DR as a microvascular complication more tied to glycemic control than lipid-driven macrovascular disease. The reply does not inappropriately hedge or invent unsupported specifics.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_recall",
+          "score": 1.0,
+          "reasoning": "The retrieved passages explicitly state that paradoxically high concentrations of HDL (HDL cholesterol, apo AI, and apo AII) were seen in DR — the phrase appears verbatim and is reiterated in multiple sections describing higher HDL, apo AI, and apo AII in DR patients.",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 43.38578579202294,
+      "generation_latency_seconds": 30.85269679094199,
+      "prompt_tokens": 19608,
+      "completion_tokens": 2738,
+      "estimated_cost_usd": 0.010378,
+      "generation_model": "gpt-5-mini"
+    },
+    {
+      "question_id": "q0018",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 0.8,
+          "reasoning": "The generated answer correctly conveys the core finding that prescribing was not properly tailored to patients' calculated ASCVD risk (i.e., low-risk patients nonetheless received high-intensity statins). It omits the specific numeric detail from the expected answer (329 of 1,072 low-risk patients) and adds extra system- and guideline-related explanations that the expected answer did not list but do not contradict the main point.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 1.0,
+          "reasoning": "All four claims are directly supported by the retrieved text: (1) misalignment of prescriptions is explicitly reported (e.g., 329/1072 low‑risk patients were prescribed high‑intensity statins; statements that prescriptions did not align with individual ASCVD risk), (2) system/clinician barriers are listed (busy clinics, low physician-to-patient ratio, limited guideline awareness, etc.), (3) sparsity of appropriate health care policy in Sri Lanka is mentioned as a possible reason, and (4) differences in dosing and definitions of “high‑intensity” statin (South Asian guidelines recommending lower doses vs. trial doses; operationalization using atorvastatin 20 mg or rosuvastatin 10 mg) are described. No unsupported claims were made.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 1.0,
+          "reasoning": "The answer directly lists plausible, study-supported reasons why low-ASCVD-risk T2DM patients might receive high-intensity statins (misaligned prescribing, system/clinician barriers, weak policy enforcement, and variable local definitions), addressing the question fully with no significant off-topic material.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 1.0,
+          "reasoning": "All retrieved passages are from the same multicenter study and directly address statin prescribing patterns in T2DM, including the finding that many low-ASCVD-risk patients received high‑intensity statins and possible causes (physician awareness gaps, busy clinics/low physician-to-patient ratio, lack of policy/decision support, regional dosing practices, and healthcare setting factors). No passage is irrelevant and none are ranked above more relevant material.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 1.0,
+          "reasoning": "Correct behavior. The question was answerable and the model provided a clear, substantive list of study-based explanations (non–risk‑aligned prescribing, system/clinician-level barriers, weak policy enforcement, and local guideline/dosing differences). The response contains no unnecessary hedging or fabricated specifics and matches the scope of the source findings, so full credit is warranted.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_recall",
+          "score": 1.0,
+          "reasoning": "The retrieved passages include the exact sentence from the supporting evidence: “In contrast, 329 patients out of 1072 in the low ASCVD risk category were unnecessarily prescribed high-intensity statins.” The key numeric detail (329 out of 1072 in the low-risk group) is present verbatim in the retrieved text.",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 43.94061829196289,
+      "generation_latency_seconds": 30.20908500009682,
+      "prompt_tokens": 19202,
+      "completion_tokens": 2914,
+      "estimated_cost_usd": 0.0106285,
+      "generation_model": "gpt-5-mini"
+    },
+    {
+      "question_id": "q0019",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 1.0,
+          "reasoning": "Both the generated answer and the expected answer state that the retrieved documents do not contain information sufficient to answer the question and that the question cannot be answered from the available evidence. The generated answer conveys the same conclusion with equivalent wording.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 0.0,
+          "reasoning": "The single claim — “The retrieved documents do not contain sufficient information to answer this” — is unsupported by the provided context. The retrieved passages include detailed information on dapagliflozin (dosage, pharmacokinetics, clinical efficacy, renal and CV outcomes) and extensive nutritional guidance, so a blanket statement of insufficiency cannot be verified from these documents and is therefore not grounded in the retrieved context.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 0.7,
+          "reasoning": "The response is on-topic in that it acknowledges an inability to answer, but it does not provide the requested dosing information. Because it fails to give the recommended starting metformin dose (or a clear, justified explanation for the inability), it is incomplete rather than a full, acceptable answer.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 0.0,
+          "reasoning": "None of the retrieved passages state a recommended starting dose of metformin. The dapagliflozin passages only reference metformin as first-line or in combination (but give no metformin dosing), and the nutritional review only notes metformin’s association with B12 deficiency—so all items are irrelevant to the dosing question.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 1.0,
+          "reasoning": "Correct behavior: is_answerable=false and the system explicitly declined to answer, stating the retrieved documents lacked sufficient information. This is proper abstention without fabricating any dosing details (no invented facts). This matches the expected handling for an unanswerable question.",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 30.165155582944863,
+      "generation_latency_seconds": 4.022166166920215,
+      "prompt_tokens": 13550,
+      "completion_tokens": 1832,
+      "estimated_cost_usd": 0.0070515,
+      "generation_model": "gpt-5-mini"
+    },
+    {
+      "question_id": "q0020",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 1.0,
+          "reasoning": "The generated answer correctly states that the documents do not provide sufficient information to answer the question about five-year survival for type 1 diabetes patients on hemodialysis, which matches the expected conclusion that the question cannot be answered from the available evidence. The generated answer omitted the additional detail that the documents do report five-year survival for type 2 patients, but that omission does not contradict the expected answer and is a minor missing detail.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 0.2,
+          "reasoning": "The answer’s single factual claim — “The retrieved documents do not contain sufficient information to answer this question” — is not supported by any statement in the provided context. The retrieved passages contain substantial data about diabetic retinopathy prevalence, risk factors in hemodialysis patients and details about dapagliflozin studies, so the blanket assertion of insufficiency is ungrounded in the supplied documents.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 1.0,
+          "reasoning": "The response directly addresses the question by explicitly stating an inability to answer due to insufficient retrieved information. An explicit, well-reasoned abstention of this form is considered fully relevant under the provided rubric.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 0.0,
+          "reasoning": "None of the retrieved passages address type 1 diabetes. All passages concern type 2 diabetes (T2DM) patients on hemodialysis (one even states a five-year survival of 35% for T2DM), or discuss unrelated drug trials; therefore none are relevant to the question about five-year survival in type 1 diabetes patients on hemodialysis.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 1.0,
+          "reasoning": "Correct behavior. Ground truth indicates the question is unanswerable from the available documents, and the system explicitly declined to answer, stating the evidence was insufficient. It did not invent any facts or provide speculative details, so abstention was appropriate and handled correctly.",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 31.935319375013933,
+      "generation_latency_seconds": 4.500160624971613,
+      "prompt_tokens": 13005,
+      "completion_tokens": 1993,
+      "estimated_cost_usd": 0.00723725,
+      "generation_model": "gpt-5-mini"
+    },
+    {
+      "question_id": "q0021",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 1.0,
+          "reasoning": "Both the generated answer and the expected answer state that the retrieved documents do not contain information to compare long-term cardiovascular outcomes of insulin degludec versus insulin glargine and that the question cannot be answered from the available evidence. The generated answer conveys the same conclusion with equivalent phrasing.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 1.0,
+          "reasoning": "The answer correctly states that the retrieved documents do not provide information on long-term cardiovascular outcomes comparing insulin degludec versus insulin glargine. The provided context exclusively discusses dapagliflozin and other SGLT2 inhibitors (and some GLP-1RA/DPP-4i data) and contains no data or trials concerning insulin degludec or insulin glargine, so abstaining is appropriate and fully supported.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 1.0,
+          "reasoning": "The answer directly addresses the question by explicitly stating that the available documents lack sufficient information to determine long-term cardiovascular outcomes; this explicit abstention is an appropriate, on-topic response when the evidence is insufficient.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 0.0,
+          "reasoning": "None of the retrieved passages are relevant: all passages discuss dapagliflozin and SGLT2 inhibitor cardiovascular/renal outcomes (DECLARE-TIMI 58, EMPA-REG, CANVAS, etc.). No passage mentions insulin degludec, insulin glargine, or direct long-term cardiovascular comparisons between those basal insulins, so the retrieval failed to return any relevant material.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 1.0,
+          "reasoning": "Correct behavior. The ground truth indicates the question is unanswerable from the provided documents (is_answerable=false), and the system explicitly declined to answer citing insufficient information without inventing any facts. This is appropriate abstention rather than fabrication or unnecessary hedging.",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 19.842061416013166,
+      "generation_latency_seconds": 3.9700205409899354,
+      "prompt_tokens": 13416,
+      "completion_tokens": 1212,
+      "estimated_cost_usd": 0.005778,
+      "generation_model": "gpt-5-mini"
+    },
+    {
+      "question_id": "q0022",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 0.9,
+          "reasoning": "Both answers conclude the available documents do not permit estimating the discontinuation rate for GLP-1 RAs due to GI side effects (core fact matched). The generated answer omits the minor supporting detail in the expected answer that the retrieved documents specifically discuss semaglutide pharmacokinetics, which is a small missing detail but does not change the conclusion.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 0.0,
+          "reasoning": "The answer asserts that the retrieved documents lack sufficient information to answer the question, but this claim is unsupported by the provided context. The retrieved context contains extensive, specific data on dapagliflozin (tolerability, adverse events, pharmacokinetics, cardiovascular and renal outcomes, real-world studies, trial results), any of which could be used to answer many plausible questions about the drug. Because the response makes an absolute claim of insufficiency that is contradicted by the presence of detailed information in the context, it is not faithful to the supplied documents.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 1.0,
+          "reasoning": "The response directly and explicitly states that the available documents lack sufficient information to answer the specific numerical question. This is an explicit abstention (rather than an incorrect or off-topic answer), so it is relevant to the user's request.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 0.0,
+          "reasoning": "All retrieved passages (ranks 1 onward) discuss dapagliflozin/SGLT2 inhibitors (efficacy and tolerability) and do not address GLP‑1 receptor agonists or discontinuation rates due to gastrointestinal side effects. Therefore none of the retrieved passages are relevant to the question.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 1.0,
+          "reasoning": "Correct behavior. Ground truth indicates the question is unanswerable from the available documents, and the system explicitly declined, stating the documents lacked sufficient information. No specific facts, estimates, or speculative details were invented. This matches the criteria for a proper abstention when evidence is insufficient.",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 26.91545454203151,
+      "generation_latency_seconds": 4.670525874942541,
+      "prompt_tokens": 13610,
+      "completion_tokens": 1816,
+      "estimated_cost_usd": 0.0070345,
+      "generation_model": "gpt-5-mini"
+    },
+    {
+      "question_id": "q0023",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 1.0,
+          "reasoning": "The generated answer matches the expected answer: both state that the retrieved documents lack a formal cost-effectiveness comparison between SGLT2 inhibitors and GLP‑1 receptor agonists in a US setting and that the question cannot be answered from the available evidence. No relevant facts are missing or contradicted.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 1.0,
+          "reasoning": "The retrieved passages cover clinical outcomes, mechanisms, trial results and safety for SGLT2 inhibitors (dapagliflozin) and mention comparative efficacy versus GLP-1RAs, but contain no costing data, economic analyses (e.g., ICERs/QALYs), or US-specific payer/healthcare-system information. Therefore the statement that the documents do not contain sufficient information to answer a US cost-effectiveness question is supported by the context.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 1.0,
+          "reasoning": "The reply is an explicit abstention stating insufficient information to answer the question. Per the scoring rules, a clear, well-reasoned abstention when documents lack necessary data is fully relevant because it directly addresses the user's request rather than providing off-topic content.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 0.2,
+          "reasoning": "All retrieved passages are clinical reviews of dapagliflozin/SGLT2 inhibitors (efficacy, safety, CV and renal outcomes) and only briefly mention GLP-1RAs’ clinical effects. None contains cost-effectiveness analyses, economic outcomes, or US healthcare–specific cost data. Therefore the set is largely irrelevant to the asked question (no passage provides direct cost-effectiveness information).",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 1.0,
+          "reasoning": "Correct behavior. The ground truth indicates the question is unanswerable from the available documents, and the system explicitly declined to answer, stating evidence was insufficient. It did not invent or assert any specific facts or speculative details. This is an appropriate abstention (no fabrication).",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 30.29287916701287,
+      "generation_latency_seconds": 3.719727084040642,
+      "prompt_tokens": 13843,
+      "completion_tokens": 1615,
+      "estimated_cost_usd": 0.00669075,
+      "generation_model": "gpt-5-mini"
+    },
+    {
+      "question_id": "q0024",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 0.8,
+          "reasoning": "The generated answer correctly rejects the premise that dapagliflozin cures type 2 diabetes and appropriately declines to provide a dosing schedule from the retrieved documents. It is missing the expected additional detail that dapagliflozin is approved for use as monotherapy or in combination with other agents and that its mechanism complements other antihyperglycemic drug classes rather than eliminating their need.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 1.0,
+          "reasoning": "All factual claims in the generated answer are supported by the retrieved context: the documents describe efficacy (improved glycaemic control, weight and CV benefits) but do not claim dapagliflozin cures type 2 diabetes, and while they give the recommended dose (10 mg once daily) they do not provide any dosing schedule that would eliminate the need for other glucose‑lowering medications. Therefore the assistant’s refusal to provide a dosing schedule that would replace other medications is faithful to the provided context.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 1.0,
+          "reasoning": "The reply directly addresses the user's premise by stating there is insufficient evidence that dapagliflozin cures type 2 diabetes and therefore appropriately declines to provide a dosing schedule. This is an explicit, relevant abstention rather than an off-topic or evasive response.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 1.0,
+          "reasoning": "All retrieved passages are directly about dapagliflozin’s pharmacology, clinical efficacy and dosing; several explicitly state the recommended dose (10 mg once daily) and its use as monotherapy. Relevance remains high throughout the ranking and no passage is clearly irrelevant or misordered.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 0.4,
+          "reasoning": "This is a case of over-caution when the question was in fact answerable from the provided documents (ground truth is_answerable=true). The system unnecessarily declined to answer, stating insufficient information, rather than providing the substantive dosing information that was available. It did not fabricate content, but it refused to respond despite adequate evidence — matching the rubric band for refusal despite available evidence. Thus a low score in the 0.3–0.5 range is appropriate (0.4).",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_recall",
+          "score": 1.0,
+          "reasoning": "The retrieved passages include the supporting evidence verbatim: the Introduction states that SGLT2 inhibitors lower glucose independently of insulin and explicitly says “This unique mechanism of action of SGLT2 inhibitors complements that of other classes of AHAs, allowing for their use as combination therapy with other AHAs, including insulin.” Additional passages also note the insulin-independent mechanism and combination use with insulin.",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 40.26983466593083,
+      "generation_latency_seconds": 7.804161375039257,
+      "prompt_tokens": 19263,
+      "completion_tokens": 2848,
+      "estimated_cost_usd": 0.01051175,
+      "generation_model": "gpt-5-mini"
+    },
+    {
+      "question_id": "q0025",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 0.9,
+          "reasoning": "The generated answer correctly rejects the premise that coffee increases T2DM risk and states the evidence shows an association with lower risk; it also appropriately notes causality is unclear and that no daily avoidance amount is supported. It omitted the expected mention of proposed mechanisms (reduced insulin resistance and improved glucose metabolism), a minor supporting detail.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 1.0,
+          "reasoning": "All factual claims are supported by the retrieved context: the umbrella review states that coffee consumption is associated with lower T2DM risk but that causality is unclear (citing a recent MR study), and the retrieved passages contain no specific per-day coffee avoidance amount or recommendation—therefore the documents do not support recommending a daily avoidance amount for coffee.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 1.0,
+          "reasoning": "The answer directly addresses the question by challenging its premise (documents show lower or unclear association rather than increased risk) and states there is no evidence in the provided documents to recommend a specific daily amount to avoid. This is a relevant, explicit abstention based on the available information.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 0.5,
+          "reasoning": "Only two retrieved passages (rank 3: t2dm_risk_factors_umbrella_review Discussion, and rank 7: the MR studies excerpt from the same review) mention coffee intake and its (non-causal/protective) relationship with T2DM and are relevant. The other passages (ranks 1, 2, 4, 5, 6) focus on unrelated nutritional topics (omega-3, trans fats, fiber, sodium, alcohol, diets, supplements) and are irrelevant to the coffee question. Also, no clearly highly relevant passage was ranked first.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 0.4,
+          "reasoning": "Over‑caution when it should have answered. The ground truth indicates the question was answerable from the provided documents, but the system declined to provide a recommendation, stating there was no evidence and no specific amount to avoid. That is a refusal despite sufficient evidence rather than fabrication. This matches the failure mode 'over-caution/when-should-have-answered' and warrants a mid-low score (0.3–0.5); I assign 0.4. To improve, the system should extract and report the specific guidance or quantities present in the source documents rather than broadly declining.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_recall",
+          "score": 1.0,
+          "reasoning": "The retrieved passages (t2dm_risk_factors_umbrella_review) include the exact statement that \"coffee consumption lowers the risk for T2DM, which is attributed to the reduction of insulin resistance and the improvement of glucose metabolism,\" matching the supporting evidence verbatim.",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 36.63170112494845,
+      "generation_latency_seconds": 24.038414374925196,
+      "prompt_tokens": 20743,
+      "completion_tokens": 2490,
+      "estimated_cost_usd": 0.01016575,
+      "generation_model": "gpt-5-mini"
+    },
+    {
+      "question_id": "q0026",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 0.0,
+          "reasoning": "The generated answer abstains and claims insufficient information, but the expected answer corrects the premise: exercise training improves HRV (autonomic activity) rather than curing cardiac autonomic neuropathy. The generated reply fails to state this correction and does not address that the evidence shows improvement, not full recovery, so it contradicts the expected response.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 1.0,
+          "reasoning": "The context reports that exercise training improves HRV in T2DM but explicitly states that insufficient data precluded robust conclusions for duration and frequency of sessions and does not provide a timeline for ‘full recovery’ from CAN. Therefore the answer’s claim that the documents do not contain sufficient information to determine how long full recovery takes is directly supported by the retrieved context (e.g., Discussion and Conclusion noting lack of data on duration/frequency and limitations).",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 1.0,
+          "reasoning": "The response directly addresses the question by explicitly abstaining due to insufficient information in the retrieved documents. This is an appropriate, on-topic answer given the stated limitation and therefore fully relevant.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 1.0,
+          "reasoning": "All retrieved passages are from a single systematic review/meta-analysis on exercise effects on HRV/CAN in type 2 diabetes and therefore directly relevant to the question (they report that exercise improves autonomic function and describe exercise modalities, supervision, and durations). The most directly relevant summary/results passages are ranked near the top and no passage is clearly irrelevant or misordered.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 0.4,
+          "reasoning": "Over-caution when the question was answerable. The ground-truth flag indicates the documents did contain the information, but the system declined to provide an answer, stating insufficient information. This is not fabrication; rather it is an unnecessary refusal to answer despite adequate evidence. The behavior matches the metric's 'is_answerable=true but the system refused' failure mode, meriting a mid-low score (0.3–0.5); I assign 0.4.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_recall",
+          "score": 1.0,
+          "reasoning": "The retrieved passages include the exact concluding sentence: “Exercise training improved HRV parameters in T2DM patients, which may reflect an improvement in the activity of the autonomic nervous system.” The Discussion also explicitly states improved HRV with decreased sympathetic and increased parasympathetic activity, which supports the same key information.",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 29.751677915919572,
+      "generation_latency_seconds": 9.60464958299417,
+      "prompt_tokens": 20303,
+      "completion_tokens": 1915,
+      "estimated_cost_usd": 0.00890575,
+      "generation_model": "gpt-5-mini"
+    },
+    {
+      "question_id": "q0027",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 0.8,
+          "reasoning": "The generated answer correctly states why guidelines still recommend statins (randomized-trial evidence that lowering LDL-C prevents ASCVD and statins are the proven drug class) and correctly suggests implementation issues can explain poor control. It missed the key factual correction in the expected answer that the study did not show statins were 'completely ineffective'—65.4% of patients did reach LDL-C targets—so it omitted that important detail.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 0.9,
+          "reasoning": "Core claims are supported by the retrieved context: the text states that evidence supporting LDL-C reduction in T2DM is well established, that statins are the drug of choice and guidelines recommend intensity-based dosing, and the Sri Lankan study documents under-dosing, low use of recommended high-intensity regimens, poor adherence and system-level barriers that are linked to failure to reach LDL targets. The only minor unsupported specificity is the explicit phrase \"randomized-trial\" evidence — the context refers to established evidence and guidelines but does not explicitly cite randomized trials.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 1.0,
+          "reasoning": "The answer directly addresses the question by explaining that large randomized trials support statins' benefit in lowering LDL and preventing ASCVD, and that the Sri Lankan findings likely reflect implementation issues (under‑dosing, low intensity use, adherence and system barriers) rather than true lack of drug efficacy. This is a concise and relevant explanation for why guidelines still recommend statins.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 1.0,
+          "reasoning": "All retrieved passages are excerpts from the Sri Lankan T2DM statin study and directly relate to the question: they document the apparent lack of LDL-target achievement in that population and explicitly discuss likely causes (inappropriate/low dosing, poor adherence, under-prescription of high-intensity statins, methodological limits) and note the broader evidence base supporting statin use. No passage is irrelevant and the relevance remains high throughout the ranking.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 1.0,
+          "reasoning": "Correct behavior (is_answerable=true and the system gave a substantive answer). The response accurately explains why guidelines still recommend statins — large randomized trials and guideline evidence show LDL-C lowering with statins reduces ASCVD risk and statins are the proven drug class — and correctly interprets the Sri Lankan study as demonstrating implementation issues (under‑dosing, low-intensity use, adherence/system barriers) rather than proving statin pharmacologic ineffectiveness. The answer is concise, grounded, and does not invent unsupported facts.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_recall",
+          "score": 1.0,
+          "reasoning": "The retrieved passages include the exact supporting statement: \"The LDL-C target achievement for the total group was 65.4% (n = 447).\" This matches the golden evidence verbatim, so all required information is present.",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 41.30005629104562,
+      "generation_latency_seconds": 135.4501200420782,
+      "prompt_tokens": 19581,
+      "completion_tokens": 2642,
+      "estimated_cost_usd": 0.01017925,
+      "generation_model": "gpt-5-mini"
+    },
+    {
+      "question_id": "q0028",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 1.0,
+          "reasoning": "Both answers state that the available/retrieved documents do not provide the retail price of dapagliflozin per month and that the specific figure cannot be answered from the provided evidence. The generated answer matches the expected conclusion and contains no contradictory information.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 0.0,
+          "reasoning": "The single factual claim — “The retrieved documents do not contain sufficient information to answer this.” — is not supported by the provided context. The retrieved passages contain extensive information on dapagliflozin pharmacokinetics (absorption, bioavailability, half-life), efficacy (phase 3 trials, DECLARE‑TIMI 58, DERIVE, bodyweight and BP effects), and safety/tolerability (AE rates, genital infections, DKA, renal AEs, amputations), so the assertion of insufficient information is contradicted by the context.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 1.0,
+          "reasoning": "The reply directly addresses the question by explicitly stating that the available documents do not contain sufficient information to provide the retail monthly price. An explicit, well-reasoned abstention of this form is a relevant response to the query.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 0.0,
+          "reasoning": "None of the retrieved passages (ranks 1–n) address pricing or retail cost; they cover pharmacokinetics, efficacy, tolerability, and safety of dapagliflozin. Therefore all retrieved passages are irrelevant to the question about US monthly retail price, and there is no relevant passage ranked anywhere in the list.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 1.0,
+          "reasoning": "Correct behavior: the ground truth indicates the question is unanswerable from the provided documents, and the system explicitly declined to answer, stating the evidence was insufficient. It did not invent any specific price or other facts. This matches the desired abstention behavior (no fabrication).",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 23.4419474999886,
+      "generation_latency_seconds": 4.11383687495254,
+      "prompt_tokens": 13413,
+      "completion_tokens": 1477,
+      "estimated_cost_usd": 0.00630725,
+      "generation_model": "gpt-5-mini"
+    },
+    {
+      "question_id": "q0029",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 1.0,
+          "reasoning": "Both the generated answer and the expected answer state that the available/retrieved documents do not provide the male/female breakdown for DECLARE‑TIMI 58, so the specific ratio cannot be determined from the evidence. The generated answer matches the expected conclusion and contains no contradictory information.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 1.0,
+          "reasoning": "The generated answer is an abstention stating the retrieved documents lack sufficient information and does not assert any additional facts. As such it makes no claims beyond the insufficiency of the context and therefore contains no unsupported factual statements relative to the provided retrieved context.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 1.0,
+          "reasoning": "The answer directly and explicitly abstains, stating that the documents do not contain sufficient information to answer the question. Per the scoring rules, a clear, well-reasoned abstention is considered fully relevant to the query.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 0.2,
+          "reasoning": "Most retrieved passages are unrelated to DECLARE‑TIMI 58 (ranks 1–3 and 5–10 are about other T2DM studies, statins, retinopathy, exercise, etc.). Only rank 4 ([dapagliflozin_sglt2i_review]) mentions DECLARE‑TIMI 58 and is therefore relevant, but it does not provide the male:female enrollment ratio. The single relevant passage is not ranked first, and the rest are irrelevant.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 1.0,
+          "reasoning": "Correct behavior: the ground-truth flag indicates the question is unanswerable from the available documents, and the system explicitly declined to answer, stating the documents lacked sufficient information. No fabricated details were introduced. This is the appropriate abstention.",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 23.94517545902636,
+      "generation_latency_seconds": 4.480490625021048,
+      "prompt_tokens": 12548,
+      "completion_tokens": 1576,
+      "estimated_cost_usd": 0.006289,
+      "generation_model": "gpt-5-mini"
+    },
+    {
+      "question_id": "q0030",
+      "metric_scores": [
+        {
+          "metric": "answer_correctness",
+          "score": 0.9,
+          "reasoning": "Both answers conclude the document does not provide a total daily caloric target for a 70 kg male with type 2 diabetes and therefore the question cannot be answered from the available evidence. The generated answer omits the minor supporting detail that the document does specify macronutrient percentage breakdowns and fiber/sodium targets per 1000 kcal, but this does not change the core conclusion.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "faithfulness",
+          "score": 0.0,
+          "reasoning": "The single factual claim in the generated answer — that “The retrieved documents do not contain sufficient information to answer this question” — is not supported by the retrieved context. The provided passages contain extensive, specific information about nutritional management of T2DM (macronutrient ranges, Mediterranean diet recommendations, fiber and sodium guidance, alcohol limits, intermittent fasting findings, supplement notes, etc.), so the blanket statement of insufficiency is contradicted by the context. (Also, the user’s original question is not shown, so the assertion cannot be validated from the context.)",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "answer_relevance",
+          "score": 1.0,
+          "reasoning": "The response directly addresses the question by explicitly stating that the source documents lack the needed information, which is an acceptable, on-topic abstention. Although brief, it answers the user's query about availability of the specific recommendation rather than providing unrelated content.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "context_precision",
+          "score": 0.0,
+          "reasoning": "None of the retrieved passages specify a recommended total daily caloric intake for a 70 kg male with T2DM. The excerpts discuss macronutrient percentages, fiber per 1000 kcal, sodium limits, and mention severe calorie-restriction protocols (<1000 kcal/day) in some studies, but no passage gives an exact daily calorie recommendation for a 70 kg male—so all retrieved passages are irrelevant to the specific question.",
+          "is_llm_judged": true
+        },
+        {
+          "metric": "abstention_quality",
+          "score": 1.0,
+          "reasoning": "Correct behavior. The ground truth indicates the question is unanswerable from the provided documents, and the system explicitly declined to answer due to insufficient information without inventing any specific facts. This matches the expected abstention.",
+          "is_llm_judged": true
+        }
+      ],
+      "failed_metrics": {},
+      "judge_latency_seconds": 28.812062583048828,
+      "generation_latency_seconds": 4.243454208015464,
+      "prompt_tokens": 14136,
+      "completion_tokens": 2094,
+      "estimated_cost_usd": 0.007722,
+      "generation_model": "gpt-5-mini"
+    }
+  ]
+}
