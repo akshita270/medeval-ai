@@ -167,26 +167,27 @@ against an unrouted run's on the golden dataset before ever trusting it in
 production.
 
 **Phase 6 — Deployment**
-Backend runs live on AWS Elastic Beanstalk (single `t3.micro` instance, no
-Docker/Kubernetes), with heavy/dev-only dependencies trimmed from the deployed
-build so install and startup fit inside that instance's CPU credit budget.
-Frontend is a Next.js app deployed on Vercel. Since the EB backend is served
-over plain HTTP (a real TLS cert would mean paying for a load balancer just for
-this personal/portfolio deployment), the frontend calls a same-origin path and a
-Next.js rewrite proxies it server-side to the real backend -- this avoids the
-browser's HTTPS-page-calling-HTTP "mixed content" block without needing a cert.
-The backend's address is also a runtime-editable, browser-persisted setting
-(`src/lib/api.ts`), independent of the build-time proxy default, so the
-Playground can point at a different backend (e.g. local dev) without a rebuild.
+Backend runs live on Hugging Face Spaces (free CPU-basic tier, no Docker/
+Kubernetes), serving the real FastAPI app directly (`app.py` runs it with
+`uvicorn` rather than wrapping it in a Gradio UI). Frontend is a Next.js app
+deployed on Vercel, calling the backend through a same-origin Next.js rewrite
+(`src/lib/api.ts` / `next.config.ts`) so the backend's address stays a single
+runtime-editable, browser-persisted setting -- the Playground can point at a
+different backend (e.g. local dev) without a rebuild. The project originally
+ran on AWS Elastic Beanstalk (`t3.micro`); it moved off AWS after the account
+got locked by an AWS Organizations policy mid-session with no CLI-level way to
+recover it -- a reminder that a portfolio deployment is only as reliable as the
+platform underneath it, independent of anything in this repo's own code.
 
 **Phase 7 — Monitoring**
 A local SQLite log (`app/request_log.py`) records every `/ask` call -- latency,
 tokens, estimated cost, and which guardrail (if any) blocked it -- surfaced live
-on the frontend's Monitoring page. Elastic Beanstalk's own health check
-(`/health`) and `t3.micro`'s limited memory are the reason heavy/dev-only
-dependencies were trimmed from the deployed build -- an unnecessary package was
-enough to starve the instance and degrade it. Full automated failure diagnosis
-(beyond "the GitHub Actions run failed, here's the real status") is still open.
+on the frontend's Monitoring page. Heavy/dev-only dependencies were trimmed
+from the deployed build during the original AWS `t3.micro` deployment, where an
+unnecessary package was enough to starve that instance's limited memory and
+degrade it -- the trimmed build carried over to the current deployment too.
+Full automated failure diagnosis (beyond "the GitHub Actions run failed, here's
+the real status") is still open.
 
 **Frontend dashboard**
 A Next.js UI (`frontend/`) with five pages, all reading real data through a handful
@@ -307,5 +308,5 @@ command above.
 ## Tech stack
 
 FastAPI, Pydantic, ChromaDB, OpenAI API, rank-bm25, sentence-transformers
-(cross-encoder reranking), MLflow, pytest, ruff, GitHub Actions, AWS Elastic
-Beanstalk. Frontend: Next.js, React, Tailwind, Recharts, deployed on Vercel.
+(cross-encoder reranking), MLflow, pytest, ruff, GitHub Actions, Hugging Face
+Spaces. Frontend: Next.js, React, Tailwind, Recharts, deployed on Vercel.
