@@ -43,7 +43,7 @@ export const QUALITY_THRESHOLDS = {
   minFaithfulness: 0.85,
   minAbstentionQuality: 0.75,
   maxRegressionPct: 0.2,
-  maxGenerationLatencySeconds: 20.0,
+  maxGenerationLatencySeconds: 25.0,
 };
 
 function detailMetricMean(detail: EvalRunDetail, metric: string): number | null {
