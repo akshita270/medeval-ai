@@ -1,5 +1,7 @@
 # MedEval AI
 
+**[Live demo](https://frontend-kygtgrcm3-akshita270s-projects.vercel.app)** -- a working dashboard, not just a repo.
+
 A production-style Retrieval-Augmented Generation (RAG) system for Type 2 diabetes
 research questions, built as an end-to-end evaluation and CI/CD platform rather than
 just a demo RAG app. It answers questions over a small corpus of real, CC-licensed
@@ -165,27 +167,26 @@ against an unrouted run's on the golden dataset before ever trusting it in
 production.
 
 **Phase 6 — Deployment**
-Runs live on a single AWS EC2 instance (`t3.small`, no Docker/Kubernetes, per the
-original scope) behind `systemd` (`Restart=always`, so the process recovers on its
-own from a crash) with CORS enabled for a browser-hosted frontend. Deliberately
-stopped between uses rather than left running 24/7 -- EC2 compute is free-tier
-eligible for 12 months, but AWS's post-2024 hourly public-IPv4 charge is not, so
-"start it, demo it, stop it" keeps real cost near zero instead of accruing for a
-personal/portfolio deployment that isn't serving continuous traffic. Because the
-server's address changes on every start/stop cycle, the frontend's backend URL is
-a runtime-editable, browser-persisted setting (`src/lib/api.ts`), not a build-time
-constant.
+Backend runs live on AWS Elastic Beanstalk (single `t3.micro` instance, no
+Docker/Kubernetes), with heavy/dev-only dependencies trimmed from the deployed
+build so install and startup fit inside that instance's CPU credit budget.
+Frontend is a Next.js app deployed on Vercel. Since the EB backend is served
+over plain HTTP (a real TLS cert would mean paying for a load balancer just for
+this personal/portfolio deployment), the frontend calls a same-origin path and a
+Next.js rewrite proxies it server-side to the real backend -- this avoids the
+browser's HTTPS-page-calling-HTTP "mixed content" block without needing a cert.
+The backend's address is also a runtime-editable, browser-persisted setting
+(`src/lib/api.ts`), independent of the build-time proxy default, so the
+Playground can point at a different backend (e.g. local dev) without a rebuild.
 
 **Phase 7 — Monitoring**
 A local SQLite log (`app/request_log.py`) records every `/ask` call -- latency,
 tokens, estimated cost, and which guardrail (if any) blocked it -- surfaced live
-on the frontend's Monitoring page. One CloudWatch alarm watches for sustained high
-CPU. Deliberately *not* built: an EC2-auto-recovery alarm and an on-box health-check
-cron -- both were tried, and installing even a small extra package on a `t3.micro`
-(the original, free-tier instance size) was enough to starve it of memory and
-freeze the whole box, which is what actually motivated the upsize to `t3.small`.
-Full automated failure diagnosis (beyond "the GitHub Actions run failed, here's
-the real status") is still open.
+on the frontend's Monitoring page. Elastic Beanstalk's own health check
+(`/health`) and `t3.micro`'s limited memory are the reason heavy/dev-only
+dependencies were trimmed from the deployed build -- an unnecessary package was
+enough to starve the instance and degrade it. Full automated failure diagnosis
+(beyond "the GitHub Actions run failed, here's the real status") is still open.
 
 **Frontend dashboard**
 A Next.js UI (`frontend/`) with five pages, all reading real data through a handful
@@ -231,10 +232,26 @@ measured quality cost on this sample:
 | Off      | 0.83                 | 0.76          | $0.0823                | `run_v1_dense_sample10`        |
 | On       | 0.89                 | 1.00          | $0.0800                | `run_v1_dense_routed_sample10` |
 
-**Full 30-question dense baseline** (`run_v1_dense`): answer correctness
-0.90, faithfulness 0.99, answer relevance 0.99, abstention quality 0.93 --
-the approved baseline every PR's sampled evaluation is regression-tested
-against.
+**Approved baseline** (`baseline_v1`, full 30 questions, `RETRIEVAL_TOP_K=5`):
+answer correctness 0.83, faithfulness 0.87, answer relevance 0.95, context
+precision 0.65, context recall 0.86, abstention quality 0.94 -- 85.1% overall,
+the baseline every PR's sampled evaluation is regression-tested against.
+
+**Quality gate catching a real regression:** raising `RETRIEVAL_TOP_K` from 5
+to 8 (same full 30-question set, everything else held fixed) was run through
+the same gate used in CI:
+
+| Retrieval top_k | Answer correctness | Faithfulness | Context precision | Context recall |
+| ---------------- | ------------------- | ------------- | -------------------- | ----------------- |
+| 5 (baseline)      | 0.83                 | 0.87          | 0.65                  | 0.86               |
+| 8                 | 0.88                 | 0.84          | 0.60                  | 0.91               |
+
+Correctness, relevance, and recall improved, but faithfulness dropped below
+the gate's `min_faithfulness` threshold (0.85) and 10 question/metric pairs
+regressed more than the allowed 20% -- so `evaluate_quality_gates()` correctly
+**failed** this change, even though the overall average score alone would have
+looked like an improvement. That's the actual point of per-metric,
+per-question regression checks instead of a single aggregate score.
 
 ## A known, documented limitation
 
@@ -290,5 +307,5 @@ command above.
 ## Tech stack
 
 FastAPI, Pydantic, ChromaDB, OpenAI API, rank-bm25, sentence-transformers
-(cross-encoder reranking), MLflow, pytest, ruff, GitHub Actions, AWS EC2.
-Frontend: Next.js, React, Tailwind, Recharts.
+(cross-encoder reranking), MLflow, pytest, ruff, GitHub Actions, AWS Elastic
+Beanstalk. Frontend: Next.js, React, Tailwind, Recharts, deployed on Vercel.
