@@ -3,6 +3,17 @@ name: Release
 on:
   push:
     branches: [main]
+    # A change confined to these paths can't affect retrieval, generation,
+    # or anything the evaluation actually measures, so re-running the full
+    # (real-OpenAI-cost) evaluation for a README or frontend-only commit
+    # would only burn budget and risk a gate failure that says nothing
+    # about this change.
+    paths-ignore:
+      - "README.md"
+      - "docs/**"
+      - "frontend/**"
+      - ".vercelignore"
+      - "*.md"
   workflow_dispatch: {}
 
 permissions:
