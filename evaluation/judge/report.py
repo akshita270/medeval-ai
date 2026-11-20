@@ -8,7 +8,10 @@ from evaluation.judge.schema import EvaluationReport, EvaluationResult, MetricNa
 
 
 def build_report(
-    dataset_version: str, results: list[EvaluationResult], retrieval_config: RetrievalConfig | None = None
+    dataset_version: str,
+    results: list[EvaluationResult],
+    retrieval_config: RetrievalConfig | None = None,
+    generated_at: float | None = None,
 ) -> EvaluationReport:
     scores_by_metric: dict[MetricName, list[float]] = {}
     for result in results:
@@ -32,6 +35,7 @@ def build_report(
         dataset_version=dataset_version,
         total_questions=len(results),
         retrieval_config=retrieval_config,
+        generated_at=generated_at,
         metric_summaries=metric_summaries,
         total_failed_metric_calls=sum(len(r.failed_metrics) for r in results),
         total_cost_usd=sum(r.estimated_cost_usd for r in results),

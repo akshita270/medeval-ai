@@ -103,6 +103,13 @@ class EvaluationReport(BaseModel):
     # None = a historical run predating this field (its real config is
     # still recoverable from mlflow.db, just not inside the JSON itself).
     retrieval_config: RetrievalConfig | None = None
+    # Unix timestamp the run actually started, used to order runs by real
+    # recency. Deliberately NOT inferred from the file's filesystem mtime
+    # (app/eval_reports.py's old fallback) -- any git-based deploy (Vercel,
+    # Hugging Face Spaces) resets every checked-out file's mtime to deploy
+    # time, which silently reorders "latest run" on every redeploy. None =
+    # a historical run predating this field; falls back to mtime there only.
+    generated_at: float | None = None
     metric_summaries: list[MetricSummary]
     total_failed_metric_calls: int
     total_cost_usd: float

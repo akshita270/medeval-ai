@@ -91,7 +91,14 @@ def _summarize(run_id: str, path: Path) -> dict:
         # but every sample run on disk so far used a single model throughout) -- the first
         # result's model is a reasonable real label without fetching full run detail.
         "generation_model": report.results[0].generation_model if report.results else "",
-        "generated_at": path.stat().st_mtime,
+        # Prefers the real run-start time stored in the report itself over
+        # the file's filesystem mtime -- any git-based deploy (Vercel,
+        # Hugging Face Spaces) resets every checked-out file's mtime to
+        # deploy time, which would otherwise silently reorder "latest run"
+        # on every redeploy regardless of when a run actually happened.
+        # mtime is still the right fallback for a historical run that
+        # predates this field.
+        "generated_at": report.generated_at if report.generated_at is not None else path.stat().st_mtime,
     }
 
 

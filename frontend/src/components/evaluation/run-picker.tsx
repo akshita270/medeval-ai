@@ -40,7 +40,13 @@ export function RunPicker({
               {(value: string) => runs.find((r) => r.run_id === value)?.label ?? value}
             </SelectValue>
           </SelectTrigger>
-          <SelectContent>
+          {/* Popup width otherwise matches the (narrow, max-w-sm) trigger
+              exactly and clips long labels with overflow-x-hidden -- since
+              retrieval_config made labels longer (e.g. "Dense retrieval +
+              model routing, top_k=5 (10-question sample)"), it needs its
+              own wider, viewport-capped width instead of inheriting the
+              trigger's. */}
+          <SelectContent className="w-[min(32rem,90vw)]">
             {runs.map((r) => (
               <SelectItem key={r.run_id} value={r.run_id}>
                 {r.label} -- {(r.overall_score * 100).toFixed(1)}% overall

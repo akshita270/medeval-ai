@@ -44,6 +44,7 @@ def _strategy_label(settings) -> str:
 
 
 def run_evaluation(dataset_version: str = "v1", question_ids: list[str] | None = None) -> None:
+    run_started_at = time.time()
     settings = get_settings()
     dataset_path = Path(f"evaluation/golden_dataset/{dataset_version}/questions.jsonl")
     questions = load_golden_dataset(dataset_path)
@@ -106,7 +107,7 @@ def run_evaluation(dataset_version: str = "v1", question_ids: list[str] | None =
         use_reranking=settings.use_reranking,
         use_model_routing=settings.use_model_routing,
     )
-    report = build_report(dataset_version, results, retrieval_config)
+    report = build_report(dataset_version, results, retrieval_config, generated_at=run_started_at)
 
     out_dir = Path("evaluation/regression/runs")
     out_dir.mkdir(parents=True, exist_ok=True)
