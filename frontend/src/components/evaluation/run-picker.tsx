@@ -45,11 +45,19 @@ export function RunPicker({
               retrieval_config made labels longer (e.g. "Dense retrieval +
               model routing, top_k=5 (10-question sample)"), it needs its
               own wider, viewport-capped width instead of inheriting the
-              trigger's. */}
-          <SelectContent className="w-[min(32rem,90vw)]">
+              trigger's. Widened further isn't a full fix on its own --
+              any future label a few characters longer would clip again --
+              so each item also wraps onto two lines below instead of
+              depending on width alone to avoid clipping. */}
+          <SelectContent className="w-[min(34rem,92vw)]">
             {runs.map((r) => (
-              <SelectItem key={r.run_id} value={r.run_id}>
-                {r.label} -- {(r.overall_score * 100).toFixed(1)}% overall
+              <SelectItem key={r.run_id} value={r.run_id} className="py-2">
+                <span className="flex flex-col gap-0.5 whitespace-normal break-words text-left">
+                  <span>{r.label}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {(r.overall_score * 100).toFixed(1)}% overall
+                  </span>
+                </span>
               </SelectItem>
             ))}
           </SelectContent>
