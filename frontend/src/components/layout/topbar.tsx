@@ -119,7 +119,7 @@ export function Topbar() {
           variant="outline"
           className="hidden items-center gap-1.5 border-teal/30 bg-teal/10 text-[11px] font-medium text-teal sm:flex"
         >
-          Demo data
+          Real data
         </Badge>
 
         <Badge
