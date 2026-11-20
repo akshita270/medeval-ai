@@ -4,10 +4,12 @@ Pure aggregation, no LLM calls, no judgment of its own -- this only
 computes means and sums over results judge_service.py already produced.
 """
 
-from evaluation.judge.schema import EvaluationReport, EvaluationResult, MetricName, MetricSummary
+from evaluation.judge.schema import EvaluationReport, EvaluationResult, MetricName, MetricSummary, RetrievalConfig
 
 
-def build_report(dataset_version: str, results: list[EvaluationResult]) -> EvaluationReport:
+def build_report(
+    dataset_version: str, results: list[EvaluationResult], retrieval_config: RetrievalConfig | None = None
+) -> EvaluationReport:
     scores_by_metric: dict[MetricName, list[float]] = {}
     for result in results:
         for metric_score in result.metric_scores:
@@ -29,6 +31,7 @@ def build_report(dataset_version: str, results: list[EvaluationResult]) -> Evalu
     return EvaluationReport(
         dataset_version=dataset_version,
         total_questions=len(results),
+        retrieval_config=retrieval_config,
         metric_summaries=metric_summaries,
         total_failed_metric_calls=sum(len(r.failed_metrics) for r in results),
         total_cost_usd=sum(r.estimated_cost_usd for r in results),

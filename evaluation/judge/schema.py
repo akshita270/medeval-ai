@@ -71,6 +71,23 @@ class MetricSummary(BaseModel):
     count: int
 
 
+class RetrievalConfig(BaseModel):
+    """The exact retrieval/generation knobs a run actually used.
+
+    Without this, two runs can carry the same "dense"/"hybrid" strategy
+    label (derived only from the output filename) while differing in
+    retrieval_top_k -- e.g. a top_k=5 baseline and a top_k=8 ablation
+    both end up filed as "dense". Persisting the real values here (not
+    just encoding them in a filename) is what lets the UI show which
+    config a run actually used instead of a viewer having to guess.
+    """
+
+    retrieval_top_k: int | None = None
+    use_hybrid_retrieval: bool | None = None
+    use_reranking: bool | None = None
+    use_model_routing: bool | None = None
+
+
 class EvaluationReport(BaseModel):
     """A full evaluation run: per-metric summaries, cost/latency totals,
     and every individual EvaluationResult preserved underneath.
@@ -83,6 +100,9 @@ class EvaluationReport(BaseModel):
 
     dataset_version: str
     total_questions: int
+    # None = a historical run predating this field (its real config is
+    # still recoverable from mlflow.db, just not inside the JSON itself).
+    retrieval_config: RetrievalConfig | None = None
     metric_summaries: list[MetricSummary]
     total_failed_metric_calls: int
     total_cost_usd: float

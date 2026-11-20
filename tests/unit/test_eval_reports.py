@@ -19,7 +19,12 @@ def test_baseline_run_is_labeled_as_baseline():
     baseline = next((r for r in runs if r["run_id"] == "baseline"), None)
     assert baseline is not None
     assert baseline["is_baseline"] is True
-    assert baseline["label"] == "Approved baseline"
+    # The label always starts with "Approved baseline" but, since the
+    # addition of retrieval_config, also states the exact config used
+    # (e.g. "Approved baseline, top_k=5 (full 30-question set)") -- two
+    # runs sharing a strategy name but differing in retrieval_top_k must
+    # not look identical in the UI, so the real config is never dropped.
+    assert baseline["label"].startswith("Approved baseline")
 
 
 def test_get_eval_run_returns_full_detail_for_a_real_run():

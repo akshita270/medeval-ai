@@ -31,6 +31,7 @@ export function ComparisonView({ runs, selectedIds }: { runs: EvalRunSummary[]; 
   const configRows: { label: string; render: (r: EvalRunSummary) => string }[] = [
     { label: "Model", render: (r) => r.generation_model || "--" },
     { label: "Retrieval strategy", render: (r) => parseRunConfig(r).retrieval },
+    { label: "Retrieval top_k", render: (r) => parseRunConfig(r).topK?.toString() ?? "unknown (historical run)" },
     { label: "Reranking", render: (r) => (parseRunConfig(r).reranking ? "Enabled" : "Off") },
     { label: "Model routing", render: (r) => (parseRunConfig(r).routed ? "Enabled" : "Off") },
     { label: "Questions evaluated", render: (r) => String(r.total_questions) },

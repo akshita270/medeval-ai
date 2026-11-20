@@ -100,31 +100,31 @@
         {
           "metric": "faithfulness",
           "score": 1.0,
-          "reasoning": "All factual claims in the generated answer — that semaglutide is a GLP‑1 receptor agonist which, in a glucose‑dependent manner, stimulates insulin secretion and inhibits glucagon release leading to improved blood glucose control and reduced hypoglycaemia risk — are explicitly stated in the provided semaglutide_pharmacokinetics context.",
+          "reasoning": "All factual claims in the generated answer \u2014 that semaglutide is a GLP\u20111 receptor agonist which, in a glucose\u2011dependent manner, stimulates insulin secretion and inhibits glucagon release leading to improved blood glucose control and reduced hypoglycaemia risk \u2014 are explicitly stated in the provided semaglutide_pharmacokinetics context.",
           "is_llm_judged": true
         },
         {
           "metric": "answer_relevance",
           "score": 0.9,
-          "reasoning": "The answer correctly identifies the primary mechanism—semaglutide is a GLP‑1 receptor agonist that glucose‑dependently stimulates insulin secretion and suppresses glucagon, reducing hypoglycaemia risk. It is slightly incomplete because it omits other relevant effects (slowed gastric emptying and reduced appetite/weight loss) that also contribute to improved glycaemic control in type 2 diabetes.",
+          "reasoning": "The answer correctly identifies the primary mechanism\u2014semaglutide is a GLP\u20111 receptor agonist that glucose\u2011dependently stimulates insulin secretion and suppresses glucagon, reducing hypoglycaemia risk. It is slightly incomplete because it omits other relevant effects (slowed gastric emptying and reduced appetite/weight loss) that also contribute to improved glycaemic control in type 2 diabetes.",
           "is_llm_judged": true
         },
         {
           "metric": "context_precision",
           "score": 0.9,
-          "reasoning": "Ranks 1 and 2 (semaglutide_pharmacokinetics) are directly relevant — they state semaglutide is a GLP‑1 receptor agonist that stimulates insulin and inhibits glucagon to improve glycaemia. Rank 3 (dapagliflozin_sglt2i_review) is about an SGLT2 inhibitor (dapagliflozin) and is not relevant to semaglutide; it is not ranked above any relevant passage.",
+          "reasoning": "Ranks 1 and 2 (semaglutide_pharmacokinetics) are directly relevant \u2014 they state semaglutide is a GLP\u20111 receptor agonist that stimulates insulin and inhibits glucagon to improve glycaemia. Rank 3 (dapagliflozin_sglt2i_review) is about an SGLT2 inhibitor (dapagliflozin) and is not relevant to semaglutide; it is not ranked above any relevant passage.",
           "is_llm_judged": true
         },
         {
           "metric": "abstention_quality",
           "score": 1.0,
-          "reasoning": "Correct behavior. The model provided a substantive, accurate mechanism: semaglutide is a GLP‑1 receptor agonist that glucose‑dependently enhances insulin secretion and suppresses glucagon, which improves glycaemic control and lowers hypoglycaemia risk. This is an appropriate answer to the question (no unnecessary hedging or fabrication). Minor omission: GLP‑1 agonists including semaglutide also slow gastric emptying and reduce appetite/weight, which contribute to improved glucose control, but the provided answer is accurate and acceptable.",
+          "reasoning": "Correct behavior. The model provided a substantive, accurate mechanism: semaglutide is a GLP\u20111 receptor agonist that glucose\u2011dependently enhances insulin secretion and suppresses glucagon, which improves glycaemic control and lowers hypoglycaemia risk. This is an appropriate answer to the question (no unnecessary hedging or fabrication). Minor omission: GLP\u20111 agonists including semaglutide also slow gastric emptying and reduce appetite/weight, which contribute to improved glucose control, but the provided answer is accurate and acceptable.",
           "is_llm_judged": true
         },
         {
           "metric": "context_recall",
           "score": 1.0,
-          "reasoning": "The retrieved passage (semaglutide_pharmacokinetics Introduction) contains the supporting sentence verbatim: “As with native GLP-1, semaglutide acts to stimulate insulin secretion and inhibit glucagon release depending on the blood glucose concentration, leading to improved blood glucose levels together with a reduced risk of hypoglycaemia.”}",
+          "reasoning": "The retrieved passage (semaglutide_pharmacokinetics Introduction) contains the supporting sentence verbatim: \u201cAs with native GLP-1, semaglutide acts to stimulate insulin secretion and inhibit glucagon release depending on the blood glucose concentration, leading to improved blood glucose levels together with a reduced risk of hypoglycaemia.\u201d}",
           "is_llm_judged": true
         }
       ],
@@ -160,7 +160,7 @@
         {
           "metric": "context_precision",
           "score": 1.0,
-          "reasoning": "All retrieved passages are directly relevant—they report diagnostic accuracy of HbA1c in previously undiagnosed populations and explicitly identify the optimal cut-off (HbA1c 6.03%). The most relevant information appears at the top ranks (ranks 1–2), and no irrelevant passages are present or misordered.",
+          "reasoning": "All retrieved passages are directly relevant\u2014they report diagnostic accuracy of HbA1c in previously undiagnosed populations and explicitly identify the optimal cut-off (HbA1c 6.03%). The most relevant information appears at the top ranks (ranks 1\u20132), and no irrelevant passages are present or misordered.",
           "is_llm_judged": true
         },
         {
@@ -172,7 +172,7 @@
         {
           "metric": "context_recall",
           "score": 1.0,
-          "reasoning": "The retrieved passages explicitly state the optimal cut-off as 6.03%: “The optimal cut off value for sensitivity and specificity for HbA1c for diagnosing diabetes in previously undiagnosed population was estimated as 6.03%.” (and even provide the pooled sensitivity/specificity at this threshold), so the supporting evidence is present verbatim.",
+          "reasoning": "The retrieved passages explicitly state the optimal cut-off as 6.03%: \u201cThe optimal cut off value for sensitivity and specificity for HbA1c for diagnosing diabetes in previously undiagnosed population was estimated as 6.03%.\u201d (and even provide the pooled sensitivity/specificity at this threshold), so the supporting evidence is present verbatim.",
           "is_llm_judged": true
         }
       ],
@@ -196,7 +196,7 @@
         {
           "metric": "faithfulness",
           "score": 1.0,
-          "reasoning": "All factual claims in the generated answer are directly supported by the retrieved context: the meta-analysis explicitly reports an optimal FPG cut-off of 104 mg/dL with pooled sensitivity 82.3% (95% CI: 74.6–88.1%) and specificity 89.4% (95% CI: 85.2–92.5%). No unsupported claims were made.",
+          "reasoning": "All factual claims in the generated answer are directly supported by the retrieved context: the meta-analysis explicitly reports an optimal FPG cut-off of 104 mg/dL with pooled sensitivity 82.3% (95% CI: 74.6\u201388.1%) and specificity 89.4% (95% CI: 85.2\u201392.5%). No unsupported claims were made.",
           "is_llm_judged": true
         },
         {
@@ -208,7 +208,7 @@
         {
           "metric": "context_precision",
           "score": 1.0,
-          "reasoning": "All retrieved passages are directly relevant: rank 1 explicitly states the optimal FPG cutoff (104 mg/dL) with its sensitivity (82.3%) and specificity (89.4%). Subsequent passages (ranks 2–5) repeat or support these findings (tables/figures and discussion). No irrelevant passages were retrieved and relevance is consistent across the ranking.",
+          "reasoning": "All retrieved passages are directly relevant: rank 1 explicitly states the optimal FPG cutoff (104 mg/dL) with its sensitivity (82.3%) and specificity (89.4%). Subsequent passages (ranks 2\u20135) repeat or support these findings (tables/figures and discussion). No irrelevant passages were retrieved and relevance is consistent across the ranking.",
           "is_llm_judged": true
         },
         {
@@ -220,7 +220,7 @@
         {
           "metric": "context_recall",
           "score": 1.0,
-          "reasoning": "The retrieved passages explicitly state: \"Estimated optimal cut-off for FPG for diagnosing diabetes was 104 mg/dL with pooled sensitivity of 82.3% (95% CI: 74.6–88.1%) and specificity of 89.4% (95% CI:85.2–92.5%),\" matching the supporting evidence verbatim.",
+          "reasoning": "The retrieved passages explicitly state: \"Estimated optimal cut-off for FPG for diagnosing diabetes was 104 mg/dL with pooled sensitivity of 82.3% (95% CI: 74.6\u201388.1%) and specificity of 89.4% (95% CI:85.2\u201392.5%),\" matching the supporting evidence verbatim.",
           "is_llm_judged": true
         }
       ],
@@ -262,7 +262,7 @@
         {
           "metric": "abstention_quality",
           "score": 1.0,
-          "reasoning": "Correct behavior: the question was answerable and the system provided a substantive numeric answer (71%) without unnecessary hedging. This is not a case of fabrication or over-caution — the model recognized it had evidence to answer and responded directly.",
+          "reasoning": "Correct behavior: the question was answerable and the system provided a substantive numeric answer (71%) without unnecessary hedging. This is not a case of fabrication or over-caution \u2014 the model recognized it had evidence to answer and responded directly.",
           "is_llm_judged": true
         },
         {
@@ -286,13 +286,13 @@
         {
           "metric": "answer_correctness",
           "score": 0.5,
-          "reasoning": "The generated answer correctly matches the core macronutrient ranges (40–50% carbs, 15–25% protein, 25–35% fat) and appropriately limits saturated fat. However it omits two recommended items from the expected answer: at least 14 g fiber per 1000 kcal and sodium under 2300 mg. It also adds a specific PUFA/MUFA breakdown not specified in the expected answer (not contradictory but extra).",
+          "reasoning": "The generated answer correctly matches the core macronutrient ranges (40\u201350% carbs, 15\u201325% protein, 25\u201335% fat) and appropriately limits saturated fat. However it omits two recommended items from the expected answer: at least 14 g fiber per 1000 kcal and sodium under 2300 mg. It also adds a specific PUFA/MUFA breakdown not specified in the expected answer (not contradictory but extra).",
           "is_llm_judged": true
         },
         {
           "metric": "faithfulness",
           "score": 1.0,
-          "reasoning": "All elements of the recommended macronutrient breakdown (40–50% carbohydrates; 15–25% protein; 25–35% fat with <7% saturated, 10% polyunsaturated, and 10% monounsaturated) are explicitly stated in the retrieved context (see the authors’ recommended dietary prescription in sections 4 and 3.2).",
+          "reasoning": "All elements of the recommended macronutrient breakdown (40\u201350% carbohydrates; 15\u201325% protein; 25\u201335% fat with <7% saturated, 10% polyunsaturated, and 10% monounsaturated) are explicitly stated in the retrieved context (see the authors\u2019 recommended dietary prescription in sections 4 and 3.2).",
           "is_llm_judged": true
         },
         {
@@ -304,19 +304,19 @@
         {
           "metric": "context_precision",
           "score": 1.0,
-          "reasoning": "All retrieved passages are directly relevant: they discuss Mediterranean-diet-based strategies and explicitly state macronutrient prescriptions (e.g., 40–50% carbs, 15–25% protein, 25–35% fat with saturated/PUFA/MUFA splits, fiber and sodium targets). The top-ranked passage contains the explicit recommended breakdown, and the remaining passages provide corroborating, on-topic detail, so relevance remains high down the list.",
+          "reasoning": "All retrieved passages are directly relevant: they discuss Mediterranean-diet-based strategies and explicitly state macronutrient prescriptions (e.g., 40\u201350% carbs, 15\u201325% protein, 25\u201335% fat with saturated/PUFA/MUFA splits, fiber and sodium targets). The top-ranked passage contains the explicit recommended breakdown, and the remaining passages provide corroborating, on-topic detail, so relevance remains high down the list.",
           "is_llm_judged": true
         },
         {
           "metric": "abstention_quality",
           "score": 1.0,
-          "reasoning": "Correct behavior. The question was answerable and the system provided a clear, substantive macronutrient prescription (40–50% carbohydrate; 15–25% protein; 25–35% fat, with <7% saturated, ~10% polyunsaturated, ~10% monounsaturated) without unnecessary hedging or invented caveats. This matches the expectation that the model should answer when evidence supports it, so no abstention was required.",
+          "reasoning": "Correct behavior. The question was answerable and the system provided a clear, substantive macronutrient prescription (40\u201350% carbohydrate; 15\u201325% protein; 25\u201335% fat, with <7% saturated, ~10% polyunsaturated, ~10% monounsaturated) without unnecessary hedging or invented caveats. This matches the expectation that the model should answer when evidence supports it, so no abstention was required.",
           "is_llm_judged": true
         },
         {
           "metric": "context_recall",
           "score": 1.0,
-          "reasoning": "All elements of the supporting evidence appear verbatim in the retrieved passages (Authors’ Comments and Conclusions): 40–50% carbohydrates; 15–25% proteins; 25–35% fats with <7% saturated, 10% polyunsaturated, and 10% monounsaturated; ≥14 g fiber per 1000 kcal; and <2300 mg sodium.",
+          "reasoning": "All elements of the supporting evidence appear verbatim in the retrieved passages (Authors\u2019 Comments and Conclusions): 40\u201350% carbohydrates; 15\u201325% proteins; 25\u201335% fats with <7% saturated, 10% polyunsaturated, and 10% monounsaturated; \u226514 g fiber per 1000 kcal; and <2300 mg sodium.",
           "is_llm_judged": true
         }
       ],
@@ -352,13 +352,13 @@
         {
           "metric": "context_precision",
           "score": 0.9,
-          "reasoning": "Ranks 1–3 (all from retinopathy_hemodialysis_risk_factors) are directly relevant and include the statement that diabetic nephropathy accounts for ~40% of patients needing renal replacement therapy. Rank 4 (serum_albumin_retinopathy_nhanes) is unrelated to the question and is the single irrelevant passage, but it is ranked last, so ordering is acceptable.",
+          "reasoning": "Ranks 1\u20133 (all from retinopathy_hemodialysis_risk_factors) are directly relevant and include the statement that diabetic nephropathy accounts for ~40% of patients needing renal replacement therapy. Rank 4 (serum_albumin_retinopathy_nhanes) is unrelated to the question and is the single irrelevant passage, but it is ranked last, so ordering is acceptable.",
           "is_llm_judged": true
         },
         {
           "metric": "abstention_quality",
           "score": 1.0,
-          "reasoning": "Correct behavior. The question was answerable and the system provided a clear, substantive estimate (≈40%) without unnecessary hedging or invented details. This matches expected responses for the prompt (no abstention or fabrication error).",
+          "reasoning": "Correct behavior. The question was answerable and the system provided a clear, substantive estimate (\u224840%) without unnecessary hedging or invented details. This matches expected responses for the prompt (no abstention or fabrication error).",
           "is_llm_judged": true
         },
         {
@@ -388,7 +388,7 @@
         {
           "metric": "faithfulness",
           "score": 1.0,
-          "reasoning": "Both factual claims are directly supported by the retrieved context: the text states “more than 99% of the semaglutide is bound to plasma albumin,” and immediately links this high albumin binding to prolonged exposure being “mainly driven by slow systemic elimination and, to a lesser extent, by delayed absorption.” No unsupported claims were made.",
+          "reasoning": "Both factual claims are directly supported by the retrieved context: the text states \u201cmore than 99% of the semaglutide is bound to plasma albumin,\u201d and immediately links this high albumin binding to prolonged exposure being \u201cmainly driven by slow systemic elimination and, to a lesser extent, by delayed absorption.\u201d No unsupported claims were made.",
           "is_llm_judged": true
         },
         {
@@ -430,37 +430,37 @@
         {
           "metric": "answer_correctness",
           "score": 0.8,
-          "reasoning": "The generated answer correctly states DSME improves glycemic control with modest reductions in HbA1c and that Mediterranean-style diets confer glycemic and cardiometabolic benefits and are recommended long-term. It omits the specific RCT effect size for DSME (~0.64% HbA1c reduction) and does not provide the Mediterranean diet macronutrient range (≈40–50% carbs, 15–25% protein, 25–35% fat), which are the key numeric details in the expected answer.",
+          "reasoning": "The generated answer correctly states DSME improves glycemic control with modest reductions in HbA1c and that Mediterranean-style diets confer glycemic and cardiometabolic benefits and are recommended long-term. It omits the specific RCT effect size for DSME (~0.64% HbA1c reduction) and does not provide the Mediterranean diet macronutrient range (\u224840\u201350% carbs, 15\u201325% protein, 25\u201335% fat), which are the key numeric details in the expected answer.",
           "is_llm_judged": true
         },
         {
           "metric": "faithfulness",
           "score": 0.9,
-          "reasoning": "Most factual claims are directly supported by the retrieved passages: DSME improves knowledge, self‑efficacy and self‑care leading to modest reductions in HbA1c and fasting glucose, and face‑to‑face plus periodic telephone follow‑up yields larger effects; the Mediterranean diet is described as high‑evidence with randomized/longer‑term studies showing lower fasting glucose, improved glycemic profiles, reduced need for hypoglycemic medications, and lower diabetes incidence, with mixed effects on HbA1c/weight/lipids. One minor claim — the explicit clinical recommendation to combine DSME with a Mediterranean‑style eating plan to “maximize” glycemic benefit — is a reasonable inference from the two sets of findings but is not directly stated in the retrieved context.",
+          "reasoning": "Most factual claims are directly supported by the retrieved passages: DSME improves knowledge, self\u2011efficacy and self\u2011care leading to modest reductions in HbA1c and fasting glucose, and face\u2011to\u2011face plus periodic telephone follow\u2011up yields larger effects; the Mediterranean diet is described as high\u2011evidence with randomized/longer\u2011term studies showing lower fasting glucose, improved glycemic profiles, reduced need for hypoglycemic medications, and lower diabetes incidence, with mixed effects on HbA1c/weight/lipids. One minor claim \u2014 the explicit clinical recommendation to combine DSME with a Mediterranean\u2011style eating plan to \u201cmaximize\u201d glycemic benefit \u2014 is a reasonable inference from the two sets of findings but is not directly stated in the retrieved context.",
           "is_llm_judged": true
         },
         {
           "metric": "answer_relevance",
           "score": 1.0,
-          "reasoning": "The answer directly explains how DSME (through knowledge, self-efficacy, behavior change) and Mediterranean-style nutrition (evidence-based diet effects on glucose, medication needs, and cardiometabolic risk) each improve glycemic control, and offers a practical clinical implication—matching the question precisely.",
+          "reasoning": "The answer directly explains how DSME (through knowledge, self-efficacy, behavior change) and Mediterranean-style nutrition (evidence-based diet effects on glucose, medication needs, and cardiometabolic risk) each improve glycemic control, and offers a practical clinical implication\u2014matching the question precisely.",
           "is_llm_judged": true
         },
         {
           "metric": "context_precision",
           "score": 1.0,
-          "reasoning": "All three retrieved passages are directly relevant: the first two (ranks 1–2) summarize Mediterranean-style nutritional therapy and broader nutritional strategies for T2DM (effects on HbA1c, fasting glucose, medication needs, and weight), and the third (rank 3) is a DSME meta-analysis describing HbA1c and metabolic improvements and mechanisms (knowledge, self-efficacy, behaviour change). No retrieved passage is irrelevant and relevance remains high throughout the ranking.",
+          "reasoning": "All three retrieved passages are directly relevant: the first two (ranks 1\u20132) summarize Mediterranean-style nutritional therapy and broader nutritional strategies for T2DM (effects on HbA1c, fasting glucose, medication needs, and weight), and the third (rank 3) is a DSME meta-analysis describing HbA1c and metabolic improvements and mechanisms (knowledge, self-efficacy, behaviour change). No retrieved passage is irrelevant and relevance remains high throughout the ranking.",
           "is_llm_judged": true
         },
         {
           "metric": "abstention_quality",
           "score": 1.0,
-          "reasoning": "Correct behavior: is_answerable=true and the system provided a substantive, evidence-aligned answer without inventing specific facts. The response accurately summarizes how DSME improves knowledge, self‑efficacy and self‑care leading to modest HbA1c/fasting glucose reductions and notes stronger effects with interactive delivery, and it characterizes Mediterranean-style dietary therapy as supported by randomized/longer-term studies improving glycemic measures and cardiometabolic risk while acknowledging variable effects on HbA1c/weight/lipids. No unwarranted fabrication or excessive hedging was present.",
+          "reasoning": "Correct behavior: is_answerable=true and the system provided a substantive, evidence-aligned answer without inventing specific facts. The response accurately summarizes how DSME improves knowledge, self\u2011efficacy and self\u2011care leading to modest HbA1c/fasting glucose reductions and notes stronger effects with interactive delivery, and it characterizes Mediterranean-style dietary therapy as supported by randomized/longer-term studies improving glycemic measures and cardiometabolic risk while acknowledging variable effects on HbA1c/weight/lipids. No unwarranted fabrication or excessive hedging was present.",
           "is_llm_judged": true
         },
         {
           "metric": "context_recall",
           "score": 0.5,
-          "reasoning": "The retrieved passages partially match the supporting evidence: they state a carbohydrate recommendation of ~40–50% TEV and generally report that DSME improves HbA1c, but they do not provide the specific DSME effect sizes and confidence intervals (0.64% [95% CI 0.45–0.83] and 1.27% [95% CI -0.63–3.17]). They also omit the detailed Mediterranean diet prescription components (protein 15–25%, fat 25–35% with the <7% saturated / 10% polyunsaturated / 10% monounsaturated split, ≥14 g fiber per 1000 kcal, and <2300 mg sodium).",
+          "reasoning": "The retrieved passages partially match the supporting evidence: they state a carbohydrate recommendation of ~40\u201350% TEV and generally report that DSME improves HbA1c, but they do not provide the specific DSME effect sizes and confidence intervals (0.64% [95% CI 0.45\u20130.83] and 1.27% [95% CI -0.63\u20133.17]). They also omit the detailed Mediterranean diet prescription components (protein 15\u201325%, fat 25\u201335% with the <7% saturated / 10% polyunsaturated / 10% monounsaturated split, \u226514 g fiber per 1000 kcal, and <2300 mg sodium).",
           "is_llm_judged": true
         }
       ],
@@ -496,7 +496,7 @@
         {
           "metric": "context_precision",
           "score": 0.5,
-          "reasoning": "Most retrieved passages (rank 1 and ranks 3–end) are from a nutritional strategies review focused on diets for T2DM and are not about pharmacological approaches; only rank 2 (the dapagliflozin/SGLT2 inhibitor review) is pharmacology-relevant. The most relevant passage is not ranked first and the set is a mix of one relevant and several irrelevant passages.",
+          "reasoning": "Most retrieved passages (rank 1 and ranks 3\u2013end) are from a nutritional strategies review focused on diets for T2DM and are not about pharmacological approaches; only rank 2 (the dapagliflozin/SGLT2 inhibitor review) is pharmacology-relevant. The most relevant passage is not ranked first and the set is a mix of one relevant and several irrelevant passages.",
           "is_llm_judged": true
         },
         {
@@ -508,7 +508,7 @@
         {
           "metric": "context_recall",
           "score": 0.0,
-          "reasoning": "The retrieved passages discuss dietary strategies and dapagliflozin dosing/place in T2D but do not mention DECLARE‑TIMI 58, EMPA‑REG OUTCOME, or the CANVAS Program nor any statement that statins are the drug of choice for reducing LDL‑C in primary and secondary prevention of ASCVD in T2DM. Therefore none of the supporting evidence content is present.",
+          "reasoning": "The retrieved passages discuss dietary strategies and dapagliflozin dosing/place in T2D but do not mention DECLARE\u2011TIMI 58, EMPA\u2011REG OUTCOME, or the CANVAS Program nor any statement that statins are the drug of choice for reducing LDL\u2011C in primary and secondary prevention of ASCVD in T2DM. Therefore none of the supporting evidence content is present.",
           "is_llm_judged": true
         }
       ],
@@ -526,13 +526,13 @@
         {
           "metric": "answer_correctness",
           "score": 0.8,
-          "reasoning": "The generated answer correctly lists the general risk factors and the hemodialysis‑population associations cited in the expected answer (glucometabolic control, hypertension, higher BMI, lower leukocyte concentrations, and other microvasculopathies). However it omits the NHANES finding that lower serum albumin was strongly negatively linked with diabetic retinopathy in both sexes — a key point in the expected answer. It also adds extra hemodialysis details (HDL, apolipoproteins, dialysis duration) that were not in the expected summary but are not contradictory.",
+          "reasoning": "The generated answer correctly lists the general risk factors and the hemodialysis\u2011population associations cited in the expected answer (glucometabolic control, hypertension, higher BMI, lower leukocyte concentrations, and other microvasculopathies). However it omits the NHANES finding that lower serum albumin was strongly negatively linked with diabetic retinopathy in both sexes \u2014 a key point in the expected answer. It also adds extra hemodialysis details (HDL, apolipoproteins, dialysis duration) that were not in the expected summary but are not contradictory.",
           "is_llm_judged": true
         },
         {
           "metric": "faithfulness",
           "score": 1.0,
-          "reasoning": "All specific claims in the generated answer are directly supported by the retrieved passages: the 4D hemodialysis study text documents associations with hypertension, higher glucose/HbA1c, longer diabetes duration, other microangiopathies, slightly higher BMI, longer dialysis time, younger age in the DR group, lower overall CAD prevalence, higher HDL/apo AI/apo AII, lower leukocyte counts, and no smoking association; the NHANES/intro text supports the link to chronic low‑grade inflammation, oxidative stress and microvascular changes. No unsupported factual claims were identified.",
+          "reasoning": "All specific claims in the generated answer are directly supported by the retrieved passages: the 4D hemodialysis study text documents associations with hypertension, higher glucose/HbA1c, longer diabetes duration, other microangiopathies, slightly higher BMI, longer dialysis time, younger age in the DR group, lower overall CAD prevalence, higher HDL/apo AI/apo AII, lower leukocyte counts, and no smoking association; the NHANES/intro text supports the link to chronic low\u2011grade inflammation, oxidative stress and microvascular changes. No unsupported factual claims were identified.",
           "is_llm_judged": true
         },
         {
@@ -550,7 +550,7 @@
         {
           "metric": "abstention_quality",
           "score": 1.0,
-          "reasoning": "Correct behavior. The question was answerable (is_answerable=true) and the system provided a substantive, specific list of risk factors and cohort‑specific associations rather than declining or hedging unnecessarily. The answer framed findings as associations (not causal claims) and did not inappropriately refuse or add excessive uncertainty, so no abstention was required and none was observed.",
+          "reasoning": "Correct behavior. The question was answerable (is_answerable=true) and the system provided a substantive, specific list of risk factors and cohort\u2011specific associations rather than declining or hedging unnecessarily. The answer framed findings as associations (not causal claims) and did not inappropriately refuse or add excessive uncertainty, so no abstention was required and none was observed.",
           "is_llm_judged": true
         },
         {
@@ -598,13 +598,13 @@
         {
           "metric": "abstention_quality",
           "score": 1.0,
-          "reasoning": "Correct behavior. The question was answerable and the system provided a substantive numerical response (IDF 2015 estimate of 415 million, prevalence 8.8% [95% CI 7.2–11.4%], and a 2040 projection of ~642 million, prevalence 10.4% [95% CI 8.5–13.5%]). There is no unnecessary hedging or refusal, and no fabrication or invented details beyond the cited estimates, so declining was not required.",
+          "reasoning": "Correct behavior. The question was answerable and the system provided a substantive numerical response (IDF 2015 estimate of 415 million, prevalence 8.8% [95% CI 7.2\u201311.4%], and a 2040 projection of ~642 million, prevalence 10.4% [95% CI 8.5\u201313.5%]). There is no unnecessary hedging or refusal, and no fabrication or invented details beyond the cited estimates, so declining was not required.",
           "is_llm_judged": true
         },
         {
           "metric": "context_recall",
           "score": 0.5,
-          "reasoning": "The retrieved passages include the International Diabetes Federation figures stating 415 million people living with T2DM in 2015 and a projection of almost 642 million by 2040 (verbatim). However, they do not contain the 2021 estimate of 537 million (10.5%) adults aged 20–79 with diabetes, so one key piece of the supporting evidence is missing.",
+          "reasoning": "The retrieved passages include the International Diabetes Federation figures stating 415 million people living with T2DM in 2015 and a projection of almost 642 million by 2040 (verbatim). However, they do not contain the 2021 estimate of 537 million (10.5%) adults aged 20\u201379 with diabetes, so one key piece of the supporting evidence is missing.",
           "is_llm_judged": true
         }
       ],
@@ -628,7 +628,7 @@
         {
           "metric": "faithfulness",
           "score": 1.0,
-          "reasoning": "All factual claims in the generated answer are directly supported by the retrieved passages: the t2dm_diagnostic_accuracy_review explicitly reports the US$548 billion 2013 global cost, that people with diabetes use about twice the resources and that ~one-fifth of diabetes health spending occurs in low- and middle-income countries; the t2dm_risk_factors_umbrella_review provides the 415 million (2015) and ~642 million (2040) case numbers and the phrase that epidemiological data “predict an inexorable and unsustainable increase in global health expenditure attributable to T2DM.” The statement that only one retrieved source gives a specific dollar estimate is therefore accurate.",
+          "reasoning": "All factual claims in the generated answer are directly supported by the retrieved passages: the t2dm_diagnostic_accuracy_review explicitly reports the US$548 billion 2013 global cost, that people with diabetes use about twice the resources and that ~one-fifth of diabetes health spending occurs in low- and middle-income countries; the t2dm_risk_factors_umbrella_review provides the 415 million (2015) and ~642 million (2040) case numbers and the phrase that epidemiological data \u201cpredict an inexorable and unsustainable increase in global health expenditure attributable to T2DM.\u201d The statement that only one retrieved source gives a specific dollar estimate is therefore accurate.",
           "is_llm_judged": true
         },
         {
@@ -646,7 +646,7 @@
         {
           "metric": "abstention_quality",
           "score": 1.0,
-          "reasoning": "Correct behavior. The system provided a substantive answer (the US$548 billion 2013 estimate) and relevant comparative details (people with diabetes use about twice the resources; ~20% of diabetes health spending occurs in low-/middle-income countries), and accurately noted that another source did not supply a global dollar figure but reported rising case numbers. There is no evidence of fabrication or unnecessary hedging — this is a case of appropriately answering an answerable question.",
+          "reasoning": "Correct behavior. The system provided a substantive answer (the US$548 billion 2013 estimate) and relevant comparative details (people with diabetes use about twice the resources; ~20% of diabetes health spending occurs in low-/middle-income countries), and accurately noted that another source did not supply a global dollar figure but reported rising case numbers. There is no evidence of fabrication or unnecessary hedging \u2014 this is a case of appropriately answering an answerable question.",
           "is_llm_judged": true
         },
         {
@@ -676,13 +676,13 @@
         {
           "metric": "faithfulness",
           "score": 1.0,
-          "reasoning": "The statement is directly supported by the retrieved context which says SGLT2 inhibitor–induced glucuresis causes caloric loss and that the observed weight loss is less than calculated from that calorie loss, possibly due to compensatory mechanisms such as increased energy intake. No unsupported claims were made.",
+          "reasoning": "The statement is directly supported by the retrieved context which says SGLT2 inhibitor\u2013induced glucuresis causes caloric loss and that the observed weight loss is less than calculated from that calorie loss, possibly due to compensatory mechanisms such as increased energy intake. No unsupported claims were made.",
           "is_llm_judged": true
         },
         {
           "metric": "answer_relevance",
           "score": 1.0,
-          "reasoning": "The answer directly addresses the question by explaining that compensatory mechanisms—specifically increased energy intake—reduce the net weight loss from the caloric deficit caused by glucosuria. It succinctly gives a correct, relevant reason for the discrepancy.",
+          "reasoning": "The answer directly addresses the question by explaining that compensatory mechanisms\u2014specifically increased energy intake\u2014reduce the net weight loss from the caloric deficit caused by glucosuria. It succinctly gives a correct, relevant reason for the discrepancy.",
           "is_llm_judged": true
         },
         {
@@ -700,7 +700,7 @@
         {
           "metric": "context_recall",
           "score": 1.0,
-          "reasoning": "The retrieved passages include the key sentence verbatim: “The loss in bodyweight with SGLT2 inhibitors is less than that calculated from calorie loss due to glucuresis, which may be because of compensatory mechanisms such as increased energy intake.” Thus all necessary information from the supporting evidence is present.",
+          "reasoning": "The retrieved passages include the key sentence verbatim: \u201cThe loss in bodyweight with SGLT2 inhibitors is less than that calculated from calorie loss due to glucuresis, which may be because of compensatory mechanisms such as increased energy intake.\u201d Thus all necessary information from the supporting evidence is present.",
           "is_llm_judged": true
         }
       ],
@@ -724,7 +724,7 @@
         {
           "metric": "faithfulness",
           "score": 1.0,
-          "reasoning": "Supported by the retrieved text: the Methods state participants under age 30 and those with diabetes onset before age 30 were excluded to lower the probability of including type 1 diabetes, and T2DM was defined using diagnostic age ≥30 or HbA1c ≥6.5%, so the exclusion aimed to focus the study on type 2 diabetes. No unsupported claims were made.",
+          "reasoning": "Supported by the retrieved text: the Methods state participants under age 30 and those with diabetes onset before age 30 were excluded to lower the probability of including type 1 diabetes, and T2DM was defined using diagnostic age \u226530 or HbA1c \u22656.5%, so the exclusion aimed to focus the study on type 2 diabetes. No unsupported claims were made.",
           "is_llm_judged": true
         },
         {
@@ -742,7 +742,7 @@
         {
           "metric": "abstention_quality",
           "score": 1.0,
-          "reasoning": "Correct — the system provided a substantive, accurate answer. Excluding diabetes onset before age 30 is a common study criterion to reduce inclusion of likely type 1 diabetes cases and thereby focus the analysis on type 2 diabetes; the response succinctly and correctly states that rationale without unnecessary hedging or fabrication.",
+          "reasoning": "Correct \u2014 the system provided a substantive, accurate answer. Excluding diabetes onset before age 30 is a common study criterion to reduce inclusion of likely type 1 diabetes cases and thereby focus the analysis on type 2 diabetes; the response succinctly and correctly states that rationale without unnecessary hedging or fabrication.",
           "is_llm_judged": true
         },
         {
@@ -766,13 +766,13 @@
         {
           "metric": "answer_correctness",
           "score": 1.0,
-          "reasoning": "The generated answer correctly states that supervision itself — not duration or frequency — is the key driver and programs should prioritize supervised delivery, matching the expected answer. The additional details about typical session length, frequency, and intensity are supplementary and do not contradict the expected point.",
+          "reasoning": "The generated answer correctly states that supervision itself \u2014 not duration or frequency \u2014 is the key driver and programs should prioritize supervised delivery, matching the expected answer. The additional details about typical session length, frequency, and intensity are supplementary and do not contradict the expected point.",
           "is_llm_judged": true
         },
         {
           "metric": "faithfulness",
           "score": 1.0,
-          "reasoning": "All factual claims are supported by the retrieved text: the meta-analyses and metaregressions show supervised training improved most HRV parameters versus partial/unsupervised training, frequency and session duration were not associated with HRV improvements, and most included studies had sessions ~45 minutes, ~3 sessions/week, and intensities around 60–70%. The suggestion to structure supervised, protocolized sessions around those commonly studied parameters is a reasonable inference from these findings and does not introduce unsupported facts.",
+          "reasoning": "All factual claims are supported by the retrieved text: the meta-analyses and metaregressions show supervised training improved most HRV parameters versus partial/unsupervised training, frequency and session duration were not associated with HRV improvements, and most included studies had sessions ~45 minutes, ~3 sessions/week, and intensities around 60\u201370%. The suggestion to structure supervised, protocolized sessions around those commonly studied parameters is a reasonable inference from these findings and does not introduce unsupported facts.",
           "is_llm_judged": true
         },
         {
@@ -784,7 +784,7 @@
         {
           "metric": "context_precision",
           "score": 1.0,
-          "reasoning": "All retrieved passages come from the same meta-analysis and directly address the role of supervision versus frequency/duration on HRV in T2DM patients—stating supervised training produced significant HRV improvements while session frequency and duration were not associated. The top-ranked passage already states this key finding and subsequent passages provide supporting details, so relevance remains high throughout and no irrelevant items are ranked above relevant ones.",
+          "reasoning": "All retrieved passages come from the same meta-analysis and directly address the role of supervision versus frequency/duration on HRV in T2DM patients\u2014stating supervised training produced significant HRV improvements while session frequency and duration were not associated. The top-ranked passage already states this key finding and subsequent passages provide supporting details, so relevance remains high throughout and no irrelevant items are ranked above relevant ones.",
           "is_llm_judged": true
         },
         {
@@ -796,7 +796,7 @@
         {
           "metric": "context_recall",
           "score": 1.0,
-          "reasoning": "The retrieved passages explicitly state in the Discussion: “Supervised training improved most HRV parameters, without influence of duration and frequency of training.” This is supported earlier by meta-regression and stratified analyses showing greater improvements after supervised training and that session frequency/duration were not significantly associated with HRV changes.",
+          "reasoning": "The retrieved passages explicitly state in the Discussion: \u201cSupervised training improved most HRV parameters, without influence of duration and frequency of training.\u201d This is supported earlier by meta-regression and stratified analyses showing greater improvements after supervised training and that session frequency/duration were not significantly associated with HRV changes.",
           "is_llm_judged": true
         }
       ],
@@ -838,13 +838,13 @@
         {
           "metric": "abstention_quality",
           "score": 1.0,
-          "reasoning": "Correct behavior. The model gave a concise, substantive answer to an answerable question: it explained that the association is 'paradoxical' because HDL is normally protective but was found higher in patients with worse retinopathy (an unexpected direction), and it cited the plausible explanation offered by the authors — accumulation of dysfunctional HDL in dialysis patients lacking normal protective effects. No fabrication or unnecessary hedging was present.",
+          "reasoning": "Correct behavior. The model gave a concise, substantive answer to an answerable question: it explained that the association is 'paradoxical' because HDL is normally protective but was found higher in patients with worse retinopathy (an unexpected direction), and it cited the plausible explanation offered by the authors \u2014 accumulation of dysfunctional HDL in dialysis patients lacking normal protective effects. No fabrication or unnecessary hedging was present.",
           "is_llm_judged": true
         },
         {
           "metric": "context_recall",
           "score": 1.0,
-          "reasoning": "The retrieved passages explicitly state the paradoxical finding: multiple lines say patients with DR had higher concentrations of HDL cholesterol and the major HDL apolipoproteins (apo AI and apo AII) — including the exact phrasing “Paradoxically, high concentrations of HDL (HDL cholesterol, apo AI, and apo AII) were seen in DR” and similar sentences confirming the same result.",
+          "reasoning": "The retrieved passages explicitly state the paradoxical finding: multiple lines say patients with DR had higher concentrations of HDL cholesterol and the major HDL apolipoproteins (apo AI and apo AII) \u2014 including the exact phrasing \u201cParadoxically, high concentrations of HDL (HDL cholesterol, apo AI, and apo AII) were seen in DR\u201d and similar sentences confirming the same result.",
           "is_llm_judged": true
         }
       ],
@@ -862,19 +862,19 @@
         {
           "metric": "answer_correctness",
           "score": 0.9,
-          "reasoning": "The generated answer correctly states the core finding—that prescribing was not aligned with individual ASCVD risk and lists system/clinician and policy-level reasons for low-risk patients receiving high‑intensity statins. It does not include the specific numeric finding (329 of 1,072 low-risk patients) reported in the expected answer, but otherwise matches and does not contradict the expected content.",
+          "reasoning": "The generated answer correctly states the core finding\u2014that prescribing was not aligned with individual ASCVD risk and lists system/clinician and policy-level reasons for low-risk patients receiving high\u2011intensity statins. It does not include the specific numeric finding (329 of 1,072 low-risk patients) reported in the expected answer, but otherwise matches and does not contradict the expected content.",
           "is_llm_judged": true
         },
         {
           "metric": "faithfulness",
           "score": 1.0,
-          "reasoning": "All three claims are directly supported by the retrieved study text: the paper documents misalignment of prescriptions with individual ASCVD risk (including 329/1072 low-risk patients given high‑intensity statins), lists system/clinician barriers (busy clinics, low physician-to-patient ratio, limited guideline awareness, financial constraints, and adherence challenges), and explicitly calls for a mandatory policy and use of ASCVD risk assessment tools as electronic clinical decision support. No unsupported assertions were made.",
+          "reasoning": "All three claims are directly supported by the retrieved study text: the paper documents misalignment of prescriptions with individual ASCVD risk (including 329/1072 low-risk patients given high\u2011intensity statins), lists system/clinician barriers (busy clinics, low physician-to-patient ratio, limited guideline awareness, financial constraints, and adherence challenges), and explicitly calls for a mandatory policy and use of ASCVD risk assessment tools as electronic clinical decision support. No unsupported assertions were made.",
           "is_llm_judged": true
         },
         {
           "metric": "answer_relevance",
           "score": 1.0,
-          "reasoning": "The answer directly lists plausible reasons from the study for why low-risk patients receive high-intensity statins — misalignment with individual risk, clinician/system barriers, and gaps in policy and risk-assessment tool use — which fully addresses the question without off-topic content.",
+          "reasoning": "The answer directly lists plausible reasons from the study for why low-risk patients receive high-intensity statins \u2014 misalignment with individual risk, clinician/system barriers, and gaps in policy and risk-assessment tool use \u2014 which fully addresses the question without off-topic content.",
           "is_llm_judged": true
         },
         {
@@ -928,7 +928,7 @@
         {
           "metric": "context_precision",
           "score": 0.1,
-          "reasoning": "None of the retrieved passages state the recommended starting dose of metformin. Most passages focus on dapagliflozin (ranks 1, 3, 5) or on nutritional strategies (ranks 2, 4). While rank 1 briefly notes metformin is first-line, it gives no dosing information — overall the set is largely irrelevant to the specific dosing question.",
+          "reasoning": "None of the retrieved passages state the recommended starting dose of metformin. Most passages focus on dapagliflozin (ranks 1, 3, 5) or on nutritional strategies (ranks 2, 4). While rank 1 briefly notes metformin is first-line, it gives no dosing information \u2014 overall the set is largely irrelevant to the specific dosing question.",
           "is_llm_judged": true
         },
         {
@@ -1042,7 +1042,7 @@
         {
           "metric": "faithfulness",
           "score": 0.0,
-          "reasoning": "The answer claims “The retrieved documents do not contain sufficient information to answer this question,” but this is not supported by the provided context. The retrieved passages contain extensive, specific information about dapagliflozin (trial names, incidence rates, adverse events, subgroup findings, and real-world study results), so the blanket statement of insufficiency is unsupported.",
+          "reasoning": "The answer claims \u201cThe retrieved documents do not contain sufficient information to answer this question,\u201d but this is not supported by the provided context. The retrieved passages contain extensive, specific information about dapagliflozin (trial names, incidence rates, adverse events, subgroup findings, and real-world study results), so the blanket statement of insufficiency is unsupported.",
           "is_llm_judged": true
         },
         {
@@ -1054,7 +1054,7 @@
         {
           "metric": "context_precision",
           "score": 0.0,
-          "reasoning": "All retrieved passages (ranks 1–6) are about dapagliflozin/SGLT2 inhibitors and their safety/efficacy; none report the proportion of T2D patients discontinuing GLP‑1 receptor agonists within the first year for gastrointestinal side effects. One passage mentions GLP‑1RAs as a comparator in a real‑world study but gives no discontinuation/GI‑AE rates, so none are relevant.",
+          "reasoning": "All retrieved passages (ranks 1\u20136) are about dapagliflozin/SGLT2 inhibitors and their safety/efficacy; none report the proportion of T2D patients discontinuing GLP\u20111 receptor agonists within the first year for gastrointestinal side effects. One passage mentions GLP\u20111RAs as a comparator in a real\u2011world study but gives no discontinuation/GI\u2011AE rates, so none are relevant.",
           "is_llm_judged": true
         },
         {
@@ -1084,7 +1084,7 @@
         {
           "metric": "faithfulness",
           "score": 1.0,
-          "reasoning": "The retrieved passages describe clinical efficacy, CV/renal outcomes, mechanisms, trials and real-world effectiveness for SGLT2 inhibitors (dapagliflozin) and clinical comparisons with GLP-1RAs, but contain no cost, economic analyses, ICERs, QALYs, pricing, payer-perspective data, or US healthcare setting–specific cost-effectiveness studies. Therefore the statement that the documents do not contain sufficient information to answer a cost-effectiveness question is supported by the context.",
+          "reasoning": "The retrieved passages describe clinical efficacy, CV/renal outcomes, mechanisms, trials and real-world effectiveness for SGLT2 inhibitors (dapagliflozin) and clinical comparisons with GLP-1RAs, but contain no cost, economic analyses, ICERs, QALYs, pricing, payer-perspective data, or US healthcare setting\u2013specific cost-effectiveness studies. Therefore the statement that the documents do not contain sufficient information to answer a cost-effectiveness question is supported by the context.",
           "is_llm_judged": true
         },
         {
@@ -1096,7 +1096,7 @@
         {
           "metric": "context_precision",
           "score": 0.0,
-          "reasoning": "None of the retrieved passages address cost‑effectiveness or economic comparisons between SGLT2 inhibitors and GLP‑1 receptor agonists in a US healthcare setting. All retrieved items (ranks 1–5) are clinical/research summaries of dapagliflozin and SGLT2i efficacy, safety, and real‑world outcomes, so they are irrelevant to the question.",
+          "reasoning": "None of the retrieved passages address cost\u2011effectiveness or economic comparisons between SGLT2 inhibitors and GLP\u20111 receptor agonists in a US healthcare setting. All retrieved items (ranks 1\u20135) are clinical/research summaries of dapagliflozin and SGLT2i efficacy, safety, and real\u2011world outcomes, so they are irrelevant to the question.",
           "is_llm_judged": true
         },
         {
@@ -1120,7 +1120,7 @@
         {
           "metric": "answer_correctness",
           "score": 0.8,
-          "reasoning": "The generated answer correctly rejects the premise that dapagliflozin cures type 2 diabetes and appropriately states that there is no evidence to support a dosing schedule that would eliminate all other medications. It omits supportive details from the expected answer — specifically that dapagliflozin is approved as monotherapy or in combination and that its mechanism complements other antihyperglycemic classes rather than replacing them — but it does not contain any incorrect statements.",
+          "reasoning": "The generated answer correctly rejects the premise that dapagliflozin cures type 2 diabetes and appropriately states that there is no evidence to support a dosing schedule that would eliminate all other medications. It omits supportive details from the expected answer \u2014 specifically that dapagliflozin is approved as monotherapy or in combination and that its mechanism complements other antihyperglycemic classes rather than replacing them \u2014 but it does not contain any incorrect statements.",
           "is_llm_judged": true
         },
         {
@@ -1138,19 +1138,19 @@
         {
           "metric": "context_precision",
           "score": 1.0,
-          "reasoning": "All retrieved passages come from the same dapagliflozin review and are directly relevant: they describe pharmacology, clinical efficacy, and—importantly—dosage/administration including that dapagliflozin can be used as monotherapy and the recommended 10 mg once-daily dose. Relevance remains high across the list (although the explicit dosing statement appears in rank 2 while rank 1 focuses more on PK), so no passage is irrelevant and overall relevance stays high.",
+          "reasoning": "All retrieved passages come from the same dapagliflozin review and are directly relevant: they describe pharmacology, clinical efficacy, and\u2014importantly\u2014dosage/administration including that dapagliflozin can be used as monotherapy and the recommended 10 mg once-daily dose. Relevance remains high across the list (although the explicit dosing statement appears in rank 2 while rank 1 focuses more on PK), so no passage is irrelevant and overall relevance stays high.",
           "is_llm_judged": true
         },
         {
           "metric": "abstention_quality",
           "score": 0.4,
-          "reasoning": "Over-caution when the question was answerable. The system refused to answer, claiming insufficient information, despite the ground-truth flag indicating an answer could be given from the available documents. This is not a fabrication error (no invented facts), but an unnecessary refusal/hedge when a substantive answer was appropriate. Per the rubric, this corresponds to the 0.3–0.5 range for 'is_answerable=true but the system refused to answer.'",
+          "reasoning": "Over-caution when the question was answerable. The system refused to answer, claiming insufficient information, despite the ground-truth flag indicating an answer could be given from the available documents. This is not a fabrication error (no invented facts), but an unnecessary refusal/hedge when a substantive answer was appropriate. Per the rubric, this corresponds to the 0.3\u20130.5 range for 'is_answerable=true but the system refused to answer.'",
           "is_llm_judged": true
         },
         {
           "metric": "context_recall",
           "score": 1.0,
-          "reasoning": "The retrieved passages include the exact sentence: “This unique mechanism of action of SGLT2 inhibitors complements that of other classes of AHAs, allowing for their use as combination therapy with other AHAs, including insulin,” and similar statements noting their insulin-independent mechanism and ability to be combined with other AHAs (including insulin).",
+          "reasoning": "The retrieved passages include the exact sentence: \u201cThis unique mechanism of action of SGLT2 inhibitors complements that of other classes of AHAs, allowing for their use as combination therapy with other AHAs, including insulin,\u201d and similar statements noting their insulin-independent mechanism and ability to be combined with other AHAs (including insulin).",
           "is_llm_judged": true
         }
       ],
@@ -1186,13 +1186,13 @@
         {
           "metric": "context_precision",
           "score": 0.2,
-          "reasoning": "Only one retrieved passage (rank 3, t2dm_risk_factors_umbrella_review) directly addresses coffee and its association with T2DM (and in fact states coffee lowers risk). The other passages (ranks 1, 2, 4, 5) focus on omega‑3, trans fats, fiber, sodium, alcohol, diet types, and saturated fat and do not discuss coffee; thus most retrieved items are irrelevant and the single relevant item is not ranked first.",
+          "reasoning": "Only one retrieved passage (rank 3, t2dm_risk_factors_umbrella_review) directly addresses coffee and its association with T2DM (and in fact states coffee lowers risk). The other passages (ranks 1, 2, 4, 5) focus on omega\u20113, trans fats, fiber, sodium, alcohol, diet types, and saturated fat and do not discuss coffee; thus most retrieved items are irrelevant and the single relevant item is not ranked first.",
           "is_llm_judged": true
         },
         {
           "metric": "abstention_quality",
           "score": 0.4,
-          "reasoning": "Over-caution when the question was answerable. The system declined to answer, stating insufficient information, even though the ground truth indicates an answer could be given from the available documents. This is the failure mode 'over-caution — should have answered.' The response should have provided a substantive recommendation (based on the retrieved evidence) rather than an unnecessary refusal. Score reflects a clear but not catastrophic error (refusal despite available evidence).",
+          "reasoning": "Over-caution when the question was answerable. The system declined to answer, stating insufficient information, even though the ground truth indicates an answer could be given from the available documents. This is the failure mode 'over-caution \u2014 should have answered.' The response should have provided a substantive recommendation (based on the retrieved evidence) rather than an unnecessary refusal. Score reflects a clear but not catastrophic error (refusal despite available evidence).",
           "is_llm_judged": true
         },
         {
@@ -1222,7 +1222,7 @@
         {
           "metric": "faithfulness",
           "score": 1.0,
-          "reasoning": "Supported: The retrieved systematic review/meta-analysis reports that exercise improves HRV in T2DM but does not present data on how long ‘full recovery’ from cardiac autonomic neuropathy takes after exercise training. The review explicitly states it found no association between training frequency/duration and HRV improvements and does not define or report timelines for full recovery, so the abstention is faithful to the provided context.",
+          "reasoning": "Supported: The retrieved systematic review/meta-analysis reports that exercise improves HRV in T2DM but does not present data on how long \u2018full recovery\u2019 from cardiac autonomic neuropathy takes after exercise training. The review explicitly states it found no association between training frequency/duration and HRV improvements and does not define or report timelines for full recovery, so the abstention is faithful to the provided context.",
           "is_llm_judged": true
         },
         {
@@ -1240,13 +1240,13 @@
         {
           "metric": "abstention_quality",
           "score": 0.4,
-          "reasoning": "Over-caution when the question was answerable. The system incorrectly declined to answer despite the ground-truth indicating sufficient evidence existed. This is not fabrication (it did not invent facts), but it refused to provide a substantive response it could have given, so partial credit is appropriate (score in the 0.3–0.5 band).",
+          "reasoning": "Over-caution when the question was answerable. The system incorrectly declined to answer despite the ground-truth indicating sufficient evidence existed. This is not fabrication (it did not invent facts), but it refused to provide a substantive response it could have given, so partial credit is appropriate (score in the 0.3\u20130.5 band).",
           "is_llm_judged": true
         },
         {
           "metric": "context_recall",
           "score": 1.0,
-          "reasoning": "The retrieved passages explicitly state “exercise training improved HRV in T2DM patients” and further note a decrease in sympathetic activity and an increase in parasympathetic activity, matching the supporting evidence that HRV improvements reflect improved autonomic nervous system activity.",
+          "reasoning": "The retrieved passages explicitly state \u201cexercise training improved HRV in T2DM patients\u201d and further note a decrease in sympathetic activity and an increase in parasympathetic activity, matching the supporting evidence that HRV improvements reflect improved autonomic nervous system activity.",
           "is_llm_judged": true
         }
       ],
@@ -1264,31 +1264,31 @@
         {
           "metric": "answer_correctness",
           "score": 0.6,
-          "reasoning": "The generated answer correctly rejects the claim that statins were ‘completely ineffective’ and correctly explains that guidelines rest on trial evidence of cardiovascular benefit and that implementation/dosing/adherence gaps can explain poor target attainment. However it misstates the study result by implying nearly half failed to reach LDL targets, whereas the expected answer notes 65.4% of the total group did achieve LDL‑C targets (only about one-third failed), so the key factual point that a majority succeeded is missing.",
+          "reasoning": "The generated answer correctly rejects the claim that statins were \u2018completely ineffective\u2019 and correctly explains that guidelines rest on trial evidence of cardiovascular benefit and that implementation/dosing/adherence gaps can explain poor target attainment. However it misstates the study result by implying nearly half failed to reach LDL targets, whereas the expected answer notes 65.4% of the total group did achieve LDL\u2011C targets (only about one-third failed), so the key factual point that a majority succeeded is missing.",
           "is_llm_judged": true
         },
         {
           "metric": "faithfulness",
           "score": 1.0,
-          "reasoning": "All factual claims in the generated answer are supported by the retrieved Sri Lankan study text: the quoted line about nearly half failing LDL-C targets is present; the study discusses misalignment of prescriptions with ASCVD risk, lower-than-trial dosing in South Asian practice (trial doses atorvastatin 40 mg / rosuvastatin 20 mg vs commonly used lower doses), and barriers such as high clinic load, limited physician awareness, and poor patient adherence. The statement that the study does not prove statins are ineffective is a supported inference from these findings and the authors’ discussion.",
+          "reasoning": "All factual claims in the generated answer are supported by the retrieved Sri Lankan study text: the quoted line about nearly half failing LDL-C targets is present; the study discusses misalignment of prescriptions with ASCVD risk, lower-than-trial dosing in South Asian practice (trial doses atorvastatin 40 mg / rosuvastatin 20 mg vs commonly used lower doses), and barriers such as high clinic load, limited physician awareness, and poor patient adherence. The statement that the study does not prove statins are ineffective is a supported inference from these findings and the authors\u2019 discussion.",
           "is_llm_judged": true
         },
         {
           "metric": "answer_relevance",
           "score": 1.0,
-          "reasoning": "The answer directly responds to the question by disputing the claim of \"completely ineffective\" and explaining why guidelines still recommend statins — i.e., large randomized trials show cardiovascular benefit at evidence-based doses, while the Sri Lankan findings likely reflect local implementation issues (dose, prescribing, adherence, risk stratification) rather than lack of drug efficacy.",
+          "reasoning": "The answer directly responds to the question by disputing the claim of \"completely ineffective\" and explaining why guidelines still recommend statins \u2014 i.e., large randomized trials show cardiovascular benefit at evidence-based doses, while the Sri Lankan findings likely reflect local implementation issues (dose, prescribing, adherence, risk stratification) rather than lack of drug efficacy.",
           "is_llm_judged": true
         },
         {
           "metric": "context_precision",
           "score": 1.0,
-          "reasoning": "The sole retrieved passage (rank 1) is directly relevant: it documents high statin prescribing but poor LDL-target achievement in Sri Lankan T2DM patients and explains likely causes (inappropriate/low dosing, underuse of high‑intensity statins, poor adherence, healthcare/system factors), which addresses why real‑world effectiveness may differ from guideline evidence. No retrieved passage is irrelevant and there is no ordering issue.",
+          "reasoning": "The sole retrieved passage (rank 1) is directly relevant: it documents high statin prescribing but poor LDL-target achievement in Sri Lankan T2DM patients and explains likely causes (inappropriate/low dosing, underuse of high\u2011intensity statins, poor adherence, healthcare/system factors), which addresses why real\u2011world effectiveness may differ from guideline evidence. No retrieved passage is irrelevant and there is no ordering issue.",
           "is_llm_judged": true
         },
         {
           "metric": "abstention_quality",
           "score": 1.0,
-          "reasoning": "Correct behavior. The question was answerable and the system provided a substantive, evidence-aligned explanation rather than refusing. It rightly challenged the premise that statins were “completely ineffective,” noted the study showed many patients failed to reach targets (not absence of benefit), and explained why guidelines still recommend statins — large randomized trials showing reduction in cardiovascular morbidity and mortality, and that real-world shortfalls more likely reflect implementation issues (dose, adherence, prescribing relative to risk) rather than intrinsic lack of efficacy. The response did not invent unsupported facts or over-hedge, so full credit is appropriate.",
+          "reasoning": "Correct behavior. The question was answerable and the system provided a substantive, evidence-aligned explanation rather than refusing. It rightly challenged the premise that statins were \u201ccompletely ineffective,\u201d noted the study showed many patients failed to reach targets (not absence of benefit), and explained why guidelines still recommend statins \u2014 large randomized trials showing reduction in cardiovascular morbidity and mortality, and that real-world shortfalls more likely reflect implementation issues (dose, adherence, prescribing relative to risk) rather than intrinsic lack of efficacy. The response did not invent unsupported facts or over-hedge, so full credit is appropriate.",
           "is_llm_judged": true
         },
         {
@@ -1318,7 +1318,7 @@
         {
           "metric": "faithfulness",
           "score": 0.2,
-          "reasoning": "The generated answer claims the retrieved documents do not contain sufficient information to answer the question. This is unsupported by the provided context, which contains extensive, specific data on dapagliflozin pharmacokinetics, efficacy (multiple trials and outcomes), safety/tolerability (pooled analyses and DECLARE‑TIMI 58), and real‑world studies — so one cannot conclude overall insufficiency from the documents shown. Because the original question is not provided, the blanket statement of insufficiency is not justified by the retrieved passages.",
+          "reasoning": "The generated answer claims the retrieved documents do not contain sufficient information to answer the question. This is unsupported by the provided context, which contains extensive, specific data on dapagliflozin pharmacokinetics, efficacy (multiple trials and outcomes), safety/tolerability (pooled analyses and DECLARE\u2011TIMI 58), and real\u2011world studies \u2014 so one cannot conclude overall insufficiency from the documents shown. Because the original question is not provided, the blanket statement of insufficiency is not justified by the retrieved passages.",
           "is_llm_judged": true
         },
         {
@@ -1372,7 +1372,7 @@
         {
           "metric": "context_precision",
           "score": 0.2,
-          "reasoning": "Most passages (ranks 1–4) are unrelated to DECLARE‑TIMI 58 or participant sex distribution (they concern statins, diabetes cohorts, or methodology). Rank 5 ([dapagliflozin_sglt2i_review]) mentions DECLARE‑TIMI 58 and sex differences in adverse events but does not provide the male:female enrollment ratio; a single somewhat on-topic passage appears last, breaking the ideal relevance ordering.",
+          "reasoning": "Most passages (ranks 1\u20134) are unrelated to DECLARE\u2011TIMI 58 or participant sex distribution (they concern statins, diabetes cohorts, or methodology). Rank 5 ([dapagliflozin_sglt2i_review]) mentions DECLARE\u2011TIMI 58 and sex differences in adverse events but does not provide the male:female enrollment ratio; a single somewhat on-topic passage appears last, breaking the ideal relevance ordering.",
           "is_llm_judged": true
         },
         {
@@ -1402,7 +1402,7 @@
         {
           "metric": "faithfulness",
           "score": 1.0,
-          "reasoning": "Supported: the retrieved documents repeatedly state there is no consensus and that dietary prescriptions must be individualized, give macronutrient percentage ranges and a carbohydrate gram example (≈130 g/day) but do not provide a specific total kcal/day target or the required inputs (BMR, activity level, weight-loss vs maintenance goal) needed to calculate an exact caloric requirement for a 70 kg male. Therefore the claim that the documents do not contain sufficient information to determine an exact total daily caloric intake is justified.",
+          "reasoning": "Supported: the retrieved documents repeatedly state there is no consensus and that dietary prescriptions must be individualized, give macronutrient percentage ranges and a carbohydrate gram example (\u2248130 g/day) but do not provide a specific total kcal/day target or the required inputs (BMR, activity level, weight-loss vs maintenance goal) needed to calculate an exact caloric requirement for a 70 kg male. Therefore the claim that the documents do not contain sufficient information to determine an exact total daily caloric intake is justified.",
           "is_llm_judged": true
         },
         {
@@ -1414,7 +1414,7 @@
         {
           "metric": "context_precision",
           "score": 0.0,
-          "reasoning": "None of the retrieved passages (ranks 1–6) state a specific total daily caloric intake or a kcal/kg recommendation for a 70 kg male with T2DM. Several passages (e.g., ranks 1 and 2) give macronutrient percentages and fiber/sodium targets (useful background) but do not provide the exact calorie value requested, so no passage is relevant to directly answering the question.",
+          "reasoning": "None of the retrieved passages (ranks 1\u20136) state a specific total daily caloric intake or a kcal/kg recommendation for a 70 kg male with T2DM. Several passages (e.g., ranks 1 and 2) give macronutrient percentages and fiber/sodium targets (useful background) but do not provide the exact calorie value requested, so no passage is relevant to directly answering the question.",
           "is_llm_judged": true
         },
         {
@@ -1432,5 +1432,11 @@
       "estimated_cost_usd": 0.0065335,
       "generation_model": "gpt-5-mini"
     }
-  ]
+  ],
+  "retrieval_config": {
+    "retrieval_top_k": 5,
+    "use_hybrid_retrieval": false,
+    "use_reranking": false,
+    "use_model_routing": false
+  }
 }

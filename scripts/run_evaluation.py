@@ -16,21 +16,31 @@ from app.vectorstore.chroma_store import get_collection
 from evaluation.golden_dataset.schema import load_golden_dataset
 from evaluation.judge.judge_service import evaluate_answer
 from evaluation.judge.report import build_report
-from evaluation.judge.schema import EvaluationResult
+from evaluation.judge.schema import EvaluationResult, RetrievalConfig
 from evaluation.tracking.mlflow_logger import log_evaluation_run
 
 
 def _strategy_label(settings) -> str:
     """Names the retrieval strategy for the output filename, so an
-    ablation run (dense vs hybrid vs hybrid+rerank, routed vs not) never
-    overwrites a previous run's results -- each config's report is
-    comparable later. This is exactly how to validate model routing
-    before trusting it: run with use_model_routing off, then on, and
-    compare the two reports' metric_summaries (and MLflow runs).
+    ablation run (dense vs hybrid vs hybrid+rerank, routed vs not, and
+    now top_k) never overwrites a previous run's results -- each config's
+    report is comparable later. This is exactly how to validate model
+    routing before trusting it: run with use_model_routing off, then on,
+    and compare the two reports' metric_summaries (and MLflow runs).
+
+    retrieval_top_k is only appended when it differs from the default
+    (5) -- otherwise every existing filename on disk would change and
+    stop matching the reports already committed/deployed. This means a
+    top_k ablation at the default value is still indistinguishable by
+    filename alone; `retrieval_config` inside the report itself is the
+    authoritative source now, this label is just a human-readable hint.
     """
     base = "hybrid" if settings.use_hybrid_retrieval else "dense"
     label = f"{base}_rerank" if settings.use_reranking else base
-    return f"{label}_routed" if settings.use_model_routing else label
+    label = f"{label}_routed" if settings.use_model_routing else label
+    if settings.retrieval_top_k != 5:
+        label = f"{label}_topk{settings.retrieval_top_k}"
+    return label
 
 
 def run_evaluation(dataset_version: str = "v1", question_ids: list[str] | None = None) -> None:
@@ -90,7 +100,13 @@ def run_evaluation(dataset_version: str = "v1", question_ids: list[str] | None =
                 )
             )
 
-    report = build_report(dataset_version, results)
+    retrieval_config = RetrievalConfig(
+        retrieval_top_k=settings.retrieval_top_k,
+        use_hybrid_retrieval=settings.use_hybrid_retrieval,
+        use_reranking=settings.use_reranking,
+        use_model_routing=settings.use_model_routing,
+    )
+    report = build_report(dataset_version, results, retrieval_config)
 
     out_dir = Path("evaluation/regression/runs")
     out_dir.mkdir(parents=True, exist_ok=True)

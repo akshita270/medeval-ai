@@ -288,10 +288,19 @@ export interface MetricSummary {
   count: number;
 }
 
+export interface RetrievalConfig {
+  retrieval_top_k: number | null;
+  use_hybrid_retrieval: boolean | null;
+  use_reranking: boolean | null;
+  use_model_routing: boolean | null;
+}
+
 export interface EvalRunSummary {
   run_id: string;
   label: string;
   is_baseline: boolean;
+  // null only for a historical run saved before this field existed.
+  retrieval_config: RetrievalConfig | null;
   total_questions: number;
   overall_score: number;
   metric_summaries: MetricSummary[];
@@ -326,6 +335,7 @@ export interface EvalResult {
 
 export interface EvalRunDetail {
   dataset_version: string;
+  retrieval_config: RetrievalConfig | null;
   total_questions: number;
   metric_summaries: MetricSummary[];
   total_failed_metric_calls: number;

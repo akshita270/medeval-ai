@@ -21,20 +21,34 @@ class EvalRunNotFoundError(Exception):
     pass
 
 
-def _friendly_label(stem: str, is_baseline: bool) -> str:
-    if is_baseline:
-        return "Approved baseline"
-
+def _friendly_label(stem: str, is_baseline: bool, retrieval_config) -> str:
+    """Includes the real retrieval_top_k from the report itself (not
+    guessed from the filename) -- two runs can share the same "dense"/
+    "hybrid" filename pattern while using a different top_k (that's
+    exactly what happened with the baseline vs. the top_k=8 ablation
+    run, both named "dense"), so the label must show it explicitly or a
+    viewer has no way to tell the configs apart.
+    """
     parts = []
-    if "hybrid" in stem:
-        parts.append("Hybrid retrieval")
-    elif "dense" in stem:
-        parts.append("Dense retrieval")
-    if "rerank" in stem:
-        parts.append("+ reranking")
-    if "routed" in stem:
-        parts.append("+ model routing")
+    if is_baseline:
+        parts.append("Approved baseline")
+    else:
+        if "hybrid" in stem:
+            parts.append("Hybrid retrieval")
+        elif "dense" in stem:
+            parts.append("Dense retrieval")
+        if "rerank" in stem:
+            parts.append("+ reranking")
+        if "routed" in stem:
+            parts.append("+ model routing")
     label = " ".join(parts) if parts else stem
+    # Several frontend components derive a "short name" via
+    # `label.split(" (")[0]` (charts, comparison view) -- top_k must land
+    # before the first "(" or those short names collapse back to e.g.
+    # "Dense retrieval" for both a top_k=5 and a top_k=8 run, silently
+    # reintroducing the exact ambiguity this field exists to remove.
+    if retrieval_config is not None and retrieval_config.retrieval_top_k is not None:
+        label = f"{label}, top_k={retrieval_config.retrieval_top_k}"
     return f"{label} (10-question sample)" if "sample10" in stem else f"{label} (full 30-question set)"
 
 
@@ -63,8 +77,9 @@ def _summarize(run_id: str, path: Path) -> dict:
     )
     return {
         "run_id": run_id,
-        "label": _friendly_label(run_id, is_baseline=run_id == "baseline"),
+        "label": _friendly_label(run_id, is_baseline=run_id == "baseline", retrieval_config=report.retrieval_config),
         "is_baseline": run_id == "baseline",
+        "retrieval_config": report.retrieval_config.model_dump() if report.retrieval_config else None,
         "total_questions": report.total_questions,
         "overall_score": round(overall_score, 4),
         "metric_summaries": [m.model_dump() for m in report.metric_summaries],
