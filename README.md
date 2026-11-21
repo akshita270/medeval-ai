@@ -78,7 +78,7 @@ an aggregate score). A GitHub Actions PR pipeline runs lint/format/unit tests fo
 free on every PR (including forks), then a sampled 10-question evaluation + quality
 gate when `OPENAI_API_KEY` is available — skipped (not failed) for fork PRs, since
 GitHub withholds secrets from them by design. A release pipeline runs the full
-30-question evaluation on every push to `main`. 186 unit tests cover deterministic
+30-question evaluation on every push to `main`. 205 unit tests cover deterministic
 logic and mocked API calls at zero cost.
 
 ```mermaid
@@ -190,7 +190,7 @@ Full automated failure diagnosis (beyond "the GitHub Actions run failed, here's
 the real status") is still open.
 
 **Frontend dashboard**
-A Next.js UI (`frontend/`) with five pages, all reading real data through a handful
+A Next.js UI (`frontend/`) with six pages, all reading real data through a handful
 of read-only endpoints added to `app/main.py` (`/stats/*`, `/evaluation/runs*`,
 `/pipeline/runs*`) -- none of it mocked:
 - **Playground** -- a live chat against the real `/ask` endpoint, with real
@@ -258,6 +258,13 @@ The live Evaluation Lab's run picker shows each run's actual `retrieval_top_k`
 (and hybrid/reranking/routing flags) directly in its label -- e.g. "Dense
 retrieval, top_k=8" vs. "Approved baseline, top_k=5" -- so this table's
 distinction is visible on the dashboard itself, not just here in prose.
+
+This was also verified through the real CI pipeline itself, not just a local
+script: [PR #14](https://github.com/akshita270/medeval-ai/pull/14) opened this
+same `top_k=8` change for real, and GitHub Actions' actual "Sampled evaluation
++ quality gate" check failed it against the live OpenAI API -- faithfulness
+0.80 against the 0.85 threshold, one question/metric pair regressed 100% on
+that run's smaller 10-question CI sample. The PR was closed without merging.
 
 ## A known, documented limitation
 
