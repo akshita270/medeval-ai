@@ -65,6 +65,14 @@ jobs:
       - name: ESLint
         run: npm run lint
 
+      # Generates .next/types (route/layout/page prop types like
+      # LayoutProps) without a full build. A fresh checkout has no .next/
+      # directory yet, so tsc fails with "Cannot find name 'LayoutProps'"
+      # without this -- it only ever worked locally because an earlier
+      # `next dev`/`next build` had already generated these types once.
+      - name: Generate Next.js route types
+        run: npx next typegen
+
       - name: TypeScript type check
         run: npx tsc --noEmit
 
