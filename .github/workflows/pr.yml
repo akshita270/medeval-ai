@@ -78,15 +78,17 @@ jobs:
     name: Sampled evaluation + quality gate
     runs-on: ubuntu-latest
     needs: lint-and-test
-    # GitHub itself withholds repository secrets from pull_request-triggered
-    # workflows when the PR comes from a fork -- secrets.OPENAI_API_KEY
-    # resolves to an empty string in that case, so this condition is false
-    # and the job is skipped entirely for untrusted PRs. It only runs for
-    # PRs from branches within this repository, where the secret is real.
-    # This is what satisfies "prevent untrusted PRs from accessing
-    # production credentials" -- it's GitHub's own security model, not
-    # anything this workflow has to enforce itself.
-    if: ${{ secrets.OPENAI_API_KEY != '' }}
+    # GitHub Actions does not allow referencing `secrets` directly inside a
+    # job-level `if:` (an "Unrecognized named-value: 'secrets'" parse error
+    # -- this used to be here as `if: ${{ secrets.OPENAI_API_KEY != '' }}`
+    # and silently broke this entire workflow file for every PR since
+    # whenever that line was added). scripts/ci_quality_gate.py already
+    # does the equivalent check correctly at runtime (`if not
+    # settings.openai_api_key: ... skip cleanly`), so no job-level
+    # condition is needed here at all -- GitHub itself still withholds the
+    # real secret from fork PRs regardless, so OPENAI_API_KEY naturally
+    # resolves to an empty string there and the script's own check handles
+    # it the same way this used to try to.
     steps:
       - uses: actions/checkout@v4
 
