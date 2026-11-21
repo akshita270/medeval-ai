@@ -45,12 +45,13 @@ def main() -> int:
         return 0
 
     question_ids = None if args.full else _PR_SAMPLE_QUESTION_IDS
-    run_evaluation(dataset_version="v1", question_ids=question_ids)
-
-    strategy = "hybrid" if settings.use_hybrid_retrieval else "dense"
-    strategy += "_rerank" if settings.use_reranking else ""
-    suffix = "" if question_ids is None else f"_sample{len(question_ids)}"
-    candidate_path = Path(f"evaluation/regression/runs/run_v1_{strategy}{suffix}.json")
+    # Uses the exact path run_evaluation() actually wrote to, rather than
+    # reconstructing the filename independently -- that duplicated logic
+    # previously fell out of sync with run_evaluation.py's real naming
+    # (missing the _topk{N} suffix added for non-default retrieval_top_k),
+    # so this job crashed with FileNotFoundError instead of ever reaching
+    # the gate check.
+    candidate_path = run_evaluation(dataset_version="v1", question_ids=question_ids)
 
     baseline = EvaluationReport.model_validate_json(_BASELINE_PATH.read_text())
     candidate = EvaluationReport.model_validate_json(candidate_path.read_text())

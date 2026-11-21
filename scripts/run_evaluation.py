@@ -43,7 +43,7 @@ def _strategy_label(settings) -> str:
     return label
 
 
-def run_evaluation(dataset_version: str = "v1", question_ids: list[str] | None = None) -> None:
+def run_evaluation(dataset_version: str = "v1", question_ids: list[str] | None = None) -> Path:
     run_started_at = time.time()
     settings = get_settings()
     dataset_path = Path(f"evaluation/golden_dataset/{dataset_version}/questions.jsonl")
@@ -140,6 +140,8 @@ def run_evaluation(dataset_version: str = "v1", question_ids: list[str] | None =
     print(flush=True)
     for summary in sorted(report.metric_summaries, key=lambda s: s.metric.value):
         print(f"  {summary.metric.value:22s} mean={summary.mean_score:.3f}  (n={summary.count})", flush=True)
+
+    return out_path
 
 
 if __name__ == "__main__":
