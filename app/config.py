@@ -32,7 +32,7 @@ class Settings(BaseSettings):
     # RAG configuration
     chunk_size: int = Field(default=800)
     chunk_overlap: int = Field(default=100)
-    retrieval_top_k: int = Field(default=5)
+    retrieval_top_k: int = Field(default=8)
     embedding_model: str = Field(default="text-embedding-3-small")
     llm_model: str = Field(default="gpt-5-mini")
     prompt_version: str = Field(default="v1")
